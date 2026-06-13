@@ -86,6 +86,9 @@ td{color:var(--text);font-weight:300}
 .cta-final a:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
 .social-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .social-btns a{padding:13px 30px;font-size:15px;letter-spacing:.12em}
+.cta-final a.ghost{background:transparent;border:1px solid var(--line);color:var(--gold);font-weight:500}
+.cta-final a.ghost:hover{border-color:var(--gold);box-shadow:none;color:var(--gold-bright)}
+.step-label{color:var(--gold-bright)!important;font-family:var(--sans);letter-spacing:.18em;font-size:14px;margin-bottom:14px}
 #b-qianzi::before{background:linear-gradient(90deg,transparent,var(--crimson),transparent)}
 .qianzi-body{font-family:var(--serif);line-height:1.95;font-size:16px;color:var(--text)}
 .qianzi-body p{margin-bottom:1.3em}
@@ -169,13 +172,20 @@ td{color:var(--text);font-weight:300}
     </div>
 
     <div class="cta-final">
-      <h3>想知道困住你的「萬字報告」嗎？</h3>
-      <p>千字讓你看見主線，萬字拆解你的人生劇本、盲區與破局之道。<br>直接私訊我們，預約你的完整解讀。</p>
+      <h3>想要完整的「萬字報告」嗎？</h3>
+      <p>千字讓你看見主線；萬字拆解你的人生劇本、盲區與破局之道。</p>
+      <p class="step-label">① 私訊我們預約</p>
       <div class="social-btns">
-        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">f　Facebook 私訊</a>
-        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">◎　Instagram</a>
-        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">@　Threads</a>
+        <a class="ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
+        <a class="ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+        <a class="ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
       </div>
+      <hr style="max-width:420px;margin:30px auto">
+      <p class="step-label">② 預約後，在這裡查看你的萬字</p>
+      <div class="social-btns">
+        <a href="login.html">註冊 / 登入會員 →</a>
+      </div>
+      <p class="qz-note" style="max-width:500px;margin:18px auto 0;border:none">註冊帳號是用來「收取並隨時查看」你的完整萬字報告——我們會在你預約後，把報告放進你的專屬帳號。</p>
     </div>
     <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
   </div>
