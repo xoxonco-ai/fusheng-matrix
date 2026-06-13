@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜免費排盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.7/lunar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iztro@2.5.8/dist/iztro.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
+<style>
+:root{--bg:#070b16;--bg2:#0c1224;--bg3:#101831;--gold:#c9a86a;--gold-bright:#e8cf9a;--crimson:#b05a6e;--crimson-bright:#d98a9c;--text:#e9e5db;--muted:#9298ad;--line:rgba(201,168,106,.25);--serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);line-height:1.85;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(201,168,106,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,106,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:30px 22px 120px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:12px}
+.topbar a{color:var(--muted);text-decoration:none;font-family:var(--sans);font-size:13px;letter-spacing:.2em}
+.topbar a:hover{color:var(--gold)}
+.brandmark{color:var(--gold);letter-spacing:.3em;font-size:18px}
+.langbar{display:flex;gap:6px}
+.langbar button{font-family:var(--sans);font-size:12px;letter-spacing:.05em;padding:6px 13px;border-radius:3px;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--muted);transition:all .25s}
+.langbar button:hover{border-color:var(--gold);color:var(--gold)}
+.langbar button.active{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#0a0e1a;border-color:var(--gold);font-weight:600}
+.hero h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.14em;text-align:center;background:linear-gradient(180deg,#f3e8cf,var(--gold) 75%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{text-align:center;color:var(--muted);font-family:var(--sans);font-weight:300;letter-spacing:.15em;font-size:14px;margin-top:14px}
+.hero .sysline{text-align:center;color:var(--gold);letter-spacing:.25em;font-size:14px;margin-top:8px}
+.card{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:38px 32px;margin-top:34px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.18em;color:var(--gold);margin:0 0 8px}
+input,select{width:100%;padding:12px 14px;border-radius:4px;border:1px solid rgba(201,168,106,.3);background:rgba(7,11,22,.7);color:var(--text);font-family:var(--sans);font-size:15px;outline:none;transition:border-color .3s}
+input:focus,select:focus{border-color:var(--gold)}
+.field{margin-bottom:4px}
+.hint{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:6px}
+.chk{display:flex;align-items:center;gap:8px;margin-top:10px;color:var(--text);font-family:var(--sans);font-size:13px;cursor:pointer}
+.chk input{width:auto;accent-color:var(--gold)}
+.warn{display:none;border:1px solid var(--crimson);background:rgba(176,90,110,.1);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--crimson-bright);line-height:1.7}
+.caveat{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--crimson-bright);margin-top:10px}
+.runbtn{width:100%;margin-top:30px;padding:16px;cursor:pointer;font-family:var(--serif);font-size:17px;letter-spacing:.3em;font-weight:600;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));border:none;border-radius:4px;transition:all .35s}
+.runbtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.runbtn:disabled{opacity:.5;cursor:wait}
+#results{margin-top:44px;display:none}
+.sys-block{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px;margin-bottom:26px;position:relative;overflow:hidden}
+.sys-block::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.sys-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.sys-head .num{font-size:13px;color:var(--gold);font-family:var(--sans);letter-spacing:.3em}
+.sys-head h2{font-size:22px;font-weight:600;letter-spacing:.1em}
+.sys-head .en{color:var(--muted);font-family:var(--sans);font-size:12px;letter-spacing:.2em}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 20px;font-size:15px}
+.kv dt{color:var(--gold-bright);white-space:nowrap;font-weight:500}
+.kv dd{color:var(--text);font-family:var(--sans);font-weight:300}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:12.5px;margin-top:6px}
+th,td{border:1px solid var(--line);padding:7px 5px;text-align:center}
+th{color:var(--gold);font-weight:400;letter-spacing:.05em}
+td{color:var(--text);font-weight:300}
+.bazi-table td.row-h{color:var(--muted);font-size:11px;letter-spacing:.1em;white-space:nowrap}
+.bazi-table td.gz{font-size:20px;color:var(--gold-bright);font-family:var(--serif);font-weight:600}
+.balance{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:4px 0 6px}
+.bal{border:1px solid var(--line);border-radius:5px;padding:8px 4px;text-align:center;font-family:var(--sans)}
+.bal .c{font-size:18px;color:var(--gold-bright);font-weight:600}
+.bal .n{font-size:11px;color:var(--muted);margin-top:2px}
+.bal.wood{box-shadow:inset 0 -3px 0 #6fae7a}.bal.fire{box-shadow:inset 0 -3px 0 #c8636e}.bal.earth{box-shadow:inset 0 -3px 0 #c9a86a}.bal.metal{box-shadow:inset 0 -3px 0 #cfd3da}.bal.water{box-shadow:inset 0 -3px 0 #5f86c4}
+.subhead{font-family:var(--sans);font-size:12px;letter-spacing:.2em;color:var(--gold);margin:20px 0 8px}
+.planet-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;font-family:var(--sans);font-size:13.5px}
+.planet-row .pl{border:1px solid var(--line);border-radius:5px;padding:9px 12px}
+.planet-row .pl b{color:var(--gold-bright);font-weight:600;margin-right:6px}
+.planet-row .pl .h{color:var(--muted);font-size:11px;float:right}
+.planet-row .pl .rx{color:var(--crimson-bright);font-size:11px}
+.hd-type{text-align:center;margin-bottom:20px}
+.hd-type .big{font-size:28px;color:var(--gold-bright);font-weight:700;letter-spacing:.08em}
+.hd-type .sub{font-family:var(--sans);color:var(--muted);font-size:13px;letter-spacing:.2em;margin-top:4px}
+.centers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-family:var(--sans);font-size:12px;margin-top:6px}
+.ctr{border:1px solid var(--line);border-radius:5px;padding:9px 6px;text-align:center;color:var(--muted)}
+.ctr.on{background:linear-gradient(135deg,rgba(201,168,106,.18),rgba(201,168,106,.04));border-color:var(--gold);color:var(--gold-bright);font-weight:500}
+.tag{display:inline-block;font-family:var(--sans);font-size:11.5px;border:1px solid var(--line);border-radius:3px;padding:3px 9px;margin:3px 4px 0 0;color:var(--muted)}
+.cta-final{text-align:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:46px 32px;margin-top:34px}
+.cta-final h3{font-size:22px;letter-spacing:.1em;margin-bottom:10px}
+.cta-final p{color:var(--muted);font-family:var(--sans);font-weight:300;font-size:14.5px;margin-bottom:26px}
+.cta-final a{display:inline-block;padding:15px 44px;border-radius:4px;font-size:16px;letter-spacing:.25em;text-decoration:none;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;transition:all .35s}
+.cta-final a:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.disclaimer{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.8}
+.err{color:var(--crimson-bright);font-family:var(--sans);font-size:14px;text-align:center;margin-top:18px;display:none}
+.loading{display:none;text-align:center;color:var(--gold);font-family:var(--sans);letter-spacing:.2em;margin-top:24px}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<main>
+  <div class="topbar">
+    <span class="brandmark" data-i18n="brand">浮生矩陣</span>
+    <div class="langbar">
+      <button data-lang="tw" class="active" onclick="setLang('tw')">繁體</button>
+      <button data-lang="cn" onclick="setLang('cn')">简体</button>
+      <button data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="index.html" data-i18n="back">← 回首頁</a>
+  </div>
+
+  <div class="hero">
+    <h1 data-i18n="title">免費排盤</h1>
+    <p data-i18n="hero_sub">輸入出生資料，立即取得你的命盤總覽</p>
+    <p class="sysline" data-i18n="hero_sys">八字 · 紫微斗數 · 西洋占星 · 人類圖</p>
+  </div>
+
+  <div class="card">
+    <div class="grid2">
+      <div class="field"><label data-i18n="f_name">姓名 / 暱稱</label><input type="text" id="name"></div>
+      <div class="field"><label data-i18n="f_gender">性別</label><select id="gender"><option value="女" data-i18n="g_female">女</option><option value="男" data-i18n="g_male">男</option></select></div>
+      <div class="field"><label data-i18n="f_date">出生日期（西元 國曆）</label><input type="date" id="date" value="1990-05-20" min="1900-01-01" max="2099-12-31"></div>
+      <div class="field"><label data-i18n="f_time">出生時間</label><input type="time" id="time" value="14:30">
+        <label class="chk"><input type="checkbox" id="unknownTime"> <span data-i18n="unknown_label">我不確定出生時間</span></label>
+        <p class="hint" data-i18n="time_hint">勾選後將以中午推算；時辰相關結果僅供參考</p></div>
+      <div class="field"><label data-i18n="f_city">出生地</label><select id="city"></select></div>
+      <div class="field" id="manualWrap" style="display:none"><label data-i18n="manual_label">經度 , 緯度 , 時區</label><input type="text" id="manual" placeholder="121.5,25.0,8"></div>
+    </div>
+    <button class="runbtn" id="run" data-i18n="run_btn">開始排盤 ✦</button>
+    <p class="err" id="err"></p>
+    <p class="loading" id="loading" data-i18n="loading">星盤推算中…</p>
+  </div>
+
+  <div id="results">
+    <div class="warn" id="timewarn"></div>
+
+    <div class="sys-block">
+      <div class="sys-head"><span class="num">壹</span><h2 data-i18n="t_bazi">八字命理</h2><span class="en">BAZI</span></div>
+      <div id="bazi-main"></div>
+    </div>
+    <div class="sys-block">
+      <div class="sys-head"><span class="num">貳</span><h2 data-i18n="t_ziwei">紫微斗數</h2><span class="en">ZIWEI</span></div>
+      <dl class="kv" id="ziwei-kv" style="margin-bottom:14px"></dl>
+      <div id="ziwei-table"></div>
+    </div>
+    <div class="sys-block">
+      <div class="sys-head"><span class="num">參</span><h2 data-i18n="t_astro">西洋占星</h2><span class="en">ASTROLOGY</span></div>
+      <dl class="kv" id="astro-kv" style="margin-bottom:14px"></dl>
+      <div class="planet-row" id="astro-planets"></div>
+      <div id="astro-extra"></div>
+    </div>
+    <div class="sys-block">
+      <div class="sys-head"><span class="num">肆</span><h2 data-i18n="t_hd">人類圖</h2><span class="en">HUMAN DESIGN</span></div>
+      <div class="hd-type" id="hd-type"></div>
+      <dl class="kv" id="hd-kv" style="margin-bottom:14px"></dl>
+      <p class="subhead" data-i18n="hd_gates_h">13 啟動點（個性 / 設計）</p>
+      <div id="hd-gates" style="margin-bottom:18px"></div>
+      <p class="subhead" data-i18n="hd_centers_h">九大能量中心</p>
+      <div class="centers" id="hd-centers"></div>
+      <p class="subhead" data-i18n="hd_channels_h">已定義通道</p>
+      <div id="hd-channels"></div>
+    </div>
+
+    <div class="cta-final">
+      <h3 data-i18n="cta_h">這只是你的命盤總覽</h3>
+      <p data-i18n="cta_p">完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。</p>
+      <a href="index.html#cta" data-i18n="cta_btn">預約完整講解 →</a>
+    </div>
+    <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
+  </div>
+</main>
+
+<script>
+const IZ={"star":{"紫微":{"tw":"紫微","en":"emperor"},"天机":{"tw":"天機","en":"advisor"},"太阳":{"tw":"太陽","en":"sun"},"武曲":{"tw":"武曲","en":"general"},"天同":{"tw":"天同","en":"fortunate"},"廉贞":{"tw":"廉貞","en":"judge"},"天府":{"tw":"天府","en":"empress"},"太阴":{"tw":"太陰","en":"moon"},"贪狼":{"tw":"貪狼","en":"wolf"},"巨门":{"tw":"巨門","en":"advocator"},"天相":{"tw":"天相","en":"minister"},"天梁":{"tw":"天梁","en":"sage"},"七杀":{"tw":"七殺","en":"marshal"},"破军":{"tw":"破軍","en":"rebel"},"左辅":{"tw":"左輔","en":"officer"},"右弼":{"tw":"右弼","en":"helper"},"文昌":{"tw":"文昌","en":"scholar"},"文曲":{"tw":"文曲","en":"artist"},"禄存":{"tw":"祿存","en":"money"},"天马":{"tw":"天馬","en":"horse"},"擎羊":{"tw":"擎羊","en":"driven"},"陀罗":{"tw":"陀羅","en":"tangled"},"火星":{"tw":"火星","en":"impulsive"},"铃星":{"tw":"鈴星","en":"spark"},"天魁":{"tw":"天魁","en":"assistant"},"天钺":{"tw":"天鉞","en":"aide"},"地空":{"tw":"地空","en":"ideologue"},"地劫":{"tw":"地劫","en":"fickle"},"劫杀":{"tw":"劫殺","en":"murder"},"天空":{"tw":"天空","en":"utopian"},"天刑":{"tw":"天刑","en":"serious"},"天姚":{"tw":"天姚","en":"social"},"解神":{"tw":"解神","en":"considery"},"阴煞":{"tw":"陰煞","en":"gloomy"},"天喜":{"tw":"天喜","en":"cheerful"},"天官":{"tw":"天官","en":"solemn"},"天福":{"tw":"天福","en":"lucky"},"天哭":{"tw":"天哭","en":"upset"},"天虚":{"tw":"天虛","en":"frail"},"龙池":{"tw":"龍池","en":"talented"},"凤阁":{"tw":"鳳閣","en":"refined"},"红鸾":{"tw":"紅鸞","en":"attractive"},"孤辰":{"tw":"孤辰","en":"alone"},"寡宿":{"tw":"寡宿","en":"lonely"},"蜚廉":{"tw":"蜚廉","en":"instigated"},"破碎":{"tw":"破碎","en":"broken"},"台辅":{"tw":"台輔","en":"honorable"},"封诰":{"tw":"封誥","en":"awarded"},"天巫":{"tw":"天巫","en":"psychic"},"天月":{"tw":"天月","en":"sickly"},"三台":{"tw":"三台","en":"senior"},"八座":{"tw":"八座","en":"dignified"},"恩光":{"tw":"恩光","en":"grateful"},"天贵":{"tw":"天貴","en":"noble"},"天才":{"tw":"天才","en":"gifted"},"天寿":{"tw":"天壽","en":"ageless"},"截空":{"tw":"截空","en":"interrupted"},"旬中":{"tw":"旬中","en":"meditative"},"旬空":{"tw":"旬空","en":"fancied"},"空亡":{"tw":"空亡","en":"bottomless"},"截路":{"tw":"截路","en":"intercepted"},"月德":{"tw":"月德","en":"peaceful"},"天伤":{"tw":"天傷","en":"wounded"},"天使":{"tw":"天使","en":"heaven"},"天厨":{"tw":"天廚","en":"gourmet"},"长生":{"tw":"長生","en":"born"},"沐浴":{"tw":"沐浴","en":"infancy"},"冠带":{"tw":"冠帶","en":"adolescence"},"临官":{"tw":"臨官","en":"adulthood"},"帝旺":{"tw":"帝旺","en":"prime"},"衰":{"tw":"衰","en":"weak"},"病":{"tw":"病","en":"sick"},"死":{"tw":"死","en":"dead"},"墓":{"tw":"墓","en":"buried"},"绝":{"tw":"絕","en":"dissipated"},"胎":{"tw":"胎","en":"embryo"},"养":{"tw":"養","en":"molding"},"博士":{"tw":"博士","en":"doctor"},"力士":{"tw":"力士","en":"sumo"},"青龙":{"tw":"青龍","en":"dragon"},"小耗":{"tw":"小耗","en":"consumer"},"将军":{"tw":"將軍","en":"general"},"奏书":{"tw":"奏書","en":"book"},"飞廉":{"tw":"飛廉","en":"gossip"},"喜神":{"tw":"喜神","en":"happiness"},"病符":{"tw":"病符","en":"illness"},"大耗":{"tw":"大耗","en":"wastrel"},"岁破":{"tw":"歲破","en":"wastrel"},"伏兵":{"tw":"伏兵","en":"ambush"},"官府":{"tw":"官府","en":"government"},"岁建":{"tw":"歲建","en":"initial"},"晦气":{"tw":"晦氣","en":"unlucky"},"丧门":{"tw":"喪門","en":"downcast"},"贯索":{"tw":"貫索","en":"tied"},"官符":{"tw":"官符","en":"official"},"龙德":{"tw":"龍德","en":"virtuous"},"白虎":{"tw":"白虎","en":"sinister"},"天德":{"tw":"天德","en":"blessed"},"吊客":{"tw":"弔客","en":"sorrowing"},"将星":{"tw":"將星","en":"capable"},"攀鞍":{"tw":"攀鞍","en":"admired"},"岁驿":{"tw":"歲驛","en":"varied"},"息神":{"tw":"息神","en":"listless"},"华盖":{"tw":"華蓋","en":"religious"},"劫煞":{"tw":"劫煞","en":"robbed"},"灾煞":{"tw":"災煞","en":"disastery"},"天煞":{"tw":"天煞","en":"condemned"},"指背":{"tw":"指背","en":"insidious"},"咸池":{"tw":"咸池","en":"passionate"},"月煞":{"tw":"月煞","en":"hapless"},"亡神":{"tw":"亡神","en":"perished"},"运魁":{"tw":"運魁","en":"assistant(D)"},"运钺":{"tw":"運鉞","en":"aide(D)"},"运昌":{"tw":"運昌","en":"scholar(D)"},"运曲":{"tw":"運曲","en":"artist(D)"},"运鸾":{"tw":"運鸞","en":"attractive(D)"},"运喜":{"tw":"運喜","en":"cheerful(D)"},"运禄":{"tw":"運祿","en":"money(D)"},"运羊":{"tw":"運羊","en":"driven(D)"},"运陀":{"tw":"運陀","en":"tangled(D)"},"运马":{"tw":"運馬","en":"horse(D)"},"流魁":{"tw":"流魁","en":"assistant(Y)"},"流钺":{"tw":"流鉞","en":"aide(Y)"},"流昌":{"tw":"流昌","en":"scholar(Y)"},"流曲":{"tw":"流曲","en":"artist(Y)"},"流鸾":{"tw":"流鸞","en":"attractive(Y)"},"流喜":{"tw":"流喜","en":"cheerful(Y)"},"流禄":{"tw":"流祿","en":"money(Y)"},"流羊":{"tw":"流羊","en":"driven(Y)"},"流陀":{"tw":"流陀","en":"tangled(Y)"},"流马":{"tw":"流馬","en":"horse(Y)"},"年解":{"tw":"年解","en":"considery(Y)"},"月魁":{"tw":"月魁","en":"assistant(M)"},"月钺":{"tw":"月鉞","en":"aide(M)"},"月昌":{"tw":"月昌","en":"scholar(M)"},"月曲":{"tw":"月曲","en":"artist(M)"},"月鸾":{"tw":"月鸞","en":"attractive(M)"},"月喜":{"tw":"月喜","en":"cheerful(M)"},"月禄":{"tw":"月祿","en":"money(M)"},"月羊":{"tw":"月羊","en":"driven(M)"},"月陀":{"tw":"月陀","en":"tangled(M)"},"月马":{"tw":"月馬","en":"horse(M)"},"日魁":{"tw":"日魁","en":"assistant(d)"},"日钺":{"tw":"日鉞","en":"aide(d)"},"日昌":{"tw":"日昌","en":"scholar(d)"},"日曲":{"tw":"日曲","en":"artist(d)"},"日鸾":{"tw":"日鸞","en":"attractive(d)"},"日喜":{"tw":"日喜","en":"cheerful(d)"},"日禄":{"tw":"日祿","en":"money(d)"},"日羊":{"tw":"日羊","en":"driven(d)"},"日陀":{"tw":"日陀","en":"tangled(d)"},"日马":{"tw":"日馬","en":"horse(d)"},"时魁":{"tw":"時魁","en":"assistant(H)"},"时钺":{"tw":"時鉞","en":"aide(H)"},"时昌":{"tw":"時昌","en":"scholar(H)"},"时曲":{"tw":"時曲","en":"artist(H)"},"时鸾":{"tw":"時鸞","en":"attractive(H)"},"时喜":{"tw":"時喜","en":"cheerful(H)"},"时禄":{"tw":"時祿","en":"money(H)"},"时羊":{"tw":"時羊","en":"driven(H)"},"时陀":{"tw":"時陀","en":"tangled(H)"},"时马":{"tw":"時馬","en":"horse(H)"}},"palace":{"命宫":{"tw":"命宮","en":"soul"},"身宫":{"tw":"身宮","en":"body"},"兄弟":{"tw":"兄弟","en":"siblings"},"夫妻":{"tw":"夫妻","en":"spouse"},"子女":{"tw":"子女","en":"children"},"财帛":{"tw":"財帛","en":"wealth"},"疾厄":{"tw":"疾厄","en":"health"},"迁移":{"tw":"遷移","en":"surface"},"仆役":{"tw":"僕役","en":"friends"},"官禄":{"tw":"官祿","en":"career"},"田宅":{"tw":"田宅","en":"property"},"福德":{"tw":"福德","en":"spirit"},"父母":{"tw":"父母","en":"parents"},"来因":{"tw":"来因","en":"origin"}},"wuxingju":{"水二局":{"tw":"水二局","en":"water 2nd"},"木三局":{"tw":"木三局","en":"wood 3rd"},"金四局":{"tw":"金四局","en":"metal 4th"},"土五局":{"tw":"土五局","en":"earth 5th"},"火六局":{"tw":"火六局","en":"fire 6th"}},"mutagen":{"禄":{"tw":"祿","en":"A"},"权":{"tw":"權","en":"B"},"科":{"tw":"科","en":"C"},"忌":{"tw":"忌","en":"D"}},"stem":{"甲":{"tw":"甲","en":"jia"},"乙":{"tw":"乙","en":"yi"},"丙":{"tw":"丙","en":"bing"},"丁":{"tw":"丁","en":"ding"},"戊":{"tw":"戊","en":"wu"},"己":{"tw":"己","en":"ji"},"庚":{"tw":"庚","en":"geng"},"辛":{"tw":"辛","en":"xin"},"壬":{"tw":"壬","en":"ren"},"癸":{"tw":"癸","en":"gui"}},"branch":{"子":{"tw":"子","en":"zi"},"丑":{"tw":"丑","en":"chou"},"寅":{"tw":"寅","en":"yin"},"卯":{"tw":"卯","en":"mao"},"辰":{"tw":"辰","en":"chen"},"巳":{"tw":"巳","en":"si"},"午":{"tw":"午","en":"woo"},"未":{"tw":"未","en":"wei"},"申":{"tw":"申","en":"shen"},"酉":{"tw":"酉","en":"you"},"戌":{"tw":"戌","en":"xu"},"亥":{"tw":"亥","en":"hai"}},"brightness":{"庙":{"tw":"廟","en":"[+3]"},"旺":{"tw":"旺","en":"[+2]"},"得":{"tw":"得","en":"[+1]"},"利":{"tw":"利","en":"[0]"},"平":{"tw":"平","en":"[-1]"},"不":{"tw":"不","en":"[-2]"},"陷":{"tw":"陷","en":"[-3]"}}};
+/* ===== 星空 ===== */
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let stars=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;stars=Array.from({length:Math.min(180,innerWidth/7)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.2+.2,a:Math.random(),s:Math.random()*.008+.002}))}
+rs();addEventListener('resize',rs);
+(function d(){cx.clearRect(0,0,cv.width,cv.height);for(const s of stars){s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle=`rgba(232,207,154,${Math.abs(Math.sin(s.a*Math.PI))*.7+.1})`;cx.fill()}requestAnimationFrame(d)})();
+
+/* ===== i18n ===== */
+let LANG='tw';
+const s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
+const zh=s=>LANG==='tw'?s2t(s):s;            // lunar 中文：繁體轉換，簡體原樣
+const pick=(map,cn)=>{const o=map[cn];if(!o)return cn;return LANG==='en'?o.en:(LANG==='tw'?o.tw:cn)};
+const izStar=c=>pick(IZ.star,c),izPal=c=>pick(IZ.palace,c),izCls=c=>pick(IZ.wuxingju,c),izBri=c=>pick(IZ.brightness,c);
+const izMut=c=>{const m={'禄':{tw:'祿',en:'A·Wealth'},'权':{tw:'權',en:'B·Power'},'科':{tw:'科',en:'C·Status'},'忌':{tw:'忌',en:'D·Obstacle'}};return pick(m,c)};
+
+const DICT={
+ tw:{brand:'浮生矩陣',back:'← 回首頁',title:'免費排盤',hero_sub:'輸入出生資料，立即取得你的命盤總覽',hero_sys:'八字 · 紫微斗數 · 西洋占星 · 人類圖',f_name:'姓名 / 暱稱',f_gender:'性別',g_female:'女',g_male:'男',f_date:'出生日期（西元 國曆）',f_time:'出生時間',unknown_label:'我不確定出生時間',time_hint:'勾選後將以中午推算；時辰相關結果僅供參考',f_city:'出生地',manual_label:'經度 , 緯度 , 時區',run_btn:'開始排盤 ✦',loading:'星盤推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗數',t_astro:'西洋占星',t_hd:'人類圖',hd_gates_h:'13 啟動點（個性 / 設計）',hd_centers_h:'九大能量中心',hd_channels_h:'已定義通道',cta_h:'這只是你的命盤總覽',cta_p:'完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。',cta_btn:'預約完整講解 →',disc:'本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。',
+   warn:'⚠ 你未提供確切出生時間，本盤以中午 12:00 推算。八字時柱、紫微命宮、上升星座與人類圖類型都會隨時辰改變，以下時辰相關內容僅供參考。',
+   lunar:'農曆',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'時柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'納音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大運',start_luck:'起運',age:'歲',taiyuan:'胎元',minggong:'命宮',shengong:'身宮',xunkong:'旬空',
+   soulstar:'命宮主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宮',daxian:'大限',p12:'十二宮',mainstar:'主星',minorstar:'輔星',empty:'（空宮）',
+   sun:'太陽星座',moon:'月亮星座',asc:'上升 ASC',mc:'天頂 MC',core:'核心自我',emo:'情緒內在',outer:'外顯人格',career:'事業方向',houses_h:'行星宮位（整宮制）',aspects_h:'主要相位',balance_h:'元素 / 性質分布',retro:'逆',
+   authority:'內在權威',profile:'人生角色',definition:'定義',cross:'輪迴交叉',strategy:'策略',notself:'非自己主題',signature:'人生印記',planet:'行星',personality:'個性',design:'設計',center:'中心',defined:'已定義',open:'開放',nochannel:'無完整通道（反映者特質）',
+   cav_bazi:'時柱需要出生時辰，目前未計入',cav_ziwei:'紫微命宮會隨時辰整盤位移，此為中午暫定盤',cav_astro:'上升、天頂與月亮高度依賴時間，請以太陽星座為主',cav_hd:'人類圖類型與角色可能因時辰改變，此為中午推算',
+   need_date:'請填寫出生日期',need_time:'請填寫出生時間，或勾選「我不確定出生時間」',need_manual:'手動格式：經度,緯度,時區，例 121.5,25.0,8',err_calc:'計算發生錯誤：'},
+ cn:{brand:'浮生矩阵',back:'← 回首页',title:'免费排盘',hero_sub:'输入出生资料，立即取得你的命盘总览',hero_sys:'八字 · 紫微斗数 · 西洋占星 · 人类图',f_name:'姓名 / 昵称',f_gender:'性别',g_female:'女',g_male:'男',f_date:'出生日期（公历）',f_time:'出生时间',unknown_label:'我不确定出生时间',time_hint:'勾选后将以中午推算；时辰相关结果仅供参考',f_city:'出生地',manual_label:'经度 , 纬度 , 时区',run_btn:'开始排盘 ✦',loading:'星盘推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗数',t_astro:'西洋占星',t_hd:'人类图',hd_gates_h:'13 启动点（个性 / 设计）',hd_centers_h:'九大能量中心',hd_channels_h:'已定义通道',cta_h:'这只是你的命盘总览',cta_p:'完整的浮生矩阵报告约一万字，采预约制，由我一对一为你深入讲解。',cta_btn:'预约完整讲解 →',disc:'本页由开源天文／历法引擎于你的浏览器即时计算，资料不经服务器。命理内容仅供自我探索参考。',
+   warn:'⚠ 你未提供确切出生时间，本盘以中午 12:00 推算。八字时柱、紫微命宫、上升星座与人类图类型都会随时辰改变，以下时辰相关内容仅供参考。',
+   lunar:'农历',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'时柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'纳音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大运',start_luck:'起运',age:'岁',taiyuan:'胎元',minggong:'命宫',shengong:'身宫',xunkong:'旬空',
+   soulstar:'命宫主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宫',daxian:'大限',p12:'十二宫',mainstar:'主星',minorstar:'辅星',empty:'（空宫）',
+   sun:'太阳星座',moon:'月亮星座',asc:'上升 ASC',mc:'天顶 MC',core:'核心自我',emo:'情绪内在',outer:'外显人格',career:'事业方向',houses_h:'行星宫位（整宫制）',aspects_h:'主要相位',balance_h:'元素 / 性质分布',retro:'逆',
+   authority:'内在权威',profile:'人生角色',definition:'定义',cross:'轮回交叉',strategy:'策略',notself:'非自己主题',signature:'人生印记',planet:'行星',personality:'个性',design:'设计',center:'中心',defined:'已定义',open:'开放',nochannel:'无完整通道（反映者特质）',
+   cav_bazi:'时柱需要出生时辰，目前未计入',cav_ziwei:'紫微命宫会随时辰整盘位移，此为中午暂定盘',cav_astro:'上升、天顶与月亮高度依赖时间，请以太阳星座为主',cav_hd:'人类图类型与角色可能因时辰改变，此为中午推算',
+   need_date:'请填写出生日期',need_time:'请填写出生时间，或勾选「我不确定出生时间」',need_manual:'手动格式：经度,纬度,时区，例 121.5,25.0,8',err_calc:'计算发生错误：'},
+ en:{brand:'Fusheng Matrix',back:'← Home',title:'Free Chart',hero_sub:'Enter your birth data for an instant four-system overview',hero_sys:'BaZi · Zi Wei · Astrology · Human Design',f_name:'Name',f_gender:'Gender',g_female:'Female',g_male:'Male',f_date:'Birth date (Gregorian)',f_time:'Birth time',unknown_label:'I am not sure of my birth time',time_hint:'If checked, noon is used; time-sensitive results are indicative only',f_city:'Birthplace',manual_label:'Longitude , Latitude , Timezone',run_btn:'Generate Chart ✦',loading:'Calculating…',t_bazi:'BaZi (Four Pillars)',t_ziwei:'Zi Wei Dou Shu',t_astro:'Western Astrology',t_hd:'Human Design',hd_gates_h:'13 Activations (Personality / Design)',hd_centers_h:'Nine Centers',hd_channels_h:'Defined Channels',cta_h:'This is only your chart overview',cta_p:'The full Fusheng Matrix report is ~10,000 words, by appointment, walked through one-on-one.',cta_btn:'Book the full reading →',disc:'Calculated live in your browser by open-source astronomy/calendar engines; no data leaves your device. For self-exploration only.',
+   warn:'⚠ No exact birth time given; noon 12:00 is assumed. The BaZi hour pillar, Zi Wei life palace, Ascendant and Human Design type all shift with time — treat time-sensitive items below as indicative.',
+   lunar:'Lunar',daymaster:'Day Master',zodiac:'Zodiac',pillar_y:'Year',pillar_m:'Month',pillar_d:'Day',pillar_h:'Hour',r_god:'Ten God',r_stem:'Stem',r_branch:'Branch',r_hide:'Hidden',r_nayin:'NaYin',undetermined:'TBD',wuxing_h:'Five-Element Balance',luck_h:'Luck Pillars',start_luck:'Start',age:'y',taiyuan:'Conception',minggong:'Life Palace',shengong:'Body Palace',xunkong:'Void',
+   soulstar:'Life Palace Stars',soulbody:'Life / Body Master',wuxingju:'Element Class',sihua:'Birth-year Transformations',bodypal:'Body Palace',daxian:'Decade',p12:'12 Palaces',mainstar:'Major Stars',minorstar:'Minor Stars',empty:'(empty)',
+   sun:'Sun Sign',moon:'Moon Sign',asc:'Ascendant',mc:'Midheaven',core:'core self',emo:'inner emotion',outer:'outer persona',career:'vocation',houses_h:'Planets in Houses (Whole Sign)',aspects_h:'Major Aspects',balance_h:'Element / Modality Balance',retro:'R',
+   authority:'Inner Authority',profile:'Profile',definition:'Definition',cross:'Incarnation Cross',strategy:'Strategy',notself:'Not-Self Theme',signature:'Signature',planet:'Planet',personality:'Personality',design:'Design',center:'Center',defined:'defined',open:'open',nochannel:'No complete channel (Reflector trait)',
+   cav_bazi:'The hour pillar needs a birth time and is omitted',cav_ziwei:'The Zi Wei life palace shifts with time; provisional noon chart',cav_astro:'Ascendant, MC and Moon depend heavily on time — rely on the Sun sign',cav_hd:'Human Design type/profile may change with time; noon estimate',
+   need_date:'Please enter a birth date',need_time:'Please enter a birth time, or tick “I am not sure of my birth time”',need_manual:'Format: lon,lat,tz e.g. 121.5,25.0,8',err_calc:'Calculation error: '}
+};
+const T=k=>{const d=DICT[LANG];return (d&&d[k]!=null)?d[k]:DICT.tw[k]};
+
+/* ===== 八字 對照 ===== */
+const STEM_EL={'甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water'};
+const BRANCH_EL={'子':'water','丑':'earth','寅':'wood','卯':'wood','辰':'earth','巳':'fire','午':'fire','未':'earth','申':'metal','酉':'metal','戌':'earth','亥':'water'};
+const EL_NAME={wood:{tw:'木',cn:'木',en:'Wood'},fire:{tw:'火',cn:'火',en:'Fire'},earth:{tw:'土',cn:'土',en:'Earth'},metal:{tw:'金',cn:'金',en:'Metal'},water:{tw:'水',cn:'水',en:'Water'}};
+const elName=e=>EL_NAME[e][LANG]||EL_NAME[e].tw;
+const GOD_EN={'比肩':'Friend','劫财':'Rob Wealth','食神':'Eating God','伤官':'Hurting Officer','偏财':'Indirect Wealth','正财':'Direct Wealth','七杀':'Seven Killings','正官':'Direct Officer','偏印':'Indirect Resource','正印':'Direct Resource','日主':'Day Master'};
+const god=g=>LANG==='en'?(GOD_EN[g]||g):zh(g);
+const STEM_EN={'甲':'Yang Wood','乙':'Yin Wood','丙':'Yang Fire','丁':'Yin Fire','戊':'Yang Earth','己':'Yin Earth','庚':'Yang Metal','辛':'Yin Metal','壬':'Yang Water','癸':'Yin Water'};
+const ZODIAC_EN={'鼠':'Rat','牛':'Ox','虎':'Tiger','兔':'Rabbit','龙':'Dragon','蛇':'Snake','马':'Horse','羊':'Goat','猴':'Monkey','鸡':'Rooster','狗':'Dog','猪':'Pig'};
+const zodiacName=r=>LANG==='en'?(ZODIAC_EN[r]||r):zh(r);
+
+/* ===== 占星 對照 ===== */
+const SIGN={tw:['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'],cn:['白羊','金牛','双子','巨蟹','狮子','处女','天秤','天蝎','射手','摩羯','水瓶','双鱼'],en:['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces']};
+const PLANET={tw:['太陽','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],cn:['太阳','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],en:['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']};
+const ABODY=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+const EL_OF_SIGN=['fire','earth','air','water','fire','earth','air','water','fire','earth','air','water'];
+const MODE_OF_SIGN=['card','fix','mut','card','fix','mut','card','fix','mut','card','fix','mut'];
+const ELEM4={fire:{tw:'火',cn:'火',en:'Fire'},earth:{tw:'土',cn:'土',en:'Earth'},air:{tw:'風',cn:'风',en:'Air'},water:{tw:'水',cn:'水',en:'Water'}};
+const MODE3={card:{tw:'開創',cn:'开创',en:'Cardinal'},fix:{tw:'固定',cn:'固定',en:'Fixed'},mut:{tw:'變動',cn:'变动',en:'Mutable'}};
+const ASPECTS=[[0,8,{tw:'合',cn:'合',en:'Conj'}],[60,4,{tw:'六分',cn:'六分',en:'Sextile'}],[90,6,{tw:'四分',cn:'四分',en:'Square'}],[120,6,{tw:'三分',cn:'三分',en:'Trine'}],[180,8,{tw:'對分',cn:'对分',en:'Opp'}]];
+function fmtSign(lon){lon=((lon%360)+360)%360;const s=Math.floor(lon/30);return SIGN[LANG][s]+' '+(lon%30).toFixed(1)+'°'}
+
+/* ===== 人類圖 對照 ===== */
+const GATE_ORDER=[41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
+const GATE_CENTER={head:[64,61,63],ajna:[47,24,4,17,11,43],throat:[62,23,56,16,20,35,12,45,33,8,31],g:[7,1,13,10,25,46,2,15],heart:[21,40,26,51],spleen:[48,57,44,50,32,28,18],sacral:[5,14,29,59,9,3,42,27,34],solar:[6,37,22,36,30,55,49],root:[53,60,52,19,39,41,58,38,54]};
+const CENTER_ORDER=['head','ajna','throat','g','heart','spleen','sacral','solar','root'];
+const CENTER_NAME={head:{tw:'頭腦',cn:'头脑',en:'Head'},ajna:{tw:'邏輯',cn:'逻辑',en:'Ajna'},throat:{tw:'喉嚨',cn:'喉咙',en:'Throat'},g:{tw:'G中心',cn:'G中心',en:'G'},heart:{tw:'意志力',cn:'意志力',en:'Heart'},spleen:{tw:'直覺',cn:'直觉',en:'Spleen'},sacral:{tw:'薦骨',cn:'荐骨',en:'Sacral'},solar:{tw:'情緒',cn:'情绪',en:'Solar Plexus'},root:{tw:'根部',cn:'根部',en:'Root'}};
+const cName=c=>CENTER_NAME[c][LANG]||CENTER_NAME[c].tw;
+const MOTORS=['sacral','heart','solar','root'];
+const CHANNELS=[[1,8],[2,14],[3,60],[4,63],[5,15],[6,59],[7,31],[9,52],[10,20],[10,34],[10,57],[11,56],[16,48],[12,22],[13,33],[17,62],[18,58],[19,49],[20,34],[20,57],[21,45],[23,43],[24,61],[25,51],[26,44],[27,50],[28,38],[29,46],[30,41],[32,54],[34,57],[35,36],[37,40],[39,55],[42,53],[47,64]];
+const TYPE={mani:{tw:'顯示者',cn:'显示者',en:'Manifestor'},gen:{tw:'生產者',cn:'生产者',en:'Generator'},mg:{tw:'顯示生產者',cn:'显示生产者',en:'Manifesting Generator'},proj:{tw:'投射者',cn:'投射者',en:'Projector'},refl:{tw:'反映者',cn:'反映者',en:'Reflector'}};
+const STRAT={mani:{tw:'告知後行動',cn:'告知后行动',en:'Inform before acting'},gen:{tw:'等待回應',cn:'等待回应',en:'Wait to respond'},mg:{tw:'回應後告知',cn:'回应后告知',en:'Respond, then inform'},proj:{tw:'等待邀請',cn:'等待邀请',en:'Wait for the invitation'},refl:{tw:'等待一個月週期',cn:'等待一个月周期',en:'Wait a lunar cycle'}};
+const NOTSELF={mani:{tw:'憤怒',cn:'愤怒',en:'Anger'},gen:{tw:'挫折',cn:'挫折',en:'Frustration'},mg:{tw:'挫折與憤怒',cn:'挫折与愤怒',en:'Frustration & Anger'},proj:{tw:'苦澀',cn:'苦涩',en:'Bitterness'},refl:{tw:'失望',cn:'失望',en:'Disappointment'}};
+const SIGN_HD={mani:{tw:'平靜',cn:'平静',en:'Peace'},gen:{tw:'滿足',cn:'满足',en:'Satisfaction'},mg:{tw:'滿足',cn:'满足',en:'Satisfaction'},proj:{tw:'成功',cn:'成功',en:'Success'},refl:{tw:'驚喜',cn:'惊喜',en:'Surprise'}};
+const AUTH={solar:{tw:'情緒型（等待情緒清明）',cn:'情绪型（等待情绪清明）',en:'Emotional — wait for clarity'},sacral:{tw:'薦骨型（回應當下）',cn:'荐骨型（回应当下）',en:'Sacral — respond in the moment'},spleen:{tw:'直覺型（第一直覺）',cn:'直觉型（第一直觉）',en:'Splenic — first instinct'},heart:{tw:'意志力型',cn:'意志力型',en:'Ego/Heart'},g:{tw:'自我投射型',cn:'自我投射型',en:'Self-Projected'},mental:{tw:'心智／外在型',cn:'心智／外在型',en:'Mental/Environmental'},lunar:{tw:'月循環型',cn:'月循环型',en:'Lunar'}};
+const ROLE={1:{tw:'研究者',cn:'研究者',en:'Investigator'},2:{tw:'隱士',cn:'隐士',en:'Hermit'},3:{tw:'烈士',cn:'烈士',en:'Martyr'},4:{tw:'機會主義者',cn:'机会主义者',en:'Opportunist'},5:{tw:'異端',cn:'异端',en:'Heretic'},6:{tw:'榜樣',cn:'榜样',en:'Role Model'}};
+const DEFN=[{tw:'無定義',cn:'无定义',en:'No Definition'},{tw:'一分人',cn:'一分人',en:'Single'},{tw:'二分人',cn:'二分人',en:'Split'},{tw:'三分人',cn:'三分人',en:'Triple Split'},{tw:'四分人',cn:'四分人',en:'Quadruple Split'}];
+const L=o=>o[LANG]||o.tw;
+const gco=g=>{for(const c in GATE_CENTER)if(GATE_CENTER[c].includes(g))return c};
+const lonToGate=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);let w=d-i*5.625;return{gate:GATE_ORDER[i],line:Math.floor(w/0.9375)+1}};
+function trueNodeLon(date){const e1=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',date,true)).vec;const e2=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',new Date(date.getTime()+43200),true)).vec;const r=e1,v={x:e2.x-e1.x,y:e2.y-e1.y,z:e2.z-e1.z};const h={x:r.y*v.z-r.z*v.y,y:r.z*v.x-r.x*v.z,z:r.x*v.y-r.y*v.x};return((Math.atan2(h.x,-h.y)*180/Math.PI)%360+360)%360}
+function planetLon(b,d){if(b==='Earth')return(Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon+180)%360;if(b==='NNode')return trueNodeLon(d);if(b==='SNode')return(trueNodeLon(d)+180)%360;return Astronomy.Ecliptic(Astronomy.GeoVector(b,d,true)).elon}
+const sunLon=d=>Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon;
+
+/* ===== 城市 ===== */
+const CITY_GROUPS=[
+ ['台灣',[['台北',121.5654,25.0330,8],['新北',121.4628,25.0169,8],['基隆',121.7392,25.1276,8],['桃園',121.3010,24.9936,8],['新竹',120.9686,24.8138,8],['苗栗',120.8214,24.5602,8],['台中',120.6839,24.1477,8],['彰化',120.5161,24.0809,8],['南投',120.6840,23.9609,8],['雲林',120.4313,23.7092,8],['嘉義',120.4473,23.4801,8],['台南',120.2270,22.9999,8],['高雄',120.3014,22.6273,8],['屏東',120.4886,22.6826,8],['宜蘭',121.7195,24.7021,8],['花蓮',121.6015,23.9871,8],['台東',121.1444,22.7583,8],['澎湖',119.5793,23.5712,8],['金門',118.3186,24.4321,8],['馬祖',119.9499,26.1608,8]]],
+ ['港澳',[['香港',114.1694,22.3193,8],['澳門',113.5439,22.1987,8]]],
+ ['中國大陸',[['北京',116.4074,39.9042,8],['上海',121.4737,31.2304,8],['天津',117.1901,39.1256,8],['重慶',106.5516,29.5630,8],['廣州',113.2644,23.1291,8],['深圳',114.0579,22.5431,8],['成都',104.0668,30.5728,8],['杭州',120.1551,30.2741,8],['南京',118.7969,32.0603,8],['武漢',114.3055,30.5928,8],['西安',108.9398,34.3416,8],['蘇州',120.5853,31.2989,8],['鄭州',113.6254,34.7466,8],['長沙',112.9388,28.2282,8],['瀋陽',123.4315,41.8057,8],['青島',120.3826,36.0671,8],['大連',121.6147,38.9140,8],['廈門',118.0894,24.4798,8],['福州',119.2965,26.0745,8],['濟南',117.1205,36.6510,8],['哈爾濱',126.5350,45.8038,8],['昆明',102.8329,24.8801,8],['南寧',108.3669,22.8170,8],['貴陽',106.6302,26.6477,8],['蘭州',103.8343,36.0611,8],['烏魯木齊',87.6168,43.8256,8]]],
+ ['東北亞・東南亞',[['東京',139.6917,35.6895,9],['大阪',135.5023,34.6937,9],['首爾',126.9780,37.5665,9],['釜山',129.0756,35.1796,9],['新加坡',103.8198,1.3521,8],['吉隆坡',101.6869,3.1390,8],['曼谷',100.5018,13.7563,7],['雅加達',106.8456,-6.2088,7],['馬尼拉',120.9842,14.5995,8],['胡志明市',106.6297,10.8231,7],['河內',105.8342,21.0278,7]]],
+ ['南亞・中東',[['新德里',77.2090,28.6139,5.5],['孟買',72.8777,19.0760,5.5],['杜拜',55.2708,25.2048,4],['伊斯坦堡',28.9784,41.0082,3]]],
+ ['歐洲',[['倫敦',-0.1276,51.5074,0],['巴黎',2.3522,48.8566,1],['柏林',13.4050,52.5200,1],['阿姆斯特丹',4.9041,52.3676,1],['羅馬',12.4964,41.9028,1],['馬德里',-3.7038,40.4168,1],['蘇黎世',8.5417,47.3769,1],['莫斯科',37.6173,55.7558,3]]],
+ ['北美',[['紐約',-74.0060,40.7128,-5],['洛杉磯',-118.2437,34.0522,-8],['舊金山',-122.4194,37.7749,-8],['西雅圖',-122.3321,47.6062,-8],['芝加哥',-87.6298,41.8781,-6],['波士頓',-71.0589,42.3601,-5],['多倫多',-79.3832,43.6532,-5],['溫哥華',-123.1207,49.2827,-8]]],
+ ['大洋洲',[['雪梨',151.2093,-33.8688,10],['墨爾本',144.9631,-37.8136,10],['奧克蘭',174.7633,-36.8485,12]]]
+];
+const GROUP_I18N={'台灣':{cn:'台湾',en:'Taiwan'},'港澳':{cn:'港澳',en:'HK & Macau'},'中國大陸':{cn:'中国大陆',en:'Mainland China'},'東北亞・東南亞':{cn:'东北亚・东南亚',en:'E/SE Asia'},'南亞・中東':{cn:'南亚・中东',en:'S Asia & Mid-East'},'歐洲':{cn:'欧洲',en:'Europe'},'北美':{cn:'北美',en:'N America'},'大洋洲':{cn:'大洋洲',en:'Oceania'}};
+const CITIES=[];CITY_GROUPS.forEach(g=>g[1].forEach(c=>CITIES.push(c)));CITIES.push(['manual','manual',0,0]);
+function buildCity(){
+  const sel=document.getElementById('city');sel.innerHTML='';let i=0;
+  CITY_GROUPS.forEach(g=>{const og=document.createElement('optgroup');og.label=(LANG==='tw')?g[0]:(GROUP_I18N[g[0]][LANG]||g[0]);g[1].forEach(()=>{const o=document.createElement('option');o.value=i;o.textContent=CITIES[i][0];og.appendChild(o);i++});sel.appendChild(og)});
+  const mo=document.createElement('option');mo.value=i;mo.textContent=(LANG==='en')?'— manual lat/long —':(LANG==='cn'?'—— 手动输入经纬度 ——':'—— 手動輸入經緯度 ——');sel.appendChild(mo);
+}
+document.getElementById('city').addEventListener('change',e=>{document.getElementById('manualWrap').style.display=(CITIES[e.target.value]&&CITIES[e.target.value][1]==='manual')?'block':'none'});
+
+/* ===== 靜態 i18n ===== */
+function applyStatic(){
+  document.documentElement.lang=LANG==='en'?'en':(LANG==='cn'?'zh-Hans':'zh-Hant');
+  document.title=DICT[LANG].brand+' | '+T('title');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(DICT[LANG][k]!=null)el.textContent=DICT[LANG][k]});
+  document.querySelectorAll('.langbar button').forEach(b=>b.classList.toggle('active',b.getAttribute('data-lang')===LANG));
+  const cur=document.getElementById('city').value;buildCity();if(cur)document.getElementById('city').value=cur;
+}
+let last=null;
+function setLang(l){LANG=l;applyStatic();if(last)compute(...last)}
+
+/* ===== 主流程 ===== */
+document.getElementById('run').addEventListener('click',()=>{
+  const err=document.getElementById('err');err.style.display='none';
+  const btn=document.getElementById('run'),load=document.getElementById('loading');
+  try{
+    const name=document.getElementById('name').value.trim();
+    const gender=document.getElementById('gender').value;
+    const dv=document.getElementById('date').value,tv=document.getElementById('time').value;
+    const unknown=document.getElementById('unknownTime').checked;
+    if(!dv)throw new Error(T('need_date'));
+    if(!unknown&&!tv)throw new Error(T('need_time'));
+    const [Y,M,D]=dv.split('-').map(Number);let h,mi;if(unknown){h=12;mi=0}else{[h,mi]=tv.split(':').map(Number)}
+    let lon,lat,tz;const c=CITIES[document.getElementById('city').value];
+    if(c[1]==='manual'){const p=document.getElementById('manual').value.split(',').map(s=>parseFloat(s.trim()));if(p.length<3||p.some(isNaN))throw new Error(T('need_manual'));[lon,lat,tz]=p}else{lon=c[1];lat=c[2];tz=c[3]}
+    btn.disabled=true;load.style.display='block';
+    setTimeout(()=>{try{last=[name,gender,Y,M,D,h,mi,lon,lat,tz,unknown];compute(...last);load.style.display='none';btn.disabled=false;document.getElementById('results').style.display='block';document.getElementById('results').scrollIntoView({behavior:'smooth'})}catch(e){load.style.display='none';btn.disabled=false;err.textContent=T('err_calc')+e.message;err.style.display='block';console.error(e)}},60);
+  }catch(e){err.textContent=e.message;err.style.display='block'}
+});
+
+function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
+  document.getElementById('timewarn').style.display=unknown?'block':'none';
+  document.getElementById('timewarn').textContent=T('warn');
+  const cav=t=>unknown?`<p class="caveat">⚠ ${t}</p>`:'';
+
+  /* ---------- 八字 ---------- */
+  const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
+  const lunarObj=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar();
+  const cols=[['pillar_y',ec.getYear(),ec.getYearShiShenGan(),ec.getYearShiShenZhi(),ec.getYearHideGan(),ec.getYearNaYin()],
+              ['pillar_m',ec.getMonth(),ec.getMonthShiShenGan(),ec.getMonthShiShenZhi(),ec.getMonthHideGan(),ec.getMonthNaYin()],
+              ['pillar_d',ec.getDay(),'日主',ec.getDayShiShenZhi(),ec.getDayHideGan(),ec.getDayNaYin()],
+              ['pillar_h',unknown?null:ec.getTime(),unknown?null:ec.getTimeShiShenGan(),unknown?null:ec.getTimeShiShenZhi(),unknown?null:ec.getTimeHideGan(),unknown?null:ec.getTimeNaYin()]];
+  const nayinEl=ny=>{if(!ny)return '—';if(LANG!=='en')return zh(ny);const last=ny.slice(-1);const m={'金':'metal','木':'wood','水':'water','火':'fire','土':'earth'};return m[last]?elName(m[last]):ny};
+  let hr=`<tr><td class="row-h"></td>`+cols.map(c=>`<td class="row-h">${T(c[0])}</td>`).join('')+`</tr>`;
+  hr+=`<tr><td class="row-h">${T('r_god')}</td>`+cols.map(c=>`<td>${c[2]==null?T('undetermined'):god(c[2])}</td>`).join('')+`</tr>`;
+  hr+=`<tr><td class="row-h">${T('r_stem')}+${T('r_branch')}</td>`+cols.map(c=>`<td class="gz">${c[1]==null?T('undetermined'):c[1]}</td>`).join('')+`</tr>`;
+  hr+=`<tr><td class="row-h">${T('r_hide')}</td>`+cols.map(c=>`<td>${c[4]==null?'—':c[4].join('')}</td>`).join('')+`</tr>`;
+  hr+=`<tr><td class="row-h">${T('r_nayin')}</td>`+cols.map(c=>`<td>${nayinEl(c[5])}</td>`).join('')+`</tr>`;
+  // 五行統計
+  const cnt={wood:0,fire:0,earth:0,metal:0,water:0};
+  [ec.getYearGan(),ec.getMonthGan(),ec.getDayGan(),unknown?null:ec.getTimeGan()].forEach(s=>{if(s&&STEM_EL[s])cnt[STEM_EL[s]]++});
+  [ec.getYearZhi(),ec.getMonthZhi(),ec.getDayZhi(),unknown?null:ec.getTimeZhi()].forEach(s=>{if(s&&BRANCH_EL[s])cnt[BRANCH_EL[s]]++});
+  const balOrder=['wood','fire','earth','metal','water'];
+  const bal=`<div class="balance">`+balOrder.map(e=>`<div class="bal ${e}"><div class="c">${cnt[e]}</div><div class="n">${elName(e)}</div></div>`).join('')+`</div>`;
+  // 大運
+  const yun=ec.getYun(gender==='男'?1:0);const dy=yun.getDaYun();
+  const luckRows=dy.slice(1,9).map(d=>`<span class="tag">${d.getGanZhi()} · ${d.getStartAge()}${T('age')}</span>`).join('');
+  // 日主
+  const dg=ec.getDayGan();const dmEl=STEM_EL[dg];
+  const dmStr=LANG==='en'?`${STEM_EN[dg]} (${dg})`:`${dg}（${elName(dmEl)}）`;
+  document.getElementById('bazi-main').innerHTML=
+    `<dl class="kv" style="margin-bottom:14px"><dt>${T('daymaster')}</dt><dd>${dmStr}</dd><dt>${T('lunar')}</dt><dd>${zh(lunarObj.toString())}</dd><dt>${T('zodiac')}</dt><dd>${zodiacName(lunarObj.getYearShengXiao())}</dd></dl>`+
+    `<table class="bazi-table">${hr}</table>`+cav(T('cav_bazi'))+
+    `<p class="subhead">${T('wuxing_h')}</p>${bal}`+
+    `<p class="subhead">${T('luck_h')}（${T('start_luck')} ${yun.getStartYear()}${T('age')}）</p><div>${luckRows}</div>`+
+    `<dl class="kv" style="margin-top:14px"><dt>${T('taiyuan')}</dt><dd>${ec.getTaiYuan()}</dd><dt>${T('minggong')}</dt><dd>${ec.getMingGong()}</dd><dt>${T('shengong')}</dt><dd>${ec.getShenGong()}</dd><dt>${T('xunkong')}</dt><dd>${ec.getDayXunKong()}</dd></dl>`;
+
+  /* ---------- 紫微 ---------- */
+  const ti=(h===23)?12:Math.floor((h+1)/2);
+  const ds=`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`;
+  const zw=iztro.astro.bySolar(ds,ti,gender==='男'?'male':'female','zh-CN');
+  const soulP=zw.palaces.find(p=>p.name==='命宫');
+  const starsOf=p=>{const ms=p.majorStars.map(s=>izStar(s.name)+(s.brightness?izBri(s.brightness):'')+(s.mutagen?'·'+izMut(s.mutagen):''));const mi2=p.minorStars.map(s=>izStar(s.name));const a=ms.concat(mi2);return a.length?a.join('、'):T('empty')};
+  const sihua=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sihua.push(izStar(s.name)+'·'+izMut(s.mutagen))}));
+  document.getElementById('ziwei-kv').innerHTML=
+    `<dt>${T('soulstar')}</dt><dd>${starsOf(soulP)}（${soulP.heavenlyStem}${soulP.earthlyBranch}）</dd>`+
+    `<dt>${T('soulbody')}</dt><dd>${izStar(zw.soul)} / ${izStar(zw.body)}</dd>`+
+    `<dt>${T('wuxingju')}</dt><dd>${izCls(zw.fiveElementsClass)}</dd>`+
+    `<dt>${T('sihua')}</dt><dd>${sihua.join('　')}</dd>`+
+    `<dt>${T('bodypal')}</dt><dd>${izPal(zw.palaces.find(p=>p.isBodyPalace)?zw.palaces.find(p=>p.isBodyPalace).name:'')}</dd>`;
+  const order=['命宫','兄弟','夫妻','子女','财帛','疾厄','迁移','仆役','官禄','田宅','福德','父母'];
+  const rows=order.map(n=>{const p=zw.palaces.find(x=>x.name===n);if(!p)return '';const dc=p.decadal?`${p.decadal.range[0]}-${p.decadal.range[1]}`:'';return `<tr><td>${izPal(n)}<br><span style="color:var(--muted);font-size:11px">${p.heavenlyStem}${p.earthlyBranch}</span></td><td style="text-align:left;padding-left:8px">${starsOf(p)}</td><td>${dc}</td></tr>`}).join('');
+  document.getElementById('ziwei-table').innerHTML=`<table><tr><th>${T('p12')}</th><th>${T('mainstar')} / ${T('minorstar')}</th><th>${T('daxian')}</th></tr>${rows}</table>`+cav(T('cav_ziwei'));
+
+  /* ---------- 占星 ---------- */
+  const utc=new Date(Date.UTC(Y,M-1,D,h-tz,mi,0));
+  const gst=Astronomy.SiderealTime(utc);const ramc=((gst+lon/15)*15)%360;
+  const Tc=(utc.getTime()/864e5+2440587.5-2451545)/36525;const eps=(23.439291-0.0130042*Tc)*Math.PI/180;
+  const ra=ramc*Math.PI/180,phi=lat*Math.PI/180;
+  let asc=((Math.atan2(Math.cos(ra),-(Math.sin(ra)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI)%360+360)%360;
+  let mc=((Math.atan2(Math.sin(ra),Math.cos(ra)*Math.cos(eps))*180/Math.PI)%360+360)%360;
+  const ascSign=Math.floor(asc/30);
+  const lons=ABODY.map(b=>planetLon(b,utc));
+  const retro=ABODY.map(b=>{if(b==='Sun'||b==='Moon')return false;const a=planetLon(b,utc),b2=planetLon(b,new Date(utc.getTime()+864e5));let dlt=((b2-a+540)%360)-180;return dlt<0});
+  const hz={tw:['一','二','三','四','五','六','七','八','九','十','十一','十二'],cn:['一','二','三','四','五','六','七','八','九','十','十一','十二'],en:['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th']};
+  const houseLabel=hi=>LANG==='en'?hz.en[hi]+' House':'第'+hz[LANG][hi]+'宮';
+  const plHtml=ABODY.map((b,i)=>{const sgn=Math.floor(((lons[i]%360)+360)%360/30);const hI=((sgn-ascSign)%12+12)%12;return `<div class="pl"><b>${PLANET[LANG][i]}</b>${fmtSign(lons[i])}${retro[i]?' <span class="rx">'+T('retro')+'</span>':''}<span class="h">${houseLabel(hI)}</span></div>`}).join('');
+  document.getElementById('astro-planets').innerHTML=plHtml;
+  document.getElementById('astro-kv').innerHTML=
+    `<dt>${T('sun')}</dt><dd>${fmtSign(lons[0])}　${T('core')}</dd>`+
+    `<dt>${T('moon')}</dt><dd>${fmtSign(lons[1])}　${T('emo')}</dd>`+
+    `<dt>${T('asc')}</dt><dd>${fmtSign(asc)}　${T('outer')}</dd>`+
+    `<dt>${T('mc')}</dt><dd>${fmtSign(mc)}　${T('career')}</dd>`;
+  // 相位
+  const asp=[];for(let i=0;i<ABODY.length;i++)for(let j=i+1;j<ABODY.length;j++){let dd=Math.abs(lons[i]-lons[j])%360;if(dd>180)dd=360-dd;for(const[ang,orb,nm]of ASPECTS){if(Math.abs(dd-ang)<=orb){asp.push(`<span class="tag">${PLANET[LANG][i]} ${L(nm)} ${PLANET[LANG][j]}</span>`);break}}}
+  // 元素/性質
+  const ec4={fire:0,earth:0,air:0,water:0},mc3={card:0,fix:0,mut:0};
+  ABODY.forEach((b,i)=>{const s=Math.floor(((lons[i]%360)+360)%360/30);ec4[EL_OF_SIGN[s]]++;mc3[MODE_OF_SIGN[s]]++});
+  const elBar=Object.keys(ec4).map(e=>`<span class="tag">${ELEM4[e][LANG]} ${ec4[e]}</span>`).join('')+'　'+Object.keys(mc3).map(m=>`<span class="tag">${MODE3[m][LANG]} ${mc3[m]}</span>`).join('');
+  document.getElementById('astro-extra').innerHTML=cav(T('cav_astro'))+`<p class="subhead">${T('aspects_h')}</p><div>${asp.join('')||'—'}</div><p class="subhead">${T('balance_h')}</p><div>${elBar}</div>`;
+
+  /* ---------- 人類圖 ---------- */
+  const tg=(sunLon(utc)-88+360)%360;let lo=new Date(utc-95*864e5),hi2=new Date(utc-80*864e5);
+  for(let i=0;i<60;i++){let m=new Date((+lo+ +hi2)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi2=m;else lo=m}
+  const design=new Date((+lo+ +hi2)/2);
+  const HB=[['Sun',0],['Earth',1],['NNode',2],['SNode',3],['Moon',4],['Mercury',5],['Venus',6],['Mars',7],['Jupiter',8],['Saturn',9],['Uranus',10],['Neptune',11],['Pluto',12]];
+  const HBNAME={tw:['太陽','地球','北交點','南交點','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],cn:['太阳','地球','北交点','南交点','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],en:['Sun','Earth','North Node','South Node','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']};
+  const act=new Set();let pSun,dSun,pEarth,dEarth;const pAct=[],dAct=[];
+  HB.forEach(b=>{const g=lonToGate(planetLon(b[0],utc));act.add(g.gate);pAct.push(g);if(b[0]==='Sun')pSun=g;if(b[0]==='Earth')pEarth=g});
+  HB.forEach(b=>{const g=lonToGate(planetLon(b[0],design));act.add(g.gate);dAct.push(g);if(b[0]==='Sun')dSun=g;if(b[0]==='Earth')dEarth=g});
+  const dc=new Set();const adj={};const defCh=[];
+  CHANNELS.forEach(ch=>{if(act.has(ch[0])&&act.has(ch[1])){defCh.push(ch);const a=gco(ch[0]),b=gco(ch[1]);dc.add(a);dc.add(b);(adj[a]=adj[a]||new Set()).add(b);(adj[b]=adj[b]||new Set()).add(a)}});
+  const conn=(s,g)=>{if(!dc.has(s)||!dc.has(g))return false;const seen=new Set([s]),q=[s];while(q.length){const x=q.shift();if(x===g)return true;(adj[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}return false};
+  let m2t=false;MOTORS.forEach(m=>{if(conn(m,'throat'))m2t=true});
+  let tkey;if(dc.size===0)tkey='refl';else if(dc.has('sacral'))tkey=m2t?'mg':'gen';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn(m,'throat'))nm=true});tkey=nm?'mani':'proj'}
+  let akey=dc.has('solar')?'solar':dc.has('sacral')?'sacral':dc.has('spleen')?'spleen':dc.has('heart')?'heart':dc.has('g')?'g':(tkey==='refl'?'lunar':'mental');
+  const profile=pSun.line+'/'+dSun.line;
+  const comps=(()=>{const seen=new Set();let n=0;dc.forEach(c=>{if(!seen.has(c)){n++;const q=[c];seen.add(c);while(q.length){const x=q.shift();(adj[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}}});return n})();
+  document.getElementById('hd-type').innerHTML=`<div class="big">${L(TYPE[tkey])}</div><div class="sub">${LANG==='en'?'':TYPE[tkey].en}</div>`;
+  document.getElementById('hd-kv').innerHTML=
+    `<dt>${T('authority')}</dt><dd>${L(AUTH[akey])}</dd>`+
+    `<dt>${T('strategy')}</dt><dd>${L(STRAT[tkey])}</dd>`+
+    `<dt>${T('profile')}</dt><dd>${profile}　${L(ROLE[pSun.line])} / ${L(ROLE[dSun.line])}</dd>`+
+    `<dt>${T('definition')}</dt><dd>${L(DEFN[comps]||DEFN[0])}</dd>`+
+    `<dt>${T('cross')}</dt><dd>${pSun.gate}/${pEarth.gate} · ${dSun.gate}/${dEarth.gate}</dd>`+
+    `<dt>${T('notself')}</dt><dd>${L(NOTSELF[tkey])}</dd>`+
+    `<dt>${T('signature')}</dt><dd>${L(SIGN_HD[tkey])}</dd>`;
+  const gr=pAct.map((p,i)=>`<tr><td>${HBNAME[LANG][i]}</td><td style="color:var(--crimson-bright)">${p.gate}.${p.line}</td><td style="color:var(--gold-bright)">${dAct[i].gate}.${dAct[i].line}</td></tr>`).join('');
+  document.getElementById('hd-gates').innerHTML=`<table><tr><th>${T('planet')}</th><th style="color:var(--crimson-bright)">${T('personality')}</th><th style="color:var(--gold-bright)">${T('design')}</th></tr>${gr}</table>`;
+  document.getElementById('hd-centers').innerHTML=CENTER_ORDER.map(c=>`<div class="ctr ${dc.has(c)?'on':''}">${cName(c)}<br><span style="font-size:10px">${dc.has(c)?T('defined'):T('open')}</span></div>`).join('');
+  document.getElementById('hd-channels').innerHTML=(defCh.length?defCh.map(ch=>`<span class="tag">${ch[0]}-${ch[1]}　${cName(gco(ch[0]))}↔${cName(gco(ch[1]))}</span>`).join(''):`<span class="tag">${T('nochannel')}</span>`)+cav(T('cav_hd'));
+}
+
+/* init */
+buildCity();applyStatic();
+</script>
+</body>
+</html>

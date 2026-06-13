@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜我的報告</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="members.css">
+<style>.wrap{max-width:1180px}</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="index.html">浮生矩陣</a>
+    <div class="row">
+      <span class="muted" id="who" style="font-family:var(--sans);font-size:13px"></span>
+      <a class="btn ghost small" id="adminlink" href="admin.html" style="display:none">管理後台</a>
+      <button class="btn ghost small" id="signout">登出</button>
+    </div>
+  </div>
+  <h1>我的浮生矩陣報告</h1>
+  <p class="sub">看見劇本，才能走出劇本</p>
+  <div id="content"><div class="loadingfull">載入中…</div></div>
+</div>
+
+<script>
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+const $=id=>document.getElementById(id);
+const VLABEL={script:'劇本版 · 看見人生主線', breakthrough:'破局版 · 找出困住你的劇本'};
+const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+$('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.href='login.html'; });
+
+(async ()=>{
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  $('who').textContent = session.user.email;
+  const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+  if(prof && prof.role==='admin'){ $('adminlink').style.display='inline-block'; }
+
+  // 安全函式：只回傳「自己的、已發布」報告；萬字未解鎖時 full_content 為 null（根本不送到前端）
+  const {data:reports, error} = await sb.rpc('my_reports');
+
+  const box=$('content');
+  if(error){ box.innerHTML=`<div class="card"><div class="msg err" style="display:block">讀取失敗：${esc(error.message)}</div></div>`; return; }
+  if(!reports || !reports.length){
+    box.innerHTML=`<div class="card center"><p class="muted" style="font-family:var(--sans)">目前還沒有發布給你的報告。<br>完成命盤解讀後，這裡就會出現你的千字精華與完整內容。</p></div>`;
+    return;
+  }
+  // 依個案分組，劇本版 / 破局版 並列
+  const byCase={};
+  reports.forEach(r=>{ (byCase[r.case_id]=byCase[r.case_id]||{info:r,v:{}}); byCase[r.case_id].v[r.version]=r; });
+  const VL={script:'劇本版',breakthrough:'破局版'};
+  const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本'};
+  const col=(g,ver)=>{
+    const r=g.v[ver];
+    if(!r) return `<div class="vcol"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
+    const full = r.full_content
+      ? `<div class="report-body">${esc(r.full_content)}</div>`
+      : `<div class="locked"><div class="lock-ic">🔒</div><p>完整萬字報告尚未解鎖</p><p class="muted">預約完整講解後開通</p></div>`;
+    return `<div class="vcol">
+      <div class="vhead ${ver}">${VL[ver]}<span>${VS[ver]}</span></div>
+      ${r.excerpt?`<p class="vsub">千字精華</p><div class="excerpt-body">${esc(r.excerpt)}</div>`:''}
+      <hr><p class="vsub">完整報告</p>${full}
+    </div>`;
+  };
+  box.innerHTML = Object.values(byCase).map(g=>{
+    const c=g.info;
+    return `<div class="case-block">
+      <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>
+      <div class="parallel">${col(g,'script')}${col(g,'breakthrough')}</div>
+    </div>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

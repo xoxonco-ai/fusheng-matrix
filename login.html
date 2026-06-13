@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜登入</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="members.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+<div class="wrap" style="max-width:460px">
+  <div class="topbar" style="justify-content:center"><a class="brand" href="index.html">浮生矩陣</a></div>
+  <h1>會員登入</h1>
+  <p class="sub" id="modesub">登入以查看你的報告</p>
+
+  <div class="card">
+    <div class="row" style="justify-content:center;margin-bottom:8px">
+      <button class="tabbtn active" id="tab-in" onclick="setMode('in')">登入</button>
+      <button class="tabbtn" id="tab-up" onclick="setMode('up')">註冊</button>
+    </div>
+    <label>Email</label>
+    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+    <label>密碼</label>
+    <input type="password" id="password" placeholder="至少 6 碼" autocomplete="current-password">
+    <div style="margin-top:24px" class="center">
+      <button class="btn" id="submit" style="width:100%">登入</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+  <p class="sub" style="margin:0"><a href="index.html" class="muted" style="text-decoration:none">← 回首頁</a></p>
+</div>
+
+<script>
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+let mode='in';
+const $=id=>document.getElementById(id);
+function setMode(m){mode=m;
+  $('tab-in').classList.toggle('active',m==='in');
+  $('tab-up').classList.toggle('active',m==='up');
+  $('submit').textContent = m==='in'?'登入':'註冊';
+  $('modesub').textContent = m==='in'?'登入以查看你的報告':'建立你的帳號';
+  $('password').setAttribute('autocomplete', m==='in'?'current-password':'new-password');
+  hideMsg();
+}
+function showMsg(t,ok){const e=$('msg');e.textContent=t;e.className='msg '+(ok?'ok':'err')}
+function hideMsg(){$('msg').className='msg'}
+
+async function routeByRole(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return false;
+  const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+  location.href = (prof && prof.role==='admin') ? 'admin.html' : 'report.html';
+  return true;
+}
+
+$('submit').addEventListener('click', async ()=>{
+  hideMsg();
+  const email=$('email').value.trim(), password=$('password').value;
+  if(!email||!password){showMsg('請填寫 Email 與密碼',false);return}
+  $('submit').disabled=true;
+  try{
+    if(mode==='in'){
+      const {error}=await sb.auth.signInWithPassword({email,password});
+      if(error){showMsg('登入失敗：'+error.message,false);return}
+      await routeByRole();
+    }else{
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:email}}});
+      if(error){showMsg('註冊失敗：'+error.message,false);return}
+      if(data.session){ await routeByRole(); }
+      else { showMsg('註冊成功！請到信箱收確認信，點擊連結後再回來登入。（若要省略此步，可在 Supabase → Authentication → Providers → Email 關閉 Confirm email）',true); setMode('in'); }
+    }
+  }catch(e){showMsg('發生錯誤：'+e.message,false)}
+  finally{$('submit').disabled=false}
+});
+$('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('submit').click()});
+
+// 已登入則直接導向
+routeByRole();
+</script>
+</body>
+</html>

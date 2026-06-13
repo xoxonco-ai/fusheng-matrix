@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜管理後台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="members.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="index.html">浮生矩陣 · 後台</a>
+    <div class="row">
+      <span class="muted" id="who" style="font-family:var(--sans);font-size:13px"></span>
+      <a class="btn ghost small" href="paipan.html" target="_blank">開排盤工具</a>
+      <button class="btn ghost small" id="signout">登出</button>
+    </div>
+  </div>
+  <h1>管理後台</h1>
+  <p class="sub">建立個案、撰寫報告、指派給個案帳號</p>
+
+  <div id="gate" class="loadingfull">載入中…</div>
+
+  <div id="app" style="display:none">
+    <!-- 新增個案 -->
+    <div class="card">
+      <h3 style="font-size:18px;letter-spacing:.05em;margin-bottom:6px">＋ 新增個案</h3>
+      <div class="grid2">
+        <div><label>姓名 / 暱稱</label><input id="c-name" placeholder="個案稱呼"></div>
+        <div><label>指派給個案帳號</label><select id="c-client"></select></div>
+        <div><label>性別</label><select id="c-gender"><option value="女">女</option><option value="男">男</option></select></div>
+        <div><label>出生地</label><input id="c-place" placeholder="例：台北市"></div>
+        <div><label>出生日期</label><input type="date" id="c-date"></div>
+        <div><label>出生時間（不確定可留白）</label><input type="time" id="c-time"></div>
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn" id="addCase">建立個案</button>
+        <span class="muted" style="font-family:var(--sans);font-size:12px">指派對象需先自行註冊帳號，才會出現在清單中</span>
+      </div>
+      <div class="msg" id="caseMsg"></div>
+    </div>
+
+    <h3 style="font-size:16px;letter-spacing:.15em;color:var(--gold);margin:26px 0 14px">個案清單</h3>
+    <div id="cases"></div>
+  </div>
+</div>
+
+<script>
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const VLABEL={script:'劇本版', breakthrough:'破局版'};
+let ME=null, CLIENTS=[], CASES=[];
+
+$('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.href='login.html'; });
+
+function clientName(id){const p=CLIENTS.find(c=>c.id===id);return p?(p.display_name||p.id):'（未指派）';}
+
+async function loadAll(){
+  // 個案帳號（client 角色）
+  const {data:profs} = await sb.from('profiles').select('id,display_name,role');
+  CLIENTS = (profs||[]).filter(p=>p.role==='client');
+  const sel=$('c-client'); sel.innerHTML='<option value="">（暫不指派）</option>'+CLIENTS.map(c=>`<option value="${c.id}">${esc(c.display_name||c.id)}</option>`).join('');
+  // 個案與其報告
+  const {data:cases} = await sb.from('cases').select('*, reports(*)').order('created_at',{ascending:false});
+  CASES = cases||[];
+  renderCases();
+}
+
+function renderCases(){
+  const box=$('cases');
+  if(!CASES.length){ box.innerHTML='<div class="card center"><span class="muted" style="font-family:var(--sans)">還沒有個案，從上方建立第一筆。</span></div>'; return; }
+  box.innerHTML = CASES.map(c=>{
+    const reps={}; (c.reports||[]).forEach(r=>reps[r.version]=r);
+    return `<div class="case">
+      <h3>${esc(c.name||'未命名')} <span class="pill">${esc(clientName(c.client_id))}</span></h3>
+      <div class="meta">${esc(c.gender||'')}　${esc(c.birth_date||'')} ${esc(c.birth_time||'')}　${esc(c.birth_place||'')}</div>
+      <div class="row" style="margin-bottom:10px">
+        ${['script','breakthrough'].map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
+        <button class="btn ghost small" onclick="delCase('${c.id}')" style="margin-left:auto">刪除個案</button>
+      </div>
+      <div id="editor-${c.id}"></div>
+    </div>`;
+  }).join('');
+}
+
+window.editReport=function(caseId,version){
+  const c=CASES.find(x=>x.id===caseId); const r=(c.reports||[]).find(x=>x.version===version)||{};
+  const box=$('editor-'+caseId);
+  box.innerHTML=`<hr>
+    <label>千字精華（個案登入即可看到）</label>
+    <textarea id="ex-${caseId}" placeholder="放在這裡的內容，個案登入後看得到">${esc(r.excerpt||'')}</textarea>
+    <label>萬字完整報告</label>
+    <textarea id="fc-${caseId}" style="min-height:240px" placeholder="完整報告全文">${esc(r.full_content||'')}</textarea>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+      <label class="row" style="margin:0;color:var(--text);font-family:var(--sans);font-size:13px"><input type="checkbox" id="pb-${caseId}" style="width:auto;margin-right:8px" ${r.published?'checked':''}> ① 發布千字（個案登入即可看到「千字精華」）</label>
+      <label class="row" style="margin:0;color:var(--text);font-family:var(--sans);font-size:13px"><input type="checkbox" id="fu-${caseId}" style="width:auto;margin-right:8px" ${r.full_unlocked?'checked':''}> ② 解鎖萬字（個案才看得到「完整全文」）</label>
+      <button class="btn small" onclick="saveReport('${caseId}','${version}','${r.id||''}')" style="align-self:flex-start">儲存${VLABEL[version]}</button>
+    </div>
+    <div class="msg" id="rmsg-${caseId}"></div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+window.saveReport=async function(caseId,version,reportId){
+  const payload={case_id:caseId,version,excerpt:$('ex-'+caseId).value,full_content:$('fc-'+caseId).value,published:$('pb-'+caseId).checked,full_unlocked:$('fu-'+caseId).checked};
+  let res;
+  if(reportId){ res=await sb.from('reports').update(payload).eq('id',reportId); }
+  else { res=await sb.from('reports').insert(payload); }
+  const m=$('rmsg-'+caseId);
+  if(res.error){ m.className='msg err'; m.textContent='儲存失敗：'+res.error.message; }
+  else { m.className='msg ok'; m.textContent='已儲存'+(payload.published?'並發布':'（草稿）'); await loadAll(); }
+};
+
+window.delCase=async function(caseId){
+  if(!confirm('確定刪除這個個案？相關報告也會一併刪除，無法復原。'))return;
+  const {error}=await sb.from('cases').delete().eq('id',caseId);
+  if(error)alert('刪除失敗：'+error.message); else loadAll();
+};
+
+$('addCase').addEventListener('click', async ()=>{
+  const m=$('caseMsg'); m.className='msg';
+  const payload={
+    name:$('c-name').value.trim(), gender:$('c-gender').value,
+    birth_date:$('c-date').value||null, birth_time:$('c-time').value||null,
+    birth_place:$('c-place').value.trim()||null,
+    unknown_time: !$('c-time').value,
+    client_id: $('c-client').value||null,
+    created_by: ME.id
+  };
+  if(!payload.name){ m.className='msg err'; m.textContent='請填寫姓名'; return; }
+  const {error}=await sb.from('cases').insert(payload);
+  if(error){ m.className='msg err'; m.textContent='建立失敗：'+error.message; }
+  else { m.className='msg ok'; m.textContent='已建立個案'; $('c-name').value='';$('c-place').value='';$('c-date').value='';$('c-time').value=''; await loadAll(); }
+});
+
+(async ()=>{
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  ME=session.user; $('who').textContent=ME.email;
+  const {data:prof} = await sb.from('profiles').select('role').eq('id',ME.id).maybeSingle();
+  if(!prof || prof.role!=='admin'){ location.href='report.html'; return; }
+  $('gate').style.display='none'; $('app').style.display='block';
+  await loadAll();
+})();
+</script>
+</body>
+</html>
