@@ -84,6 +84,15 @@ td{color:var(--text);font-weight:300}
 .cta-final p{color:var(--muted);font-family:var(--sans);font-weight:300;font-size:14.5px;margin-bottom:26px}
 .cta-final a{display:inline-block;padding:15px 44px;border-radius:4px;font-size:16px;letter-spacing:.25em;text-decoration:none;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;transition:all .35s}
 .cta-final a:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.social-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.social-btns a{padding:13px 30px;font-size:15px;letter-spacing:.12em}
+#b-qianzi::before{background:linear-gradient(90deg,transparent,var(--crimson),transparent)}
+.qianzi-body{font-family:var(--serif);line-height:1.95;font-size:16px;color:var(--text)}
+.qianzi-body p{margin-bottom:1.3em}
+.qianzi-body .lead{font-size:17px;color:var(--gold-bright);letter-spacing:.04em}
+.qianzi-body h4{font-family:var(--sans);font-size:12.5px;letter-spacing:.25em;color:var(--gold);margin:20px 0 8px;font-weight:500}
+.qianzi-body .accent{color:var(--gold-bright)}
+.qz-note{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px dashed rgba(201,168,106,.25);padding-top:12px}
 .disclaimer{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.8}
 .err{color:var(--crimson-bright);font-family:var(--sans);font-size:14px;text-align:center;margin-top:18px;display:none}
 .loading{display:none;text-align:center;color:var(--gold);font-family:var(--sans);letter-spacing:.2em;margin-top:24px}
@@ -154,10 +163,19 @@ td{color:var(--text);font-weight:300}
       <div id="hd-channels"></div>
     </div>
 
+    <div class="sys-block" id="b-qianzi">
+      <div class="sys-head"><span class="num">伍</span><h2>千字精華報告</h2><span class="en">YOUR READING</span></div>
+      <div class="qianzi-body" id="qianzi-content"></div>
+    </div>
+
     <div class="cta-final">
-      <h3 data-i18n="cta_h">這只是你的命盤總覽</h3>
-      <p data-i18n="cta_p">完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。</p>
-      <a href="index.html#cta" data-i18n="cta_btn">預約完整講解 →</a>
+      <h3>想知道困住你的「萬字報告」嗎？</h3>
+      <p>千字讓你看見主線，萬字拆解你的人生劇本、盲區與破局之道。<br>直接私訊我們，預約你的完整解讀。</p>
+      <div class="social-btns">
+        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">f　Facebook 私訊</a>
+        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">◎　Instagram</a>
+        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">@　Threads</a>
+      </div>
     </div>
     <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
   </div>
@@ -301,6 +319,37 @@ document.getElementById('run').addEventListener('click',()=>{
   }catch(e){err.textContent=e.message;err.style.display='block'}
 });
 
+/* ===== 千字精華 自動生成（繁體） ===== */
+const QZ={
+ sun:['你天生帶著開創的衝勁，喜歡當第一個、不愛等待，行動是你理解世界的方式。','你務實、重感官、需要安全感，慢，但一旦投入就極穩定持久。','你好奇、靈活、善於表達與連結，心思快，需要新鮮與多元的刺激。','你重情感與歸屬、敏感而善於照顧，安全感是你一切行動的底層。','你需要被看見與肯定，天生有舞台感與創造的熱情。','你細膩、講究、追求把事情做對，用分析與服務確認自己的價值。','你重關係與平衡、在意美感與公平，常透過他人來定位自己。','你深刻、專注、不滿足於表面，對掌控與真相有強烈需求。','你嚮往自由與意義，喜歡探索、遠方與更大的圖像。','你務實、自律、有野心，用成就與責任定義自己，慢工出細活。','你獨立、理性、嚮往獨特，不愛被框，常站在群體之外看群體。','你敏感、富同理與想像，界線柔軟，容易與環境融為一體。'],
+ moon:['情緒來得快去得快，需要即時的出口。','情緒像土，慢熱也難動搖，靠穩定與感官安頓。','靠說出來、想清楚來消化情緒。','情緒深、念舊，需要被接住與歸屬。','需要被肯定與關注才覺得安穩。','靠把事情整理好、做對來安心。','在和諧的關係裡才感到平靜。','情緒濃烈而私密，習慣往內藏。','靠自由、希望感與意義來安頓自己。','習慣壓抑、自己扛，難以示弱。','用抽離與理性處理情緒，需要空間。','情緒像海，容易吸收他人的情緒。'],
+ asc:['直接、有衝勁','沉穩、可靠、重美感','機靈、健談、好相處','溫和、體貼、略帶防備','有氣場、亮眼','細心、得體、略帶距離','優雅、好親近','神祕、深沉、不易看透','開朗、自由、愛冒險','成熟、可靠、有距離','獨特、冷靜、略疏離','柔軟、夢幻、易親近'],
+ el:{wood:'你像樹，向上、講成長與彈性，重視方向與發展，討厭被困住。',fire:'你像火，熱情、外放、需要被看見，能點燃別人，也需要燃料避免燒盡。',earth:'你像山，穩定、可靠、能承接，是別人會本能依靠的人，但容易把自己壓在底下。',metal:'你像金屬，講原則、重界線與品質，果決犀利，也可能過於要求。',water:'你像水，靈活、深沉、善於流動與適應，聰明而難以捉摸，需要方向感。'},
+ miss:{wood:'你的盤裡缺木——較少現成的框架與規則約束你，方向常得自己長出來。',fire:'你的盤裡缺火——不易啟動那種不顧一切的熱情與衝動，容易把渴望往內收。',earth:'你的盤裡缺土——較少天生的安穩感，需要後天為自己建立穩定的根基。',metal:'你的盤裡缺金——不易果斷收尾與設界線，柔軟卻有時難以堅定。',water:'你的盤裡缺水——較少天生的彈性與圓融，做事直接但可能偏硬。'},
+ spine:{wood:'以「成長與方向」為底色',fire:'以「熱情與表達」為底色',earth:'以「穩定承接」為底色',metal:'以「原則與決斷」為底色',water:'以「流動與深度」為底色'},
+ type:{mani:'你是來「發起」的——有想法就去推動。策略是「告知後行動」，活對了會感到平靜。',gen:'你是來「回應」的——對的事身體會亮起來、投入就能燒很久。策略是「等待回應」，活對了會感到滿足。',mg:'你能量充沛、能多工，先回應再告知；快，但別跳過步驟。活對了會感到滿足。',proj:'你是來「引導」的——看得透系統與人，但需要被邀請。策略是「等待邀請」，活對了會感到成功。',refl:'你像一面鏡子，反映環境的健康度；重大決定需要一個月週期。活對了會感到驚喜。'},
+ auth:{solar:'你沒有「當下」的真相，等情緒平靜後再決定最準。',sacral:'相信身體當下「有力／沒力」的反應，別用頭腦覆蓋它。',spleen:'相信第一時間的直覺，它通常只說一次。',heart:'跟著你真正「想要、願意承諾」的衝動走。',g:'把決定說出來、聽自己的聲音，方向就清楚了。',mental:'跟信任的人對話、把想法說出來釐清，再決定。',lunar:'重大決定給自己一個月，讓答案沉澱。'},
+ role:{'1/3':'你需要先打好地基、再透過試錯學習，跌倒是你的養分。','1/4':'你靠扎實的根基與人脈網絡前進。','2/4':'你有天賦但需要獨處充電，機會常從人脈來。','2/5':'你被期待解決問題，卻也需要躲起來養。','3/5':'你透過試錯找路，常被投射為救世主。','3/6':'前半生試錯，後半生成為某種典範。','4/6':'靠關係前進，三階段活成榜樣。','4/1':'根基穩固，靠人際網絡發揮。','5/1':'你被投射許多期待，扎實的內在是你的底氣。','5/2':'被期待救場，卻需要獨處與被召喚。','6/2':'前半生體驗、中期抽離、後半生成為榜樣。','6/3':'透過經驗活成典範，一路試錯。'},
+ star:{'紫微':'帝王星，天生有領導氣場與自尊，適合站在能被尊重的位置。','天機':'智多星，善謀略、思緒靈活，是天生的策劃者。','太陽':'光明磊落、樂於付出，適合在外發光、照亮他人。','武曲':'財星與將星，務實、果決、有執行力。','天同':'福星，溫和、知足、重情感與生活品質。','廉貞':'能量強、有原則也有叛逆，愛恨分明。','天府':'財庫星，穩重、保守、善於累積與守成。','太陰':'柔星，細膩、內斂、重感受與規劃。','貪狼':'多才多藝、慾望強、善於社交與經營。','巨門':'口舌之星，善言、深思，靠表達與專業立足。','天相':'印星，忠厚、講究、適合輔佐與協調。','天梁':'蔭星，老成、講原則、能扛責任、好為人師。','七殺':'將星，剛烈、果敢、開創力強，喜歡掌控。','破軍':'變動之星，破而後立、不安於現狀、敢於翻新。'}
+};
+function genQianzi(d){
+  const si=l=>Math.floor((((l%360)+360)%360)/30);
+  const SN=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+  const sun=si(d.sunL),moon=si(d.moonL),asc=si(d.asc);
+  const elName={wood:'木',fire:'火',earth:'土',metal:'金',water:'水'};
+  const miss=Object.keys(d.cnt).filter(k=>d.cnt[k]===0);
+  let h='';
+  h+=`<p class="lead">把你的八字、紫微、占星、人類圖同時攤開，浮現的是一套<span class="accent">${QZ.spine[d.dmEl]}</span>的生命結構。以下是四套系統交叉後，屬於你的千字精華。</p>`;
+  h+=`<h4>八字｜你的底層材質</h4><p>你的八字以 <span class="accent">${d.dg}（${elName[d.dmEl]}）</span> 為日主。${QZ.el[d.dmEl]}${miss.length?'　'+QZ.miss[miss[0]]:''}</p>`;
+  h+=`<h4>占星｜你的人格藍圖</h4><p>太陽在<span class="accent">${SN[sun]}</span>——${QZ.sun[sun]}月亮在${SN[moon]}，${QZ.moon[moon]}上升${SN[asc]}，給人${QZ.asc[asc]}的第一印象。</p>`;
+  h+=`<h4>人類圖｜你的運作機制</h4><p>你的類型是<span class="accent">${d.typeName}</span>。${QZ.type[d.tkey]}你的內在權威是${d.authName}：${QZ.auth[d.akey]}人生角色 ${d.profile}——${QZ.role[d.profile]||''}</p>`;
+  if(d.star&&QZ.star[d.star]) h+=`<h4>紫微｜你的命格主軸</h4><p>紫微命宮主星為 <span class="accent">${d.star}</span>，${QZ.star[d.star]}</p>`;
+  h+=`<h4>四套系統共同指向</h4><p>當四套語言放在一起，它們指向同一件事：你正<span class="accent">${QZ.spine[d.dmEl]}</span>在活著，而你最大的力量與最深的卡點，往往是同一個來源。${miss.length?'那些先天「缺」的部分，正是你一生在補的功課。':''}</p>`;
+  h+=`<p>這份千字讓你看見<span class="accent">主線</span>。但你為什麼總在同樣的地方卡住、被同樣的人吸引，那些四套系統互相矛盾、藏在更深處的盲區與破局之道，是<span class="accent">萬字報告</span>才拆得開的部分。</p>`;
+  h+=`<p class="qz-note">本千字由四套系統實算結果自動生成，為結構性導讀；完整、深入、針對你個人矛盾的解讀，請見萬字報告。</p>`;
+  document.getElementById('qianzi-content').innerHTML=h;
+}
+
 function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   document.getElementById('timewarn').style.display=unknown?'block':'none';
   document.getElementById('timewarn').textContent=T('warn');
@@ -412,6 +461,12 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   document.getElementById('hd-gates').innerHTML=`<table><tr><th>${T('planet')}</th><th style="color:var(--crimson-bright)">${T('personality')}</th><th style="color:var(--gold-bright)">${T('design')}</th></tr>${gr}</table>`;
   document.getElementById('hd-centers').innerHTML=CENTER_ORDER.map(c=>`<div class="ctr ${dc.has(c)?'on':''}">${cName(c)}<br><span style="font-size:10px">${dc.has(c)?T('defined'):T('open')}</span></div>`).join('');
   document.getElementById('hd-channels').innerHTML=(defCh.length?defCh.map(ch=>`<span class="tag">${ch[0]}-${ch[1]}　${cName(gco(ch[0]))}↔${cName(gco(ch[1]))}</span>`).join(''):`<span class="tag">${T('nochannel')}</span>`)+cav(T('cav_hd'));
+
+  /* ---------- 千字精華（自動生成，繁體） ---------- */
+  const _dg=ec.getDayGan();
+  const _star=soulP.majorStars[0]?(IZ.star[soulP.majorStars[0].name]?IZ.star[soulP.majorStars[0].name].tw:null):null;
+  const _authShort={solar:'情緒型',sacral:'薦骨型',spleen:'直覺型',heart:'意志力型',g:'自我投射型',mental:'心智／外在型',lunar:'月循環型'};
+  genQianzi({dg:_dg, dmEl:STEM_EL[_dg], cnt, sunL:lons[0], moonL:lons[1], asc:asc, tkey, akey, profile, typeName:TYPE[tkey].tw, authName:_authShort[akey], star:_star});
 }
 
 /* init */

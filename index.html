@@ -487,32 +487,22 @@ footer .brand{color:var(--gold);font-family:var(--serif);letter-spacing:.3em;mar
 <section class="reveal cta" id="cta">
   <h2 style="font-size:clamp(22px,3.6vw,30px)">預約你的浮生矩陣</h2>
   <div class="poem center" style="margin-top:24px">
-    <p class="muted">留下資料，我會與你約時間，一對一講解你的完整報告。</p>
+    <p class="muted">先輸入生辰，<span class="accent">免費取得你的千字精華</span>——不需要註冊。<br>想看見困住你的完整「萬字報告」，直接私訊我們預約。</p>
   </div>
 
-  <form class="lead-form" id="leadForm">
-    <label>姓名</label>
-    <input type="text" id="f-name" required placeholder="怎麼稱呼你">
-    <label>Email</label>
-    <input type="email" id="f-email" required placeholder="you@example.com">
-    <label>出生年月日時</label>
-    <input type="text" id="f-birth" required placeholder="例：1990/05/20 14:30（不確定時辰可註明）">
-    <label>出生地</label>
-    <input type="text" id="f-place" required placeholder="例：台北市">
-    <label>想預約的版本</label>
-    <select id="f-version">
-      <option>劇本版｜看見人生主線</option>
-      <option>破局版｜找出困住你的劇本</option>
-      <option>兩份都想要</option>
-      <option>還不確定，想先聊聊</option>
-    </select>
-    <button type="submit">送出預約 →</button>
-    <p class="hint">送出後會開啟你的郵件程式，內容已自動填好，按傳送即完成。</p>
-  </form>
+  <div class="btns" style="margin-bottom:22px">
+    <a class="btn btn-gold" href="paipan.html">立即免費排盤 · 拿千字 ✦</a>
+  </div>
 
+  <p class="sub" style="margin:0 0 12px">想知道萬字報告？私訊我們 ↓</p>
   <div class="btns">
-    <a class="btn btn-ghost" href="https://line.me/ti/g2/S2fEbId6TK7W2aHun6nTzG7O9LArqxfZ_V3E7Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" rel="noopener">加入「浮生矩陣玩家基地」LINE 社群</a>
-    <a class="btn btn-ghost" href="login.html">會員登入 · 查看我的報告</a>
+    <a class="btn btn-ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook 私訊</a>
+    <a class="btn btn-ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+    <a class="btn btn-ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+  </div>
+  <div class="btns" style="margin-top:16px">
+    <a class="btn btn-ghost" href="https://line.me/ti/g2/S2fEbId6TK7W2aHun6nTzG7O9LArqxfZ_V3E7Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" rel="noopener">加入 LINE 社群</a>
+    <a class="btn btn-ghost" href="login.html">會員登入</a>
   </div>
 </section>
 
@@ -552,15 +542,7 @@ const io=new IntersectionObserver(es=>{
 },{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-/* ---------- 預約表單 → 開啟郵件 ---------- */
-document.getElementById('leadForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const v=id=>document.getElementById(id).value;
-  const body=encodeURIComponent(
-    `姓名：${v('f-name')}\nEmail：${v('f-email')}\n出生年月日時：${v('f-birth')}\n出生地：${v('f-place')}\n想預約的版本：${v('f-version')}\n\n（由浮生矩陣官網表單送出）`
-  );
-  location.href=`mailto:floatingmatrix1@gmail.com?subject=${encodeURIComponent('浮生矩陣｜報告預約')}&body=${body}`;
-});
+/* 預約改為私訊 FB／IG／Threads，表單已移除 */
 </script>
 </body>
 </html>
