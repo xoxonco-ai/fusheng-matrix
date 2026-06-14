@@ -1,3 +1,293 @@
+TEST_PASTE_123
+LINE2<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜管理後台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="members.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.7/lunar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iztro@2.5.8/dist/iztro.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="index.html">浮生矩陣 · 後台</a>
+    <div class="row">
+      <span class="muted" id="who" style="font-family:var(--sans);font-size:13px"></span>
+      <a class="btn ghost small" href="paipan.html" target="_blank">開排盤工具</a>
+      <a class="btn ghost small" href="report.html" target="_blank">查看所有萬字</a>
+      <button class="btn ghost small" id="signout">登出</button>
+    </div>
+  </div>
+  <h1>管理後台</h1>
+  <p class="sub">建立個案、撰寫報告、指派給個案帳號</p>
+
+  <div id="gate" class="loadingfull">載入中…</div>
+
+  <div id="app" style="display:none">
+    <!-- 新增個案 -->
+    <div class="card">
+      <h3 style="font-size:18px;letter-spacing:.05em;margin-bottom:6px">＋ 新增個案</h3>
+      <div class="grid2">
+        <div><label>姓名 / 暱稱</label><input id="c-name" placeholder="個案稱呼"></div>
+        <div><label>指派給個案帳號</label><select id="c-client"></select></div>
+        <div><label>性別</label><select id="c-gender"><option value="女">女</option><option value="男">男</option></select></div>
+        <div><label>出生地（影響占星／人類圖）</label><select id="c-city"></select></div>
+        <div><label>出生日期</label><input type="date" id="c-date"></div>
+        <div><label>出生時間（不確定可留白）</label><input type="time" id="c-time"></div>
+      </div>
+      <label>佐證事件（選填，AI 會拿來當鐵證）</label>
+      <textarea id="c-evidence" style="min-height:70px" placeholder="一件他人生真實發生過的事，例：35 歲那年創業失敗負債、長期失眠、剛結束一段七年感情、童年父母離異…　越具體，報告越準。"></textarea>
+      <div class="row" style="margin-top:18px">
+        <button class="btn" id="addCase">建立個案</button>
+        <span class="muted" style="font-family:var(--sans);font-size:12px">指派對象需先自行註冊帳號，才會出現在清單中</span>
+      </div>
+      <div class="msg" id="caseMsg"></div>
+    </div>
+
+    <h3 style="font-size:16px;letter-spacing:.15em;color:var(--gold);margin:26px 0 14px">個案清單</h3>
+    <div id="cases"></div>
+  </div>
+</div>
+
+<script>
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const VLABEL={script:'劇本版', breakthrough:'破局版'};
+let ME=null, CLIENTS=[], CASES=[];
+const EDGE_URL = window.SB_URL + '/functions/v1/generate-report';
+
+/* ===== 城市（出生地→經緯度時區） ===== */
+const CITY=[['台北',121.5654,25.0330,8],['新北',121.4628,25.0169,8],['基隆',121.7392,25.1276,8],['桃園',121.3010,24.9936,8],['新竹',120.9686,24.8138,8],['台中',120.6839,24.1477,8],['彰化',120.5161,24.0809,8],['嘉義',120.4473,23.4801,8],['台南',120.2270,22.9999,8],['高雄',120.3014,22.6273,8],['屏東',120.4886,22.6826,8],['宜蘭',121.7195,24.7021,8],['花蓮',121.6015,23.9871,8],['台東',121.1444,22.7583,8],['澎湖',119.5793,23.5712,8],['金門',118.3186,24.4321,8],['香港',114.1694,22.3193,8],['澳門',113.5439,22.1987,8],['北京',116.4074,39.9042,8],['上海',121.4737,31.2304,8],['廣州',113.2644,23.1291,8],['深圳',114.0579,22.5431,8],['台中',120.6839,24.1477,8],['東京',139.6917,35.6895,9],['首爾',126.9780,37.5665,9],['新加坡',103.8198,1.3521,8],['吉隆坡',101.6869,3.1390,8],['曼谷',100.5018,13.7563,7],['紐約',-74.0060,40.7128,-5],['洛杉磯',-118.2437,34.0522,-8],['溫哥華',-123.1207,49.2827,-8],['倫敦',-0.1276,51.5074,0],['雪梨',151.2093,-33.8688,10]];
+function buildCity(){const sel=$('c-city');if(!sel)return;sel.innerHTML=CITY.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('');}
+
+/* ===== 命盤摘要計算（給 AI 用） ===== */
+const _s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
+const _SG=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+const _GO=[41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
+const _GC={head:[64,61,63],ajna:[47,24,4,17,11,43],throat:[62,23,56,16,20,35,12,45,33,8,31],g:[7,1,13,10,25,46,2,15],heart:[21,40,26,51],spleen:[48,57,44,50,32,28,18],sacral:[5,14,29,59,9,3,42,27,34],solar:[6,37,22,36,30,55,49],root:[53,60,52,19,39,41,58,38,54]};
+const _CN={head:'頭腦',ajna:'邏輯',throat:'喉嚨',g:'G中心',heart:'意志力',spleen:'直覺',sacral:'薦骨',solar:'情緒',root:'根部'};
+const _MO=['sacral','heart','solar','root'];
+const _CH=[[1,8],[2,14],[3,60],[4,63],[5,15],[6,59],[7,31],[9,52],[10,20],[10,34],[10,57],[11,56],[16,48],[12,22],[13,33],[17,62],[18,58],[19,49],[20,34],[20,57],[21,45],[23,43],[24,61],[25,51],[26,44],[27,50],[28,38],[29,46],[30,41],[32,54],[34,57],[35,36],[37,40],[39,55],[42,53],[47,64]];
+const _gco=g=>{for(const c in _GC)if(_GC[c].includes(g))return c};
+const _ltg=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);return{gate:_GO[i],line:Math.floor((d-i*5.625)/0.9375)+1}};
+const _fmt=l=>{l=((l%360)+360)%360;return _SG[Math.floor(l/30)]+(l%30).toFixed(0)+'°'};
+function _tnode(dt){const e1=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',dt,true)).vec;const e2=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',new Date(dt.getTime()+43200),true)).vec;const r=e1,v={x:e2.x-e1.x,y:e2.y-e1.y,z:e2.z-e1.z};const h={x:r.y*v.z-r.z*v.y,y:r.z*v.x-r.x*v.z,z:r.x*v.y-r.y*v.x};return((Math.atan2(h.x,-h.y)*180/Math.PI)%360+360)%360}
+function _pl(b,dt){if(b==='Earth')return(Astronomy.Ecliptic(Astronomy.GeoVector('Sun',dt,true)).elon+180)%360;if(b==='NN')return _tnode(dt);if(b==='SN')return(_tnode(dt)+180)%360;return Astronomy.Ecliptic(Astronomy.GeoVector(b,dt,true)).elon}
+const _sl=dt=>Astronomy.Ecliptic(Astronomy.GeoVector('Sun',dt,true)).elon;
+function chartSummary(c){
+  const [Y,M,D]=(c.birth_date||'1990-01-01').split('-').map(Number);
+  let h,mi,unknown=false;
+  if(c.birth_time){[h,mi]=c.birth_time.split(':').map(Number);}else{h=12;mi=0;unknown=true;}
+  const lon=(c.lon!=null?c.lon:121.5654), lat=(c.lat!=null?c.lat:25.0330), tz=(c.tz!=null?c.tz:8);
+  const gender=c.gender||'女';
+  let out=[];
+  out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
+  // 八字
+  const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
+  const wx={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+  const bz={子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+  const cnt={木:0,火:0,土:0,金:0,水:0};
+  [ec.getYearGan(),ec.getMonthGan(),ec.getDayGan(),unknown?null:ec.getTimeGan()].forEach(g=>{if(g)cnt[wx[g]]++});
+  [ec.getYearZhi(),ec.getMonthZhi(),ec.getDayZhi(),unknown?null:ec.getTimeZhi()].forEach(z=>{if(z)cnt[bz[z]]++});
+  out.push(`【八字】四柱：${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${unknown?'(時柱未定)':ec.getTime()}；日主：${ec.getDayGan()}(${wx[ec.getDayGan()]})；十神(年月時)：${ec.getYearShiShenGan()}/${ec.getMonthShiShenGan()}/${unknown?'—':ec.getTimeShiShenGan()}；五行：木${cnt.木} 火${cnt.火} 土${cnt.土} 金${cnt.金} 水${cnt.水}；納音：${ec.getYearNaYin()}/${ec.getMonthNaYin()}/${ec.getDayNaYin()}`);
+  // 紫微
+  try{
+    const ti=(h===23)?12:Math.floor((h+1)/2);
+    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
+    const sp=zw.palaces.find(p=>p.name==='命宫');
+    const sh=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sh.push(_s2t(s.name)+'化'+_s2t(s.mutagen))}));
+    out.push(`【紫微】命宮主星：${_s2t(sp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)'}；命主/身主：${_s2t(zw.soul)}/${_s2t(zw.body)}；五行局：${_s2t(zw.fiveElementsClass)}；生年四化：${sh.join(' ')}`);
+  }catch(e){out.push('【紫微】(計算略)');}
+  // 占星
+  const utc=new Date(Date.UTC(Y,M-1,D,h-tz,mi,0));
+  const PB=[['太陽','Sun'],['月亮','Moon'],['水星','Mercury'],['金星','Venus'],['火星','Mars'],['木星','Jupiter'],['土星','Saturn'],['天王','Uranus'],['海王','Neptune'],['冥王','Pluto']];
+  const pls=PB.map(p=>{const L=_pl(p[1],utc);const a2=Astronomy.Ecliptic(Astronomy.GeoVector(p[1],new Date(utc.getTime()+864e5),true)).elon;const rx=(p[1]!=='Sun'&&p[1]!=='Moon')&&((((a2-L+540)%360)-180)<0);return p[0]+_fmt(L)+(rx?'逆':'');}).join('、');
+  const gst=Astronomy.SiderealTime(utc);const ramc=((gst+lon/15)*15)%360;const T=(utc/864e5+2440587.5-2451545)/36525;const eps=(23.439291-0.0130042*T)*Math.PI/180;const ra=ramc*Math.PI/180,phi=lat*Math.PI/180;
+  let asc=((Math.atan2(Math.cos(ra),-(Math.sin(ra)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI)%360+360)%360;
+  let mc=((Math.atan2(Math.sin(ra),Math.cos(ra)*Math.cos(eps))*180/Math.PI)%360+360)%360;
+  out.push(`【占星】${pls}；上升${_fmt(asc)}；天頂${_fmt(mc)}${unknown?'（上升/月亮因時間不確定僅供參考）':''}`);
+  // 人類圖
+  const tg=(_sl(utc)-88+360)%360;let lo=new Date(utc-95*864e5),hi=new Date(utc-80*864e5);for(let i=0;i<60;i++){let m=new Date((+lo+ +hi)/2);let df=((_sl(m)-tg+540)%360)-180;if(df>0)hi=m;else lo=m}const des=new Date((+lo+ +hi)/2);
+  const B=['Sun','Earth','NN','SN','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  const act=new Set();let pSun,dSun;B.forEach(b=>{const g=_ltg(_pl(b,utc));act.add(g.gate);if(b==='Sun')pSun=g});B.forEach(b=>{const g=_ltg(_pl(b,des));act.add(g.gate);if(b==='Sun')dSun=g});
+  const dc=new Set();const adj={};const defc=[];_CH.forEach(ch=>{if(act.has(ch[0])&&act.has(ch[1])){defc.push(ch);const a=_gco(ch[0]),b=_gco(ch[1]);dc.add(a);dc.add(b);(adj[a]=adj[a]||new Set()).add(b);(adj[b]=adj[b]||new Set()).add(a)}});
+  const conn=(s,g)=>{if(!dc.has(s)||!dc.has(g))return false;const seen=new Set([s]),q=[s];while(q.length){const x=q.shift();if(x===g)return true;(adj[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}return false};
+  let m2t=false;_MO.forEach(m=>{if(conn(m,'throat'))m2t=true});
+  let type;if(dc.size===0)type='反映者';else if(dc.has('sacral'))type=m2t?'顯示生產者':'生產者';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn(m,'throat'))nm=true});type=nm?'顯示者':'投射者'}
+  let auth=dc.has('solar')?'情緒':dc.has('sacral')?'薦骨':dc.has('spleen')?'直覺':dc.has('heart')?'意志力':dc.has('g')?'自我投射':(type==='反映者'?'月循環':'心智');
+  out.push(`【人類圖】類型：${type}；內在權威：${auth}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc].map(x=>_CN[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
+  return out.join('\n');
+}
+
+async function genAI(caseId,version){
+  const c=CASES.find(x=>x.id===caseId);
+  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（約 1～2 分鐘，請耐心等待、勿重複按、勿關閉）';
+  const btn=$('ai-'+caseId); if(btn)btn.disabled=true;
+  try{
+    const summary=chartSummary(c);
+    const {data:{session}}=await sb.auth.getSession();
+    const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,evidence:(c.chart&&c.chart.evidence)||''})});
+    const data=await resp.json();
+    if(!resp.ok||data.error){ m.className='msg err'; m.textContent='AI 生成失敗：'+(data.error||resp.status)+'（請確認金鑰與函式已部署）'; return; }
+    if($('ex-'+caseId))$('ex-'+caseId).value=data.excerpt||'';
+    if($('fc-'+caseId))$('fc-'+caseId).value=data.full||'';
+    m.className='msg ok'; m.textContent='✓ AI 已生成，請檢查內容後勾選發布／解鎖並儲存。';
+  }catch(e){ m.className='msg err'; m.textContent='AI 生成發生錯誤：'+e.message; }
+  finally{ if(btn)btn.disabled=false; }
+}
+
+$('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.href='login.html'; });
+
+function clientName(id){const p=CLIENTS.find(c=>c.id===id);return p?(p.display_name||p.id):'（未指派）';}
+
+async function loadAll(){
+  // 個案帳號（client 角色）
+  const {data:profs} = await sb.from('profiles').select('id,display_name,role');
+  CLIENTS = (profs||[]).filter(p=>p.role==='client');
+  const sel=$('c-client'); sel.innerHTML='<option value="">（暫不指派）</option>'+CLIENTS.map(c=>`<option value="${c.id}">${esc(c.display_name||c.id)}</option>`).join('');
+  // 個案與其報告
+  const {data:cases} = await sb.from('cases').select('*, reports(*)').order('created_at',{ascending:false});
+  CASES = cases||[];
+  renderCases();
+}
+
+function renderCases(){
+  const box=$('cases');
+  if(!CASES.length){ box.innerHTML='<div class="card center"><span class="muted" style="font-family:var(--sans)">還沒有個案，從上方建立第一筆。</span></div>'; return; }
+  box.innerHTML = CASES.map(c=>{
+    const reps={}; (c.reports||[]).forEach(r=>reps[r.version]=r);
+    return `<div class="case">
+      <h3>${esc(c.name||'未命名')} <span class="pill">${esc(clientName(c.client_id))}</span></h3>
+      <div class="meta">${esc(c.gender||'')}　${esc(c.birth_date||'')} ${esc(c.birth_time||'')}　${esc(c.birth_place||'')}${(c.chart&&c.chart.evidence)?'　<span style="color:var(--gold)">📌 已填佐證</span>':''}</div>
+      <div class="row" style="margin-bottom:10px">
+        ${['script','breakthrough'].map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
+        <button class="btn ghost small" onclick="editCase('${c.id}')" style="margin-left:auto">✎ 編輯個案</button>
+        <button class="btn ghost small" onclick="delCase('${c.id}')">刪除</button>
+      </div>
+      <div id="cedit-${c.id}"></div>
+      <div id="editor-${c.id}"></div>
+    </div>`;
+  }).join('');
+}
+
+window.editReport=function(caseId,version){
+  const c=CASES.find(x=>x.id===caseId); const r=(c.reports||[]).find(x=>x.version===version)||{};
+  const box=$('editor-'+caseId);
+  box.innerHTML=`<hr>
+    <label>千字精華（個案登入即可看到）</label>
+    <textarea id="ex-${caseId}" placeholder="放在這裡的內容，個案登入後看得到">${esc(r.excerpt||'')}</textarea>
+    <label>萬字完整報告</label>
+    <textarea id="fc-${caseId}" style="min-height:240px" placeholder="完整報告全文">${esc(r.full_content||'')}</textarea>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+      <label class="row" style="margin:0;color:var(--text);font-family:var(--sans);font-size:13px"><input type="checkbox" id="pb-${caseId}" style="width:auto;margin-right:8px" ${r.published?'checked':''}> ① 發布千字（個案登入即可看到「千字精華」）</label>
+      <label class="row" style="margin:0;color:var(--text);font-family:var(--sans);font-size:13px"><input type="checkbox" id="fu-${caseId}" style="width:auto;margin-right:8px" ${r.full_unlocked?'checked':''}> ② 解鎖萬字（個案才看得到「完整全文」）</label>
+      <div class="row" style="margin:0">
+        <button class="btn ghost small" id="ai-${caseId}" onclick="genAI('${caseId}','${version}')">✨ AI 生成這版</button>
+        <button class="btn small" onclick="saveReport('${caseId}','${version}','${r.id||''}')">儲存${VLABEL[version]}</button>
+      </div>
+    </div>
+    <div class="msg" id="rmsg-${caseId}"></div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+window.editCase=function(caseId){
+  const c=CASES.find(x=>x.id===caseId); if(!c)return;
+  const box=$('cedit-'+caseId);
+  if(box.innerHTML){ box.innerHTML=''; return; } // 再按一次收起
+  const cityOpts=CITY.map((ci,i)=>`<option value="${i}" ${ci[0]===c.birth_place?'selected':''}>${ci[0]}</option>`).join('');
+  const clientOpts='<option value="">（暫不指派）</option>'+CLIENTS.map(p=>`<option value="${p.id}" ${p.id===c.client_id?'selected':''}>${esc(p.display_name||p.id)}</option>`).join('');
+  box.innerHTML=`<hr>
+    <div class="grid2">
+      <div><label>姓名 / 暱稱</label><input id="e-name-${caseId}" value="${esc(c.name||'')}"></div>
+      <div><label>指派給個案帳號</label><select id="e-client-${caseId}">${clientOpts}</select></div>
+      <div><label>性別</label><select id="e-gender-${caseId}"><option value="女" ${c.gender==='女'?'selected':''}>女</option><option value="男" ${c.gender==='男'?'selected':''}>男</option></select></div>
+      <div><label>出生地</label><select id="e-city-${caseId}">${cityOpts}</select></div>
+      <div><label>出生日期</label><input type="date" id="e-date-${caseId}" value="${esc(c.birth_date||'')}"></div>
+      <div><label>出生時間（不確定可留白）</label><input type="time" id="e-time-${caseId}" value="${esc(c.birth_time||'')}"></div>
+    </div>
+    <label>佐證事件（AI 會拿來當鐵證）</label>
+    <textarea id="e-evidence-${caseId}" style="min-height:70px" placeholder="一件他人生真實發生過的事，越具體越好">${esc((c.chart&&c.chart.evidence)||'')}</textarea>
+    <div class="row" style="margin-top:14px">
+      <button class="btn small" onclick="updateCase('${caseId}')">儲存修改</button>
+      <button class="btn ghost small" onclick="document.getElementById('cedit-${caseId}').innerHTML=''">取消</button>
+    </div>
+    <div class="msg" id="cemsg-${caseId}"></div>`;
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+window.updateCase=async function(caseId){
+  const ci=CITY[$('e-city-'+caseId).value]||CITY[0];
+  const time=$('e-time-'+caseId).value;
+  const payload={
+    name:$('e-name-'+caseId).value.trim(), gender:$('e-gender-'+caseId).value,
+    birth_date:$('e-date-'+caseId).value||null, birth_time:time||null,
+    birth_place:ci[0], lon:ci[1], lat:ci[2], tz:ci[3], unknown_time:!time,
+    chart:$('e-evidence-'+caseId).value.trim()? {evidence:$('e-evidence-'+caseId).value.trim()} : null,
+    client_id:$('e-client-'+caseId).value||null
+  };
+  const m=$('cemsg-'+caseId);
+  if(!payload.name){ m.className='msg err'; m.textContent='請填寫姓名'; return; }
+  const {error}=await sb.from('cases').update(payload).eq('id',caseId);
+  if(error){ m.className='msg err'; m.textContent='儲存失敗：'+error.message; }
+  else { m.className='msg ok'; m.textContent='已更新'; await loadAll(); }
+};
+
+window.saveReport=async function(caseId,version,reportId){
+  const payload={case_id:caseId,version,excerpt:$('ex-'+caseId).value,full_content:$('fc-'+caseId).value,published:$('pb-'+caseId).checked,full_unlocked:$('fu-'+caseId).checked};
+  let res;
+  if(reportId){ res=await sb.from('reports').update(payload).eq('id',reportId); }
+  else { res=await sb.from('reports').insert(payload); }
+  const m=$('rmsg-'+caseId);
+  if(res.error){ m.className='msg err'; m.textContent='儲存失敗：'+res.error.message; }
+  else { m.className='msg ok'; m.textContent='已儲存'+(payload.published?'並發布':'（草稿）'); await loadAll(); }
+};
+
+window.delCase=async function(caseId){
+  if(!confirm('確定刪除這個個案？相關報告也會一併刪除，無法復原。'))return;
+  const {error}=await sb.from('cases').delete().eq('id',caseId);
+  if(error)alert('刪除失敗：'+error.message); else loadAll();
+};
+
+$('addCase').addEventListener('click', async ()=>{
+  const m=$('caseMsg'); m.className='msg';
+  const ci=CITY[$('c-city').value]||CITY[0];
+  const payload={
+    name:$('c-name').value.trim(), gender:$('c-gender').value,
+    birth_date:$('c-date').value||null, birth_time:$('c-time').value||null,
+    birth_place:ci[0], lon:ci[1], lat:ci[2], tz:ci[3],
+    unknown_time: !$('c-time').value,
+    chart: $('c-evidence').value.trim()? {evidence:$('c-evidence').value.trim()} : null,
+    client_id: $('c-client').value||null,
+    created_by: ME.id
+  };
+  if(!payload.name){ m.className='msg err'; m.textContent='請填寫姓名'; return; }
+  if(!payload.birth_date){ m.className='msg err'; m.textContent='請填寫出生日期'; return; }
+  const {error}=await sb.from('cases').insert(payload);
+  if(error){ m.className='msg err'; m.textContent='建立失敗：'+error.message; }
+  else { m.className='msg ok'; m.textContent='已建立個案'; $('c-name').value='';$('c-date').value='';$('c-time').value='';$('c-evidence').value=''; await loadAll(); }
+});
+
+(async ()=>{
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ location.href='login.html'; return; }
+  ME=session.user; $('who').textContent=ME.email;
+  const {data:prof} = await sb.from('profiles').select('role').eq('id',ME.id).maybeSingle();
+  if(!prof || prof.role!=='admin'){ location.href='report.html'; return; }
+  $('gate').style.display='none'; $('app').style.display='block';
+  buildCity();
+  await loadAll();
+})();
+</script>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
