@@ -66,9 +66,13 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
       <hr><p class="vsub">完整報告</p>${full}
     </div>`;
   };
-  box.innerHTML = Object.values(byCase).map(g=>{
+  const groups=Object.values(byCase);
+  const idx = groups.length>1
+    ? `<div class="case-index"><span>個案：</span>${groups.map((g,i)=>`<a href="#case-${i}">${esc(g.info.case_name||'命盤')}</a>`).join('')}</div>`
+    : '';
+  box.innerHTML = idx + groups.map((g,i)=>{
     const c=g.info;
-    return `<div class="case-block">
+    return `<div class="case-block" id="case-${i}">
       <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>
       <div class="parallel">${col(g,'script')}${col(g,'breakthrough')}</div>
     </div>`;

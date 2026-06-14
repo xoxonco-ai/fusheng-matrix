@@ -52,3 +52,10 @@ hr{border:none;border-top:1px dashed rgba(201,168,106,.25);margin:22px 0}
 .locked{text-align:center;padding:30px 12px;border:1px dashed rgba(201,168,106,.3);border-radius:8px}
 .locked .lock-ic{font-size:26px;margin-bottom:8px}
 .locked p{font-family:var(--sans);font-size:13px;margin:2px 0}
+
+/* 個案名稱索引（管理員查看所有報告） */
+.case-index{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;background:rgba(7,11,22,.92);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:26px}
+.case-index span{font-family:var(--sans);font-size:12px;letter-spacing:.2em;color:var(--gold)}
+.case-index a{font-family:var(--sans);font-size:13px;padding:5px 12px;border:1px solid var(--line);border-radius:20px;color:var(--text);text-decoration:none;transition:all .25s}
+.case-index a:hover{border-color:var(--gold);color:var(--gold-bright)}
+.case-block{scroll-margin-top:70px}
