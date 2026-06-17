@@ -46,7 +46,16 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
   const box=$('content');
   if(error){ box.innerHTML=`<div class="card"><div class="msg err" style="display:block">讀取失敗：${esc(error.message)}</div></div>`; return; }
   if(!reports || !reports.length){
-    box.innerHTML=`<div class="card center"><p class="muted" style="font-family:var(--sans)">目前還沒有發布給你的報告。<br>完成命盤解讀後，這裡就會出現你的千字精華與完整內容。</p></div>`;
+    box.innerHTML=`<div class="card center">
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功 ✦</p>
+      <p class="muted" style="font-family:var(--sans)">完成預約解讀後，你的千字精華與萬字報告就會出現在這裡。</p>
+      <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:13.5px">還沒預約？私訊我們：</p>
+      <div class="row" style="justify-content:center;margin-top:10px">
+        <a class="btn ghost small" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
+        <a class="btn ghost small" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+        <a class="btn ghost small" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+      </div>
+    </div>`;
     return;
   }
   // 依個案分組，劇本版 / 破局版 並列
