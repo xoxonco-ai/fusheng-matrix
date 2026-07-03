@@ -47,13 +47,17 @@ function setMode(m){mode=m;
 function showMsg(t,ok){const e=$('msg');e.textContent=t;e.className='msg '+(ok?'ok':'err')}
 function hideMsg(){$('msg').className='msg'}
 
+// ?next=pay：從排盤頁來買報告 → 登入後帶回排盤頁繼續付款
+const NEXT = new URLSearchParams(location.search).get('next');
 async function routeByRole(){
   const {data:{session}} = await sb.auth.getSession();
   if(!session) return false;
+  if(NEXT==='pay'){ location.href='paipan.html?resume=1'; return true; }
   const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
   location.href = (prof && prof.role==='admin') ? 'admin.html' : 'report.html';
   return true;
 }
+if(NEXT==='pay'){ document.getElementById('modesub').textContent='登入或註冊後，將帶你回到付款步驟'; }
 
 $('submit').addEventListener('click', async ()=>{
   hideMsg();

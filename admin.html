@@ -139,21 +139,21 @@ function chartSummary(c){
       const _dn=[];for(let i=1;i<=7;i++){const _d=_dy[i];const _yy=_d.getStartYear(),_ag=_d.getStartAge();if(_ag>=16&&_ag<=56)_dn.push(_yy+'(約'+_ag+'歲)');}
       if(_dn.length)_dayun='；大運交接(人生階段大轉換)：'+_dn.join('、');
     }catch(e){}
-    out.push(`【關卡年｜可驗證佐證，請寫成「你在西元__年前後…」】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲，人生結構性重整／重大抉擇）；流年沖日支(${ec.getDayZhi()}沖${_ZHI[_opp]})：${_chong.join('、')}（變動、低谷或重要轉折，抓前後一兪年）${_dayun}　【請從以上挑 2~3 個最關鍵年份寫進報告】`);
+    out.push(`【關卡年｜可驗證佐證，請寫成「你在西元__年前後…」】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲，人生結構性重整／重大抉擇）；流年沖日支(${ec.getDayZhi()}沖${_ZHI[_opp]})：${_chong.join('、')}（變動、低谷或重要轉折，抓前後一兩年）${_dayun}　【請從以上挑 2~3 個最關鍵年份寫進報告】`);
   }catch(e){}
   // ===== 父母線索（講關係、不講姓氏）=====
   try{
     const _wx={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
     const _DME=_wx[ec.getDayGan()];
     const _SHENG={木:'水',火:'木',土:'火',金:'土',水:'金'};const _KE={木:'土',火:'金',土:'水',金:'木',水:'火'};
-    out.push(`【父母線索｜只談關係/性格議題，嚴禁猜姓氏】八字：印星(${_SHENG[_DME]}=母)${cnt[_SHENG[_DME]]||0}個、財星(${_KE[_DME]}=父)${cnt[_KE[_DME]]||0}個（0=緣薄/滋養缺位，多=影響強/有張力）；紫微父母宮主星：${_fm||'(略)'}　→ 據此推「與父母的關係與議題」當作可証学的佐證`);
+    out.push(`【父母線索｜只談關係/性格議題，嚴禁猜姓氏】八字：印星(${_SHENG[_DME]}=母)${cnt[_SHENG[_DME]]||0}個、財星(${_KE[_DME]}=父)${cnt[_KE[_DME]]||0}個（0=緣薄/滋養缺位，多=影響強/有張力）；紫微父母宮主星：${_fm||'(略)'}　→ 據此推「與父母的關係與議題」當作可被驗證的佐證`);
   }catch(e){}
   return out.join('\n');
 }
 
 async function genAI(caseId,version){
   const c=CASES.find(x=>x.id===caseId);
-  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（約 1～2 分鐘，請耐心等待、勿重複按、勿關閉）';
+  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（萬字分三段撰寫，約 3～6 分鐘，請耐心等待、勿重複按、勿關閉）';
   const btn=$('ai-'+caseId); if(btn)btn.disabled=true;
   try{
     const summary=chartSummary(c);

@@ -33,6 +33,33 @@ const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]
 
 $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.href='login.html'; });
 
+// 訂單狀態橫幅：付款後生成中 → 每 20 秒自動更新
+async function orderBanner(userId){
+  const {data:orders} = await sb.from('orders').select('status,error,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(1);
+  const o = orders && orders[0];
+  if(!o) return {html:'', generating:false};
+  if(o.status==='paid'||o.status==='generating'){
+    return {generating:true, html:`<div class="card center" style="border-color:var(--gold)">
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的萬字報告正在生成中…</p>
+      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依你的命盤撰寫「劇本版」與「破局版」兩份報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
+    </div>`};
+  }
+  if(o.status==='pending' && (Date.now()-new Date(o.created_at).getTime()) < 24*3600e3){
+    return {generating:false, html:`<div class="card center">
+      <p style="font-family:var(--sans);font-size:15px;color:var(--muted)">你有一筆尚未完成的付款。<a href="paipan.html" style="color:var(--gold-bright)">回排盤頁重新購買 →</a></p>
+    </div>`};
+  }
+  if(o.status==='failed'){
+    return {generating:false, html:`<div class="card center">
+      <p style="font-family:var(--sans);font-size:15px;color:var(--crimson-bright,#d98a9c);margin-bottom:6px">報告生成遇到問題</p>
+      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">請不用擔心，你的付款已收到。私訊我們任一平台，會盡快為你補上：
+      <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a> ·
+      <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--gold-bright)">Instagram</a></p>
+    </div>`};
+  }
+  return {html:'', generating:false};
+}
+
 (async ()=>{
   const {data:{session}} = await sb.auth.getSession();
   if(!session){ location.href='login.html'; return; }
@@ -42,19 +69,24 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
 
   // 安全函式：只回傳「自己的、已發布」報告；萬字未解鎖時 full_content 為 null（根本不送到前端）
   const {data:reports, error} = await sb.rpc('my_reports');
+  const banner = await orderBanner(session.user.id);
+  if(banner.generating){ setTimeout(()=>location.reload(), 20000); }
 
   const box=$('content');
   if(error){ box.innerHTML=`<div class="card"><div class="msg err" style="display:block">讀取失敗：${esc(error.message)}</div></div>`; return; }
   if(!reports || !reports.length){
-    box.innerHTML=`<div class="card center">
+    box.innerHTML= banner.html || `<div class="card center">
       <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功 ✦</p>
-      <p class="muted" style="font-family:var(--sans)">完成預約解讀後，你的千字精華與萬字報告就會出現在這裡。</p>
-      <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:13.5px">還沒預約？私訊我們：</p>
-      <div class="row" style="justify-content:center;margin-top:10px">
-        <a class="btn ghost small" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
-        <a class="btn ghost small" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
-        <a class="btn ghost small" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+      <p class="muted" style="font-family:var(--sans)">購買後，你的千字精華與萬字報告就會出現在這裡。</p>
+      <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再一鍵解鎖萬字（NT$199，劇本版＋破局版）。</p>
+      <div class="row" style="justify-content:center;margin-top:16px">
+        <a class="btn small" href="paipan.html">免費排盤 · 解鎖萬字 →</a>
       </div>
+      <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:12.5px">有問題？私訊我們：
+        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a> ·
+        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--gold-bright)">Instagram</a> ·
+        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Threads</a>
+      </p>
     </div>`;
     return;
   }
@@ -68,7 +100,7 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
     if(!r) return `<div class="vcol"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
     const full = r.full_content
       ? `<div class="report-body">${esc(r.full_content)}</div>`
-      : `<div class="locked"><div class="lock-ic">🔒</div><p>完整萬字報告尚未解鎖</p><p class="muted">預約完整講解後開通</p></div>`;
+      : `<div class="locked"><div class="lock-ic">🔒</div><p>完整萬字報告尚未解鎖</p><p class="muted">付費解鎖後即可查看</p></div>`;
     return `<div class="vcol">
       <div class="vhead ${ver}">${VL[ver]}<span>${VS[ver]}</span></div>
       ${r.excerpt?`<p class="vsub">千字精華</p><div class="excerpt-body">${esc(r.excerpt)}</div>`:''}
@@ -79,7 +111,7 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
   const idx = groups.length>1
     ? `<div class="case-index"><span>個案：</span>${groups.map((g,i)=>`<a href="#case-${i}">${esc(g.info.case_name||'命盤')}</a>`).join('')}</div>`
     : '';
-  box.innerHTML = idx + groups.map((g,i)=>{
+  box.innerHTML = banner.html + idx + groups.map((g,i)=>{
     const c=g.info;
     return `<div class="case-block" id="case-${i}">
       <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>

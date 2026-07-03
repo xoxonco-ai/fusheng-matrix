@@ -11,6 +11,8 @@
 <script src="https://cdn.jsdelivr.net/npm/iztro@2.5.8/dist/iztro.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <style>
 :root{--bg:#070b16;--bg2:#0c1224;--bg3:#101831;--gold:#c9a86a;--gold-bright:#e8cf9a;--crimson:#b05a6e;--crimson-bright:#d98a9c;--text:#e9e5db;--muted:#9298ad;--line:rgba(201,168,106,.25);--serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -99,6 +101,25 @@ td{color:var(--text);font-weight:300}
 .disclaimer{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.8}
 .err{color:var(--crimson-bright);font-family:var(--sans);font-size:14px;text-align:center;margin-top:18px;display:none}
 .loading{display:none;text-align:center;color:var(--gold);font-family:var(--sans);letter-spacing:.2em;margin-top:24px}
+/* ===== 付費解鎖 ===== */
+.price-line{font-family:var(--sans);margin:6px 0 4px}
+.price-line .price{font-size:34px;color:var(--gold-bright);font-weight:700;letter-spacing:.05em}
+.price-line .per{font-size:13px;color:var(--muted);margin-left:6px}
+.pay-points{font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--muted);line-height:2;margin:10px 0 22px}
+.pay-points b{color:var(--gold-bright);font-weight:500}
+.paybtn{display:inline-block;padding:16px 52px;border-radius:4px;font-family:var(--serif);font-size:17px;letter-spacing:.2em;text-decoration:none;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;border:none;cursor:pointer;transition:all .35s}
+.paybtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.paybtn:disabled{opacity:.5;cursor:wait}
+.modal-mask{display:none;position:fixed;inset:0;z-index:50;background:rgba(4,7,14,.82);backdrop-filter:blur(4px);overflow-y:auto;padding:40px 18px}
+.modal{max-width:560px;margin:0 auto;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px}
+.modal h3{font-size:20px;letter-spacing:.08em;margin-bottom:6px}
+.modal .msub{font-family:var(--sans);font-weight:300;font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.8}
+.modal textarea{width:100%;min-height:96px;padding:12px 14px;border-radius:4px;border:1px solid rgba(201,168,106,.3);background:rgba(7,11,22,.7);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.7;outline:none;resize:vertical}
+.modal textarea:focus{border-color:var(--gold)}
+.modal select{margin-top:6px}
+.modal .mrow{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);padding:14px 24px;border-radius:4px;font-family:var(--sans);font-size:14px;cursor:pointer}
+.modal .cancel:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
@@ -172,22 +193,49 @@ td{color:var(--text);font-weight:300}
     </div>
 
     <div class="cta-final">
-      <h3>想看見困住你的完整「萬字報告」？</h3>
-      <p>千字讓你看見主線；萬字由我一對一拆解你的人生劇本、矛盾盲區與破局之道。</p>
-      <p class="step-label">私訊我們預約（任選一個平台）</p>
-      <div class="social-btns">
-        <a class="ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
-        <a class="ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
-        <a class="ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
-      </div>
-      <p class="qz-note" style="max-width:520px;margin:26px auto 0;border:none;line-height:1.9">
-        預約後，我會把你的專屬萬字放進會員帳號——屆時登入即可隨時查看。<br>
-        <span style="color:var(--gold)">已經預約過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a>
+      <h3>解鎖你的完整「萬字報告」</h3>
+      <p>千字讓你看見主線；萬字把你的人生劇本、矛盾盲區與破局之道整份拆開。</p>
+      <p class="price-line"><span class="price">NT$ 199</span><span class="per">一次付費・兩份報告</span></p>
+      <p class="pay-points">
+        <b>劇本版</b>（約萬字）＋<b>破局版</b>（約萬字）兩份都給<br>
+        付款完成後由系統依你的命盤<b>自動生成</b>，約 5～10 分鐘<br>
+        報告存進你的會員帳號，<b>隨時登入重看</b>
+      </p>
+      <button class="paybtn" id="payBtn">付費解鎖 · NT$199 ✦</button>
+      <p class="err" id="payErr" style="margin-top:14px"></p>
+      <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
+        <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
+        有任何問題，歡迎私訊：
+        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--muted)">Facebook</a> ·
+        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--muted)">Instagram</a> ·
+        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener" style="color:var(--muted)">Threads</a>
       </p>
     </div>
     <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
   </div>
 </main>
+
+<!-- 付費前確認視窗 -->
+<div class="modal-mask" id="payModal">
+  <div class="modal">
+    <h3>最後一步，讓報告更準</h3>
+    <p class="msub">這兩題都可以跳過，但填了之後，AI 會把它們寫進報告當「鐵證」，準確感會大幅提升。</p>
+    <label style="display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.15em;color:var(--gold);margin:14px 0 7px">一件對你影響很深、真實發生過的事（選填）</label>
+    <textarea id="payEvidence" placeholder="例：29 歲那年裸辭創業、剛結束一段七年感情、長期失眠、童年父母離異…　越具體，報告越準。"></textarea>
+    <label style="display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.15em;color:var(--gold);margin:16px 0 7px">你希望報告說話的力道</label>
+    <select id="payIntensity">
+      <option value="犀利" selected>犀利——直接說中，一針見血（推薦）</option>
+      <option value="溫和">溫和——一樣準，但說得溫柔</option>
+      <option value="狠">狠——不留情面，敢講最痛的</option>
+    </select>
+    <div class="mrow">
+      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$199 →</button>
+      <button class="cancel" id="payCancel">先不要</button>
+    </div>
+    <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
+    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">付款由綠界科技（ECPay）安全處理，本站不會接觸你的卡號。付款完成後報告自動生成（約 5～10 分鐘），存入你的會員帳號。</p>
+  </div>
+</div>
 
 <script>
 const IZ={"star":{"紫微":{"tw":"紫微","en":"emperor"},"天机":{"tw":"天機","en":"advisor"},"太阳":{"tw":"太陽","en":"sun"},"武曲":{"tw":"武曲","en":"general"},"天同":{"tw":"天同","en":"fortunate"},"廉贞":{"tw":"廉貞","en":"judge"},"天府":{"tw":"天府","en":"empress"},"太阴":{"tw":"太陰","en":"moon"},"贪狼":{"tw":"貪狼","en":"wolf"},"巨门":{"tw":"巨門","en":"advocator"},"天相":{"tw":"天相","en":"minister"},"天梁":{"tw":"天梁","en":"sage"},"七杀":{"tw":"七殺","en":"marshal"},"破军":{"tw":"破軍","en":"rebel"},"左辅":{"tw":"左輔","en":"officer"},"右弼":{"tw":"右弼","en":"helper"},"文昌":{"tw":"文昌","en":"scholar"},"文曲":{"tw":"文曲","en":"artist"},"禄存":{"tw":"祿存","en":"money"},"天马":{"tw":"天馬","en":"horse"},"擎羊":{"tw":"擎羊","en":"driven"},"陀罗":{"tw":"陀羅","en":"tangled"},"火星":{"tw":"火星","en":"impulsive"},"铃星":{"tw":"鈴星","en":"spark"},"天魁":{"tw":"天魁","en":"assistant"},"天钺":{"tw":"天鉞","en":"aide"},"地空":{"tw":"地空","en":"ideologue"},"地劫":{"tw":"地劫","en":"fickle"},"劫杀":{"tw":"劫殺","en":"murder"},"天空":{"tw":"天空","en":"utopian"},"天刑":{"tw":"天刑","en":"serious"},"天姚":{"tw":"天姚","en":"social"},"解神":{"tw":"解神","en":"considery"},"阴煞":{"tw":"陰煞","en":"gloomy"},"天喜":{"tw":"天喜","en":"cheerful"},"天官":{"tw":"天官","en":"solemn"},"天福":{"tw":"天福","en":"lucky"},"天哭":{"tw":"天哭","en":"upset"},"天虚":{"tw":"天虛","en":"frail"},"龙池":{"tw":"龍池","en":"talented"},"凤阁":{"tw":"鳳閣","en":"refined"},"红鸾":{"tw":"紅鸞","en":"attractive"},"孤辰":{"tw":"孤辰","en":"alone"},"寡宿":{"tw":"寡宿","en":"lonely"},"蜚廉":{"tw":"蜚廉","en":"instigated"},"破碎":{"tw":"破碎","en":"broken"},"台辅":{"tw":"台輔","en":"honorable"},"封诰":{"tw":"封誥","en":"awarded"},"天巫":{"tw":"天巫","en":"psychic"},"天月":{"tw":"天月","en":"sickly"},"三台":{"tw":"三台","en":"senior"},"八座":{"tw":"八座","en":"dignified"},"恩光":{"tw":"恩光","en":"grateful"},"天贵":{"tw":"天貴","en":"noble"},"天才":{"tw":"天才","en":"gifted"},"天寿":{"tw":"天壽","en":"ageless"},"截空":{"tw":"截空","en":"interrupted"},"旬中":{"tw":"旬中","en":"meditative"},"旬空":{"tw":"旬空","en":"fancied"},"空亡":{"tw":"空亡","en":"bottomless"},"截路":{"tw":"截路","en":"intercepted"},"月德":{"tw":"月德","en":"peaceful"},"天伤":{"tw":"天傷","en":"wounded"},"天使":{"tw":"天使","en":"heaven"},"天厨":{"tw":"天廚","en":"gourmet"},"长生":{"tw":"長生","en":"born"},"沐浴":{"tw":"沐浴","en":"infancy"},"冠带":{"tw":"冠帶","en":"adolescence"},"临官":{"tw":"臨官","en":"adulthood"},"帝旺":{"tw":"帝旺","en":"prime"},"衰":{"tw":"衰","en":"weak"},"病":{"tw":"病","en":"sick"},"死":{"tw":"死","en":"dead"},"墓":{"tw":"墓","en":"buried"},"绝":{"tw":"絕","en":"dissipated"},"胎":{"tw":"胎","en":"embryo"},"养":{"tw":"養","en":"molding"},"博士":{"tw":"博士","en":"doctor"},"力士":{"tw":"力士","en":"sumo"},"青龙":{"tw":"青龍","en":"dragon"},"小耗":{"tw":"小耗","en":"consumer"},"将军":{"tw":"將軍","en":"general"},"奏书":{"tw":"奏書","en":"book"},"飞廉":{"tw":"飛廉","en":"gossip"},"喜神":{"tw":"喜神","en":"happiness"},"病符":{"tw":"病符","en":"illness"},"大耗":{"tw":"大耗","en":"wastrel"},"岁破":{"tw":"歲破","en":"wastrel"},"伏兵":{"tw":"伏兵","en":"ambush"},"官府":{"tw":"官府","en":"government"},"岁建":{"tw":"歲建","en":"initial"},"晦气":{"tw":"晦氣","en":"unlucky"},"丧门":{"tw":"喪門","en":"downcast"},"贯索":{"tw":"貫索","en":"tied"},"官符":{"tw":"官符","en":"official"},"龙德":{"tw":"龍德","en":"virtuous"},"白虎":{"tw":"白虎","en":"sinister"},"天德":{"tw":"天德","en":"blessed"},"吊客":{"tw":"弔客","en":"sorrowing"},"将星":{"tw":"將星","en":"capable"},"攀鞍":{"tw":"攀鞍","en":"admired"},"岁驿":{"tw":"歲驛","en":"varied"},"息神":{"tw":"息神","en":"listless"},"华盖":{"tw":"華蓋","en":"religious"},"劫煞":{"tw":"劫煞","en":"robbed"},"灾煞":{"tw":"災煞","en":"disastery"},"天煞":{"tw":"天煞","en":"condemned"},"指背":{"tw":"指背","en":"insidious"},"咸池":{"tw":"咸池","en":"passionate"},"月煞":{"tw":"月煞","en":"hapless"},"亡神":{"tw":"亡神","en":"perished"},"运魁":{"tw":"運魁","en":"assistant(D)"},"运钺":{"tw":"運鉞","en":"aide(D)"},"运昌":{"tw":"運昌","en":"scholar(D)"},"运曲":{"tw":"運曲","en":"artist(D)"},"运鸾":{"tw":"運鸞","en":"attractive(D)"},"运喜":{"tw":"運喜","en":"cheerful(D)"},"运禄":{"tw":"運祿","en":"money(D)"},"运羊":{"tw":"運羊","en":"driven(D)"},"运陀":{"tw":"運陀","en":"tangled(D)"},"运马":{"tw":"運馬","en":"horse(D)"},"流魁":{"tw":"流魁","en":"assistant(Y)"},"流钺":{"tw":"流鉞","en":"aide(Y)"},"流昌":{"tw":"流昌","en":"scholar(Y)"},"流曲":{"tw":"流曲","en":"artist(Y)"},"流鸾":{"tw":"流鸞","en":"attractive(Y)"},"流喜":{"tw":"流喜","en":"cheerful(Y)"},"流禄":{"tw":"流祿","en":"money(Y)"},"流羊":{"tw":"流羊","en":"driven(Y)"},"流陀":{"tw":"流陀","en":"tangled(Y)"},"流马":{"tw":"流馬","en":"horse(Y)"},"年解":{"tw":"年解","en":"considery(Y)"},"月魁":{"tw":"月魁","en":"assistant(M)"},"月钺":{"tw":"月鉞","en":"aide(M)"},"月昌":{"tw":"月昌","en":"scholar(M)"},"月曲":{"tw":"月曲","en":"artist(M)"},"月鸾":{"tw":"月鸞","en":"attractive(M)"},"月喜":{"tw":"月喜","en":"cheerful(M)"},"月禄":{"tw":"月祿","en":"money(M)"},"月羊":{"tw":"月羊","en":"driven(M)"},"月陀":{"tw":"月陀","en":"tangled(M)"},"月马":{"tw":"月馬","en":"horse(M)"},"日魁":{"tw":"日魁","en":"assistant(d)"},"日钺":{"tw":"日鉞","en":"aide(d)"},"日昌":{"tw":"日昌","en":"scholar(d)"},"日曲":{"tw":"日曲","en":"artist(d)"},"日鸾":{"tw":"日鸞","en":"attractive(d)"},"日喜":{"tw":"日喜","en":"cheerful(d)"},"日禄":{"tw":"日祿","en":"money(d)"},"日羊":{"tw":"日羊","en":"driven(d)"},"日陀":{"tw":"日陀","en":"tangled(d)"},"日马":{"tw":"日馬","en":"horse(d)"},"时魁":{"tw":"時魁","en":"assistant(H)"},"时钺":{"tw":"時鉞","en":"aide(H)"},"时昌":{"tw":"時昌","en":"scholar(H)"},"时曲":{"tw":"時曲","en":"artist(H)"},"时鸾":{"tw":"時鸞","en":"attractive(H)"},"时喜":{"tw":"時喜","en":"cheerful(H)"},"时禄":{"tw":"時祿","en":"money(H)"},"时羊":{"tw":"時羊","en":"driven(H)"},"时陀":{"tw":"時陀","en":"tangled(H)"},"时马":{"tw":"時馬","en":"horse(H)"}},"palace":{"命宫":{"tw":"命宮","en":"soul"},"身宫":{"tw":"身宮","en":"body"},"兄弟":{"tw":"兄弟","en":"siblings"},"夫妻":{"tw":"夫妻","en":"spouse"},"子女":{"tw":"子女","en":"children"},"财帛":{"tw":"財帛","en":"wealth"},"疾厄":{"tw":"疾厄","en":"health"},"迁移":{"tw":"遷移","en":"surface"},"仆役":{"tw":"僕役","en":"friends"},"官禄":{"tw":"官祿","en":"career"},"田宅":{"tw":"田宅","en":"property"},"福德":{"tw":"福德","en":"spirit"},"父母":{"tw":"父母","en":"parents"},"来因":{"tw":"来因","en":"origin"}},"wuxingju":{"水二局":{"tw":"水二局","en":"water 2nd"},"木三局":{"tw":"木三局","en":"wood 3rd"},"金四局":{"tw":"金四局","en":"metal 4th"},"土五局":{"tw":"土五局","en":"earth 5th"},"火六局":{"tw":"火六局","en":"fire 6th"}},"mutagen":{"禄":{"tw":"祿","en":"A"},"权":{"tw":"權","en":"B"},"科":{"tw":"科","en":"C"},"忌":{"tw":"忌","en":"D"}},"stem":{"甲":{"tw":"甲","en":"jia"},"乙":{"tw":"乙","en":"yi"},"丙":{"tw":"丙","en":"bing"},"丁":{"tw":"丁","en":"ding"},"戊":{"tw":"戊","en":"wu"},"己":{"tw":"己","en":"ji"},"庚":{"tw":"庚","en":"geng"},"辛":{"tw":"辛","en":"xin"},"壬":{"tw":"壬","en":"ren"},"癸":{"tw":"癸","en":"gui"}},"branch":{"子":{"tw":"子","en":"zi"},"丑":{"tw":"丑","en":"chou"},"寅":{"tw":"寅","en":"yin"},"卯":{"tw":"卯","en":"mao"},"辰":{"tw":"辰","en":"chen"},"巳":{"tw":"巳","en":"si"},"午":{"tw":"午","en":"woo"},"未":{"tw":"未","en":"wei"},"申":{"tw":"申","en":"shen"},"酉":{"tw":"酉","en":"you"},"戌":{"tw":"戌","en":"xu"},"亥":{"tw":"亥","en":"hai"}},"brightness":{"庙":{"tw":"廟","en":"[+3]"},"旺":{"tw":"旺","en":"[+2]"},"得":{"tw":"得","en":"[+1]"},"利":{"tw":"利","en":"[0]"},"平":{"tw":"平","en":"[-1]"},"不":{"tw":"不","en":"[-2]"},"陷":{"tw":"陷","en":"[-3]"}}};
@@ -323,7 +371,7 @@ document.getElementById('run').addEventListener('click',()=>{
     let lon,lat,tz;const c=CITIES[document.getElementById('city').value];
     if(c[1]==='manual'){const p=document.getElementById('manual').value.split(',').map(s=>parseFloat(s.trim()));if(p.length<3||p.some(isNaN))throw new Error(T('need_manual'));[lon,lat,tz]=p}else{lon=c[1];lat=c[2];tz=c[3]}
     btn.disabled=true;load.style.display='block';
-    setTimeout(()=>{try{last=[name,gender,Y,M,D,h,mi,lon,lat,tz,unknown];compute(...last);load.style.display='none';btn.disabled=false;document.getElementById('results').style.display='block';document.getElementById('results').scrollIntoView({behavior:'smooth'})}catch(e){load.style.display='none';btn.disabled=false;err.textContent=T('err_calc')+e.message;err.style.display='block';console.error(e)}},60);
+    setTimeout(()=>{try{last=[name,gender,Y,M,D,h,mi,lon,lat,tz,unknown];compute(...last);CUR_BIRTH={name:name||'我的命盤',gender,birth_date:dv,birth_time:unknown?null:tv,birth_place:(c[1]==='manual'?'手動輸入':c[0]),lon,lat,tz,unknown_time:unknown};load.style.display='none';btn.disabled=false;document.getElementById('results').style.display='block';document.getElementById('results').scrollIntoView({behavior:'smooth'})}catch(e){load.style.display='none';btn.disabled=false;err.textContent=T('err_calc')+e.message;err.style.display='block';console.error(e)}},60);
   }catch(e){err.textContent=e.message;err.style.display='block'}
 });
 
@@ -476,6 +524,145 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   const _authShort={solar:'情緒型',sacral:'薦骨型',spleen:'直覺型',heart:'意志力型',g:'自我投射型',mental:'心智／外在型',lunar:'月循環型'};
   genQianzi({dg:_dg, dmEl:STEM_EL[_dg], cnt, sunL:lons[0], moonL:lons[1], asc:asc, tkey, akey, profile, typeName:TYPE[tkey].tw, authName:_authShort[akey], star:_star});
 }
+
+/* ============================================================
+   付費解鎖：命盤摘要（給 AI 用，與後台同邏輯，一律繁體）
+============================================================ */
+const _s2t=s2t;
+const _SG=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+const _fmt=l=>{l=((l%360)+360)%360;return _SG[Math.floor(l/30)]+(l%30).toFixed(0)+'°'};
+const _ltg=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);return{gate:GATE_ORDER[i],line:Math.floor((d-i*5.625)/0.9375)+1}};
+const _CNM={head:'頭腦',ajna:'邏輯',throat:'喉嚨',g:'G中心',heart:'意志力',spleen:'直覺',sacral:'薦骨',solar:'情緒',root:'根部'};
+function chartSummary(c){
+  const [Y,M,D]=(c.birth_date||'1990-01-01').split('-').map(Number);
+  let h,mi,unknown=false;
+  if(c.birth_time){[h,mi]=c.birth_time.split(':').map(Number);}else{h=12;mi=0;unknown=true;}
+  const lon=(c.lon!=null?c.lon:121.5654), lat=(c.lat!=null?c.lat:25.0330), tz=(c.tz!=null?c.tz:8);
+  const gender=c.gender||'女';
+  let out=[]; let _fm='';
+  out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
+  // 八字
+  const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
+  const wx={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+  const bz={子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+  const cnt2={木:0,火:0,土:0,金:0,水:0};
+  [ec.getYearGan(),ec.getMonthGan(),ec.getDayGan(),unknown?null:ec.getTimeGan()].forEach(g=>{if(g)cnt2[wx[g]]++});
+  [ec.getYearZhi(),ec.getMonthZhi(),ec.getDayZhi(),unknown?null:ec.getTimeZhi()].forEach(z=>{if(z)cnt2[bz[z]]++});
+  out.push(`【八字】四柱：${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${unknown?'(時柱未定)':ec.getTime()}；日主：${ec.getDayGan()}(${wx[ec.getDayGan()]})；十神(年月時)：${ec.getYearShiShenGan()}/${ec.getMonthShiShenGan()}/${unknown?'—':ec.getTimeShiShenGan()}；五行：木${cnt2.木} 火${cnt2.火} 土${cnt2.土} 金${cnt2.金} 水${cnt2.水}；納音：${ec.getYearNaYin()}/${ec.getMonthNaYin()}/${ec.getDayNaYin()}`);
+  // 紫微
+  try{
+    const ti=(h===23)?12:Math.floor((h+1)/2);
+    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
+    const sp=zw.palaces.find(p=>p.name==='命宫');
+    const _fmp=zw.palaces.find(p=>p.name==='父母'); if(_fmp)_fm=_s2t(_fmp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)';
+    const sh=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sh.push(_s2t(s.name)+'化'+_s2t(s.mutagen))}));
+    out.push(`【紫微】命宮主星：${_s2t(sp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)'}；命主/身主：${_s2t(zw.soul)}/${_s2t(zw.body)}；五行局：${_s2t(zw.fiveElementsClass)}；生年四化：${sh.join(' ')}`);
+  }catch(e){out.push('【紫微】(計算略)');}
+  // 占星
+  const utc=new Date(Date.UTC(Y,M-1,D,h-tz,mi,0));
+  const PB=[['太陽','Sun'],['月亮','Moon'],['水星','Mercury'],['金星','Venus'],['火星','Mars'],['木星','Jupiter'],['土星','Saturn'],['天王','Uranus'],['海王','Neptune'],['冥王','Pluto']];
+  const pls=PB.map(p=>{const Lp=planetLon(p[1],utc);const a2=Astronomy.Ecliptic(Astronomy.GeoVector(p[1],new Date(utc.getTime()+864e5),true)).elon;const rx=(p[1]!=='Sun'&&p[1]!=='Moon')&&((((a2-Lp+540)%360)-180)<0);return p[0]+_fmt(Lp)+(rx?'逆':'');}).join('、');
+  const gst=Astronomy.SiderealTime(utc);const ramc=((gst+lon/15)*15)%360;const Tc2=(utc/864e5+2440587.5-2451545)/36525;const eps=(23.439291-0.0130042*Tc2)*Math.PI/180;const ra=ramc*Math.PI/180,phi=lat*Math.PI/180;
+  let asc2=((Math.atan2(Math.cos(ra),-(Math.sin(ra)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI)%360+360)%360;
+  let mc2=((Math.atan2(Math.sin(ra),Math.cos(ra)*Math.cos(eps))*180/Math.PI)%360+360)%360;
+  out.push(`【占星】${pls}；上升${_fmt(asc2)}；天頂${_fmt(mc2)}${unknown?'（上升/月亮因時間不確定僅供參考）':''}`);
+  // 人類圖
+  const tg=(sunLon(utc)-88+360)%360;let lo2=new Date(utc-95*864e5),hi2=new Date(utc-80*864e5);for(let i=0;i<60;i++){let m=new Date((+lo2+ +hi2)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi2=m;else lo2=m}const des=new Date((+lo2+ +hi2)/2);
+  const B=['Sun','Earth','NNode','SNode','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  const act=new Set();let pSun,dSun;B.forEach(b=>{const g=_ltg(planetLon(b,utc));act.add(g.gate);if(b==='Sun')pSun=g});B.forEach(b=>{const g=_ltg(planetLon(b,des));act.add(g.gate);if(b==='Sun')dSun=g});
+  const dc2=new Set();const adj2={};const defc=[];CHANNELS.forEach(ch=>{if(act.has(ch[0])&&act.has(ch[1])){defc.push(ch);const a=gco(ch[0]),b=gco(ch[1]);dc2.add(a);dc2.add(b);(adj2[a]=adj2[a]||new Set()).add(b);(adj2[b]=adj2[b]||new Set()).add(a)}});
+  const conn2=(s,g)=>{if(!dc2.has(s)||!dc2.has(g))return false;const seen=new Set([s]),q=[s];while(q.length){const x=q.shift();if(x===g)return true;(adj2[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}return false};
+  let m2t2=false;MOTORS.forEach(m=>{if(conn2(m,'throat'))m2t2=true});
+  let type2;if(dc2.size===0)type2='反映者';else if(dc2.has('sacral'))type2=m2t2?'顯示生產者':'生產者';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn2(m,'throat'))nm=true});type2=nm?'顯示者':'投射者'}
+  let auth2=dc2.has('solar')?'情緒':dc2.has('sacral')?'薦骨':dc2.has('spleen')?'直覺':dc2.has('heart')?'意志力':dc2.has('g')?'自我投射':(type2==='反映者'?'月循環':'心智');
+  out.push(`【人類圖】類型：${type2}；內在權威：${auth2}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc2].map(x=>_CNM[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
+  // 關卡年（可驗證佐證）
+  try{
+    const _natSat=Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',utc,true)).elon;
+    let _best=null;
+    for(let age=27;age<=32;age+=0.05){const _dt=new Date(utc.getTime()+age*365.25*864e5);let _dd=((Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',_dt,true)).elon-_natSat+540)%360)-180;if(_best===null||Math.abs(_dd)<Math.abs(_best.d)){_best={age,d:_dd,year:_dt.getUTCFullYear()};}}
+    const _ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const _di=_ZHI.indexOf(ec.getDayZhi());const _opp=(_di+6)%12;
+    const _chong=[];for(let y=Y+14;y<=Y+55;y++){if((((y-4)%12)+12)%12===_opp)_chong.push(y);}
+    let _dayun='';
+    try{
+      const _yun=ec.getYun(gender==='男'?1:0);const _dy=_yun.getDaYun();
+      const _dn=[];for(let i=1;i<=7;i++){const _d=_dy[i];const _yy=_d.getStartYear(),_ag=_d.getStartAge();if(_ag>=16&&_ag<=56)_dn.push(_yy+'(約'+_ag+'歲)');}
+      if(_dn.length)_dayun='；大運交接(人生階段大轉換)：'+_dn.join('、');
+    }catch(e){}
+    out.push(`【關卡年｜可驗證佐證，請寫成「你在西元__年前後…」】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲，人生結構性重整／重大抉擇）；流年沖日支(${ec.getDayZhi()}沖${_ZHI[_opp]})：${_chong.join('、')}（變動、低谷或重要轉折，抓前後一兩年）${_dayun}　【請從以上挑 2~3 個最關鍵年份寫進報告】`);
+  }catch(e){}
+  // 父母線索
+  try{
+    const _wx2={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+    const _DME=_wx2[ec.getDayGan()];
+    const _SHENG={木:'水',火:'木',土:'火',金:'土',水:'金'};const _KE={木:'土',火:'金',土:'水',金:'木',水:'火'};
+    out.push(`【父母線索｜只談關係/性格議題，嚴禁猜姓氏】八字：印星(${_SHENG[_DME]}=母)${cnt2[_SHENG[_DME]]||0}個、財星(${_KE[_DME]}=父)${cnt2[_KE[_DME]]||0}個（0=緣薄/滋養缺位，多=影響強/有張力）；紫微父母宮主星：${_fm||'(略)'}　→ 據此推「與父母的關係與議題」當作可被驗證的佐證`);
+  }catch(e){}
+  return out.join('\n');
+}
+
+/* ============================================================
+   付費解鎖流程：登入 → 選填佐證 → 綠界付款 → 自動生成
+============================================================ */
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+let CUR_BIRTH=null;
+const $id=x=>document.getElementById(x);
+function savePending(){
+  localStorage.setItem('fs_pending', JSON.stringify({
+    form:{name:$id('name').value,gender:$id('gender').value,date:$id('date').value,time:$id('time').value,unknown:$id('unknownTime').checked,city:$id('city').value,manual:$id('manual').value},
+    ts:Date.now()
+  }));
+}
+$id('payBtn').addEventListener('click', async ()=>{
+  const err=$id('payErr'); err.style.display='none';
+  if(!CUR_BIRTH){ err.textContent='請先完成排盤'; err.style.display='block'; return; }
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ savePending(); location.href='login.html?next=pay'; return; }
+  $id('payModal').style.display='block';
+});
+$id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
+$id('payGo').addEventListener('click', async ()=>{
+  const btn=$id('payGo'), err=$id('payModalErr'); err.style.display='none';
+  btn.disabled=true; btn.textContent='訂單建立中…';
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){ savePending(); location.href='login.html?next=pay'; return; }
+    const summary=chartSummary(CUR_BIRTH);
+    const resp=await fetch(window.SB_URL+'/functions/v1/create-order',{
+      method:'POST',
+      headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token,'apikey':window.SB_KEY},
+      body:JSON.stringify({summary,birth:CUR_BIRTH,evidence:$id('payEvidence').value.trim(),intensity:$id('payIntensity').value})
+    });
+    const data=await resp.json();
+    if(!resp.ok||data.error)throw new Error(data.error||('HTTP '+resp.status));
+    localStorage.removeItem('fs_pending');
+    // 自動送出表單，前往綠界付款頁
+    const f=document.createElement('form'); f.method='POST'; f.action=data.action;
+    Object.entries(data.params).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;f.appendChild(i)});
+    document.body.appendChild(f); f.submit();
+  }catch(e){
+    err.textContent='無法前往付款：'+e.message; err.style.display='block';
+    btn.disabled=false; btn.textContent='前往付款 NT$199 →';
+  }
+});
+/* 登入後回來：還原排盤、直接打開付款視窗（延後到 buildCity() 完成後執行） */
+setTimeout(function resume(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('resume')!=='1')return;
+  try{
+    const p=JSON.parse(localStorage.getItem('fs_pending')||'null');
+    if(!p||Date.now()-p.ts>3600e3)return;
+    const f=p.form;
+    $id('name').value=f.name;$id('gender').value=f.gender;$id('date').value=f.date;$id('time').value=f.time;$id('unknownTime').checked=f.unknown;
+    $id('city').value=f.city;$id('manual').value=f.manual||'';
+    document.getElementById('city').dispatchEvent(new Event('change'));
+    setTimeout(()=>{ $id('run').click(); setTimeout(async()=>{
+      const {data:{session}}=await sb.auth.getSession();
+      if(session&&CUR_BIRTH){$id('payModal').style.display='block';$id('payModal').scrollTop=0;}
+    },1200); },300);
+  }catch(e){}
+},0);
 
 /* init */
 buildCity();applyStatic();
