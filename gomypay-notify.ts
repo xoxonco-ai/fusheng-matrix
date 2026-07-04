@@ -80,18 +80,26 @@ Deno.serve(async (req: Request) => {
       return ok();
     }
 
-    // ---- 標記已付款、建立個案 ----
+    // ---- 標記已付款、建立個案（單人盤 / 合盤）----
     const b = order.birth || {};
+    const isCouple = order.product === "couple";
+    const p1 = isCouple ? (b.p1 || {}) : b;
+    const caseName = isCouple
+      ? `${(b.p1 && b.p1.name) || "甲"} ✕ ${(b.p2 && b.p2.name) || "乙"}｜合盤`
+      : (b.name || "我的命盤");
+    const chartMeta: Record<string, unknown> = {};
+    if (order.evidence) chartMeta.evidence = order.evidence;
+    if (isCouple) chartMeta.couple = { relation: b.relation || "", p2: b.p2 || {} };
     const { data: kase, error: caseErr } = await admin.from("cases").insert({
       client_id: order.user_id,
-      name: b.name || "我的命盤",
-      gender: b.gender || null,
-      birth_date: b.birth_date || null,
-      birth_time: b.birth_time || null,
-      birth_place: b.birth_place || null,
-      lon: b.lon ?? null, lat: b.lat ?? null, tz: b.tz ?? null,
-      unknown_time: !!b.unknown_time,
-      chart: order.evidence ? { evidence: order.evidence } : null,
+      name: caseName,
+      gender: p1.gender || null,
+      birth_date: p1.birth_date || null,
+      birth_time: p1.birth_time || null,
+      birth_place: p1.birth_place || null,
+      lon: p1.lon ?? null, lat: p1.lat ?? null, tz: p1.tz ?? null,
+      unknown_time: !!p1.unknown_time,
+      chart: Object.keys(chartMeta).length ? chartMeta : null,
       created_by: order.user_id,
     }).select().single();
     if (caseErr || !kase) {
@@ -110,7 +118,8 @@ Deno.serve(async (req: Request) => {
         body: JSON.stringify({ order_id: order.id, version }),
       }).catch((e) => console.error("觸發生成失敗", version, e));
 
-    const job = Promise.allSettled([invoke("script"), invoke("breakthrough")]);
+    const versions = isCouple ? ["sync", "clash"] : ["script", "breakthrough"];
+    const job = Promise.allSettled(versions.map(invoke));
     // deno-lint-ignore no-explicit-any
     (globalThis as any).EdgeRuntime?.waitUntil?.(job);
 

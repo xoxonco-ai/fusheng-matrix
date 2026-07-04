@@ -53,11 +53,12 @@ async function routeByRole(){
   const {data:{session}} = await sb.auth.getSession();
   if(!session) return false;
   if(NEXT==='pay'){ location.href='paipan.html?resume=1'; return true; }
+  if(NEXT==='pay2'){ location.href='hepan.html?resume=1'; return true; }
   const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
   location.href = (prof && prof.role==='admin') ? 'admin.html' : 'report.html';
   return true;
 }
-if(NEXT==='pay'){ document.getElementById('modesub').textContent='登入或註冊後，將帶你回到付款步驟'; }
+if(NEXT==='pay'||NEXT==='pay2'){ document.getElementById('modesub').textContent='登入或註冊後，將帶你回到付款步驟'; }
 
 $('submit').addEventListener('click', async ()=>{
   hideMsg();

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浮生矩陣｜情侶合盤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.7/lunar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iztro@2.5.8/dist/iztro.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+:root{--bg:#070b16;--bg2:#0c1224;--bg3:#101831;--gold:#c9a86a;--gold-bright:#e8cf9a;--crimson:#b05a6e;--crimson-bright:#d98a9c;--text:#e9e5db;--muted:#9298ad;--line:rgba(201,168,106,.25);--serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);line-height:1.85;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(201,168,106,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,106,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);}
+main{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:30px 22px 120px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:12px}
+.topbar a{color:var(--muted);text-decoration:none;font-family:var(--sans);font-size:13px;letter-spacing:.2em}
+.topbar a:hover{color:var(--gold)}
+.brandmark{color:var(--gold);letter-spacing:.3em;font-size:18px}
+.hero h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.14em;text-align:center;background:linear-gradient(180deg,#f3e8cf,var(--gold) 75%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{text-align:center;color:var(--muted);font-family:var(--sans);font-weight:300;letter-spacing:.15em;font-size:14px;margin-top:14px}
+.hero .sysline{text-align:center;color:var(--gold);letter-spacing:.25em;font-size:14px;margin-top:8px}
+.card{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px;margin-top:30px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:680px){.duo{grid-template-columns:1fr}}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:22px 20px;background:rgba(7,11,22,.4)}
+.pcard h3{font-family:var(--sans);font-size:13px;letter-spacing:.25em;color:var(--gold-bright);margin-bottom:14px}
+label{display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.18em;color:var(--gold);margin:12px 0 7px}
+input,select,textarea{width:100%;padding:11px 13px;border-radius:4px;border:1px solid rgba(201,168,106,.3);background:rgba(7,11,22,.7);color:var(--text);font-family:var(--sans);font-size:15px;outline:none;transition:border-color .3s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:9px;color:var(--text);font-family:var(--sans);font-size:12.5px;cursor:pointer}
+.chk input{width:auto;accent-color:var(--gold)}
+.runbtn{width:100%;margin-top:28px;padding:16px;cursor:pointer;font-family:var(--serif);font-size:17px;letter-spacing:.3em;font-weight:600;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));border:none;border-radius:4px;transition:all .35s}
+.runbtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.runbtn:disabled{opacity:.5;cursor:wait}
+.err{color:var(--crimson-bright);font-family:var(--sans);font-size:14px;text-align:center;margin-top:16px;display:none}
+.loading{display:none;text-align:center;color:var(--gold);font-family:var(--sans);letter-spacing:.2em;margin-top:22px}
+#results{margin-top:40px;display:none}
+.sys-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.sys-head h2{font-size:22px;font-weight:600;letter-spacing:.1em}
+.sys-head .en{color:var(--muted);font-family:var(--sans);font-size:12px;letter-spacing:.2em}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:13.5px}
+th,td{border:1px solid var(--line);padding:10px 8px;text-align:center}
+th{color:var(--gold);font-weight:400;letter-spacing:.08em;white-space:nowrap}
+td{color:var(--text);font-weight:300}
+td.h{color:var(--muted);font-size:12px;letter-spacing:.1em;white-space:nowrap}
+.quick{font-family:var(--serif);line-height:2;font-size:16px;margin-top:22px}
+.quick p{margin-bottom:1.2em}
+.quick .accent{color:var(--gold-bright)}
+.quick h4{font-family:var(--sans);font-size:12.5px;letter-spacing:.25em;color:var(--gold);margin:20px 0 8px;font-weight:500}
+.qz-note{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px dashed rgba(201,168,106,.25);padding-top:12px}
+.cta-final{text-align:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:44px 32px;margin-top:32px}
+.cta-final h3{font-size:22px;letter-spacing:.1em;margin-bottom:10px}
+.cta-final>p{color:var(--muted);font-family:var(--sans);font-weight:300;font-size:14.5px}
+.price-line{font-family:var(--sans);margin:8px 0 4px}
+.price-line .price{font-size:34px;color:var(--gold-bright);font-weight:700;letter-spacing:.05em}
+.price-line .per{font-size:13px;color:var(--muted);margin-left:6px}
+.pay-points{font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--muted);line-height:2;margin:10px 0 22px}
+.pay-points b{color:var(--gold-bright);font-weight:500}
+.paybtn{display:inline-block;padding:16px 52px;border-radius:4px;font-family:var(--serif);font-size:17px;letter-spacing:.2em;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;border:none;cursor:pointer;transition:all .35s}
+.paybtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
+.paybtn:disabled{opacity:.5;cursor:wait}
+.disclaimer{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);text-align:center;margin-top:28px;line-height:1.8}
+.modal-mask{display:none;position:fixed;inset:0;z-index:50;background:rgba(4,7,14,.82);backdrop-filter:blur(4px);overflow-y:auto;padding:40px 18px}
+.modal{max-width:560px;margin:0 auto;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px}
+.modal h3{font-size:20px;letter-spacing:.08em;margin-bottom:6px}
+.modal .msub{font-family:var(--sans);font-weight:300;font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.8}
+.modal textarea{min-height:96px;line-height:1.7;resize:vertical;font-size:14px}
+.modal .mrow{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);padding:14px 24px;border-radius:4px;font-family:var(--sans);font-size:14px;cursor:pointer}
+.modal .cancel:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+  <div class="topbar">
+    <span class="brandmark">浮生矩陣</span>
+    <a href="index.html">← 回首頁</a>
+  </div>
+
+  <div class="hero">
+    <h1>情侶合盤</h1>
+    <p>輸入兩人的出生資料，看見你們之間的結構</p>
+    <p class="sysline">八字 · 紫微斗數 · 西洋占星 · 人類圖 ✕ 2</p>
+  </div>
+
+  <div class="card">
+    <div class="duo">
+      <div class="pcard" id="p1card">
+        <h3>PERSON A ─ 你</h3>
+        <label>姓名 / 暱稱</label><input type="text" id="a-name">
+        <label>性別</label><select id="a-gender"><option value="女">女</option><option value="男">男</option></select>
+        <label>出生日期（西元）</label><input type="date" id="a-date" value="1990-05-20" min="1900-01-01" max="2099-12-31">
+        <label>出生時間</label><input type="time" id="a-time" value="12:00">
+        <label class="chk"><input type="checkbox" id="a-unknown"> 不確定出生時間（以中午推算）</label>
+        <label>出生地</label><select id="a-city"></select>
+      </div>
+      <div class="pcard" id="p2card">
+        <h3>PERSON B ─ 對方</h3>
+        <label>姓名 / 暱稱</label><input type="text" id="b-name">
+        <label>性別</label><select id="b-gender"><option value="男">男</option><option value="女">女</option></select>
+        <label>出生日期（西元）</label><input type="date" id="b-date" value="1990-01-01" min="1900-01-01" max="2099-12-31">
+        <label>出生時間</label><input type="time" id="b-time" value="12:00">
+        <label class="chk"><input type="checkbox" id="b-unknown"> 不確定出生時間（以中午推算）</label>
+        <label>出生地</label><select id="b-city"></select>
+      </div>
+    </div>
+    <label style="margin-top:20px">你們目前的關係階段</label>
+    <select id="relation">
+      <option value="曖昧探索">曖昧・還在互相靠近</option>
+      <option value="熱戀磨合" selected>交往中・熱戀與磨合</option>
+      <option value="穩定婚姻">穩定關係・夫妻</option>
+      <option value="修復期">修復期・想把關係修回來</option>
+    </select>
+    <button class="runbtn" id="run">開始合盤 ✦</button>
+    <p class="err" id="err"></p>
+    <p class="loading" id="loading">兩張星盤推算中…</p>
+  </div>
+
+  <div id="results">
+    <div class="card">
+      <div class="sys-head"><h2>兩人命盤對照</h2><span class="en">SIDE BY SIDE</span></div>
+      <div style="overflow-x:auto"><table id="duoTable"></table></div>
+    </div>
+
+    <div class="card">
+      <div class="sys-head"><h2>合盤速讀</h2><span class="en">QUICK READING</span></div>
+      <div class="quick" id="quick"></div>
+      <p class="qz-note">本速讀由兩張命盤實算結果自動生成，屬結構性導讀。你們之間完整的吸引力來源、衝突迴圈與相處說明書，在付費合盤報告中展開。</p>
+    </div>
+
+    <div class="cta-final">
+      <h3>解鎖你們的完整「合盤報告」</h3>
+      <p>兩份報告，一段關係的兩面。</p>
+      <p class="price-line"><span class="price">NT$ 399</span><span class="per">一次付費・兩份合盤報告</span></p>
+      <p class="pay-points">
+        <b>同頻版</b>——你們怎麼吸引彼此、最好的樣子、相處說明書<br>
+        <b>碰撞版</b>——你們怎麼互相消耗、衝突迴圈解剖、拆彈手冊<br>
+        付款後由系統依兩張命盤<b>自動生成</b>（約 5～10 分鐘），存入會員帳號<b>隨時重看</b>
+      </p>
+      <button class="paybtn" id="payBtn">付費解鎖 · NT$399 ✦</button>
+      <p class="err" id="payErr" style="margin-top:14px"></p>
+      <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
+        <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的報告 →</a><br>
+        想看個人完整命盤？<a href="paipan.html" style="color:var(--gold-bright)">單人排盤（免費）→</a>
+      </p>
+    </div>
+    <p class="disclaimer">本頁由開源天文／曆法引擎於你的瀏覽器即時計算。命理內容僅供關係探索參考，不構成任何關係決策之建議。</p>
+  </div>
+</main>
+
+<!-- 付費前確認視窗 -->
+<div class="modal-mask" id="payModal">
+  <div class="modal">
+    <h3>最後一步，讓合盤更準</h3>
+    <p class="msub">選填，但填了之後 AI 會把它當「鐵證」寫進報告，準確感大幅提升。</p>
+    <label>一件你們共同經歷過、印象很深的真實事件（選填）</label>
+    <textarea id="payEvidence" placeholder="例：遠距離兩年、為了婚禮籌備大吵過、一起度過其中一方失業的半年、正在猶豫要不要同居…　越具體，報告越準。"></textarea>
+    <label style="margin-top:16px">你希望報告說話的力道</label>
+    <select id="payIntensity">
+      <option value="犀利" selected>犀利——直接說中，一針見血（推薦）</option>
+      <option value="溫和">溫和——一樣準，但說得溫柔</option>
+      <option value="狠">狠——不留情面，敢講最痛的</option>
+    </select>
+    <div class="mrow">
+      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$399 →</button>
+      <button class="cancel" id="payCancel">先不要</button>
+    </div>
+    <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
+    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">付款由第三方金流（GoMyPay 萬事達）安全加密處理，本站不會接觸你的卡號。付款完成後兩份合盤報告自動生成（約 5～10 分鐘），存入你的會員帳號。</p>
+  </div>
+</div>
+
+<script>
+/* ===== 城市 ===== */
+const CITY=[['台北',121.5654,25.0330,8],['新北',121.4628,25.0169,8],['基隆',121.7392,25.1276,8],['桃園',121.3010,24.9936,8],['新竹',120.9686,24.8138,8],['苗栗',120.8214,24.5602,8],['台中',120.6839,24.1477,8],['彰化',120.5161,24.0809,8],['南投',120.6840,23.9609,8],['雲林',120.4313,23.7092,8],['嘉義',120.4473,23.4801,8],['台南',120.2270,22.9999,8],['高雄',120.3014,22.6273,8],['屏東',120.4886,22.6826,8],['宜蘭',121.7195,24.7021,8],['花蓮',121.6015,23.9871,8],['台東',121.1444,22.7583,8],['澎湖',119.5793,23.5712,8],['金門',118.3186,24.4321,8],['香港',114.1694,22.3193,8],['澳門',113.5439,22.1987,8],['北京',116.4074,39.9042,8],['上海',121.4737,31.2304,8],['廣州',113.2644,23.1291,8],['深圳',114.0579,22.5431,8],['成都',104.0668,30.5728,8],['東京',139.6917,35.6895,9],['大阪',135.5023,34.6937,9],['首爾',126.9780,37.5665,9],['新加坡',103.8198,1.3521,8],['吉隆坡',101.6869,3.1390,8],['曼谷',100.5018,13.7563,7],['紐約',-74.0060,40.7128,-5],['洛杉磯',-118.2437,34.0522,-8],['舊金山',-122.4194,37.7749,-8],['溫哥華',-123.1207,49.2827,-8],['倫敦',-0.1276,51.5074,0],['巴黎',2.3522,48.8566,1],['雪梨',151.2093,-33.8688,10]];
+['a-city','b-city'].forEach(id=>{const sel=document.getElementById(id);sel.innerHTML=CITY.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('')});
+
+/* ===== 命盤引擎（與排盤頁同邏輯） ===== */
+const _s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
+const _SG=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+const _fmt=l=>{l=((l%360)+360)%360;return _SG[Math.floor(l/30)]+(l%30).toFixed(0)+'°'};
+const GATE_ORDER=[41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
+const GATE_CENTER={head:[64,61,63],ajna:[47,24,4,17,11,43],throat:[62,23,56,16,20,35,12,45,33,8,31],g:[7,1,13,10,25,46,2,15],heart:[21,40,26,51],spleen:[48,57,44,50,32,28,18],sacral:[5,14,29,59,9,3,42,27,34],solar:[6,37,22,36,30,55,49],root:[53,60,52,19,39,41,58,38,54]};
+const _CNM={head:'頭腦',ajna:'邏輯',throat:'喉嚨',g:'G中心',heart:'意志力',spleen:'直覺',sacral:'薦骨',solar:'情緒',root:'根部'};
+const MOTORS=['sacral','heart','solar','root'];
+const CHANNELS=[[1,8],[2,14],[3,60],[4,63],[5,15],[6,59],[7,31],[9,52],[10,20],[10,34],[10,57],[11,56],[16,48],[12,22],[13,33],[17,62],[18,58],[19,49],[20,34],[20,57],[21,45],[23,43],[24,61],[25,51],[26,44],[27,50],[28,38],[29,46],[30,41],[32,54],[34,57],[35,36],[37,40],[39,55],[42,53],[47,64]];
+const gco=g=>{for(const c in GATE_CENTER)if(GATE_CENTER[c].includes(g))return c};
+const _ltg=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);return{gate:GATE_ORDER[i],line:Math.floor((d-i*5.625)/0.9375)+1}};
+function _tnode(dt){const e1=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',dt,true)).vec;const e2=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',new Date(dt.getTime()+43200),true)).vec;const r=e1,v={x:e2.x-e1.x,y:e2.y-e1.y,z:e2.z-e1.z};const h={x:r.y*v.z-r.z*v.y,y:r.z*v.x-r.x*v.z,z:r.x*v.y-r.y*v.x};return((Math.atan2(h.x,-h.y)*180/Math.PI)%360+360)%360}
+function planetLon(b,d){if(b==='Earth')return(Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon+180)%360;if(b==='NNode')return _tnode(d);if(b==='SNode')return(_tnode(d)+180)%360;return Astronomy.Ecliptic(Astronomy.GeoVector(b,d,true)).elon}
+const sunLon=d=>Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon;
+const WX={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+const BZ={子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+
+/* 計算一個人：回傳 {summary 文字, disp 顯示資料} */
+function calcPerson(c){
+  const [Y,M,D]=c.birth_date.split('-').map(Number);
+  let h,mi,unknown=!!c.unknown_time;
+  if(!unknown&&c.birth_time){[h,mi]=c.birth_time.split(':').map(Number);}else{h=12;mi=0;unknown=true;}
+  const lon=c.lon,lat=c.lat,tz=c.tz,gender=c.gender||'女';
+  const out=[];let _fm='';
+  out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
+  // 八字
+  const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
+  const cnt={木:0,火:0,土:0,金:0,水:0};
+  [ec.getYearGan(),ec.getMonthGan(),ec.getDayGan(),unknown?null:ec.getTimeGan()].forEach(g=>{if(g)cnt[WX[g]]++});
+  [ec.getYearZhi(),ec.getMonthZhi(),ec.getDayZhi(),unknown?null:ec.getTimeZhi()].forEach(z=>{if(z)cnt[BZ[z]]++});
+  const dg=ec.getDayGan(),dmEl=WX[dg];
+  out.push(`【八字】四柱：${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${unknown?'(時柱未定)':ec.getTime()}；日主：${dg}(${dmEl})；十神(年月時)：${ec.getYearShiShenGan()}/${ec.getMonthShiShenGan()}/${unknown?'—':ec.getTimeShiShenGan()}；五行：木${cnt.木} 火${cnt.火} 土${cnt.土} 金${cnt.金} 水${cnt.水}`);
+  // 紫微
+  let star='';
+  try{
+    const ti=(h===23)?12:Math.floor((h+1)/2);
+    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
+    const sp=zw.palaces.find(p=>p.name==='命宫');
+    star=_s2t(sp.majorStars.map(s=>s.name).join('、'))||'(空宮)';
+    const _fmp=zw.palaces.find(p=>p.name==='父母'); if(_fmp)_fm=_s2t(_fmp.majorStars.map(s=>s.name).join('、'))||'(空宮)';
+    const sh=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sh.push(_s2t(s.name)+'化'+_s2t(s.mutagen))}));
+    out.push(`【紫微】命宮主星：${_s2t(sp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)'}；命主/身主：${_s2t(zw.soul)}/${_s2t(zw.body)}；五行局：${_s2t(zw.fiveElementsClass)}；生年四化：${sh.join(' ')}`);
+  }catch(e){out.push('【紫微】(計算略)');}
+  // 占星
+  const utc=new Date(Date.UTC(Y,M-1,D,h-tz,mi,0));
+  const PB=[['太陽','Sun'],['月亮','Moon'],['水星','Mercury'],['金星','Venus'],['火星','Mars'],['木星','Jupiter'],['土星','Saturn'],['天王','Uranus'],['海王','Neptune'],['冥王','Pluto']];
+  const pls=PB.map(p=>p[0]+_fmt(planetLon(p[1],utc))).join('、');
+  const gst=Astronomy.SiderealTime(utc);const ramc=((gst+lon/15)*15)%360;const Tc=(utc/864e5+2440587.5-2451545)/36525;const eps=(23.439291-0.0130042*Tc)*Math.PI/180;const ra=ramc*Math.PI/180,phi=lat*Math.PI/180;
+  const asc=((Math.atan2(Math.cos(ra),-(Math.sin(ra)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI)%360+360)%360;
+  out.push(`【占星】${pls}；上升${_fmt(asc)}${unknown?'（上升/月亮因時間不確定僅供參考）':''}`);
+  // 人類圖
+  const tg=(sunLon(utc)-88+360)%360;let lo=new Date(utc-95*864e5),hi=new Date(utc-80*864e5);for(let i=0;i<60;i++){let m=new Date((+lo+ +hi)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi=m;else lo=m}const des=new Date((+lo+ +hi)/2);
+  const B=['Sun','Earth','NNode','SNode','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  const act=new Set();let pSun,dSun;B.forEach(b=>{const g=_ltg(planetLon(b,utc));act.add(g.gate);if(b==='Sun')pSun=g});B.forEach(b=>{const g=_ltg(planetLon(b,des));act.add(g.gate);if(b==='Sun')dSun=g});
+  const dc=new Set();const adj={};const defc=[];CHANNELS.forEach(ch=>{if(act.has(ch[0])&&act.has(ch[1])){defc.push(ch);const a=gco(ch[0]),b2=gco(ch[1]);dc.add(a);dc.add(b2);(adj[a]=adj[a]||new Set()).add(b2);(adj[b2]=adj[b2]||new Set()).add(a)}});
+  const conn=(s,g)=>{if(!dc.has(s)||!dc.has(g))return false;const seen=new Set([s]),q=[s];while(q.length){const x=q.shift();if(x===g)return true;(adj[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}return false};
+  let m2t=false;MOTORS.forEach(m=>{if(conn(m,'throat'))m2t=true});
+  let type;if(dc.size===0)type='反映者';else if(dc.has('sacral'))type=m2t?'顯示生產者':'生產者';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn(m,'throat'))nm=true});type=nm?'顯示者':'投射者'}
+  let auth=dc.has('solar')?'情緒':dc.has('sacral')?'薦骨':dc.has('spleen')?'直覺':dc.has('heart')?'意志力':dc.has('g')?'自我投射':(type==='反映者'?'月循環':'心智');
+  out.push(`【人類圖】類型：${type}；內在權威：${auth}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc].map(x=>_CNM[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
+  // 關卡年
+  try{
+    const _natSat=Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',utc,true)).elon;
+    let _best=null;
+    for(let age=27;age<=32;age+=0.05){const _dt=new Date(utc.getTime()+age*365.25*864e5);let _dd=((Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',_dt,true)).elon-_natSat+540)%360)-180;if(_best===null||Math.abs(_dd)<Math.abs(_best.d)){_best={age,d:_dd,year:_dt.getUTCFullYear()};}}
+    const _ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const _di=_ZHI.indexOf(ec.getDayZhi());const _opp=(_di+6)%12;
+    const _chong=[];for(let y=Y+14;y<=Y+55;y++){if((((y-4)%12)+12)%12===_opp)_chong.push(y);}
+    out.push(`【關卡年｜可驗證佐證】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲）；流年沖日支：${_chong.join('、')}（變動、低谷或重要轉折，抓前後一兩年）`);
+  }catch(e){}
+  const sunSi=Math.floor((((planetLon('Sun',utc)%360)+360)%360)/30);
+  const moonSi=Math.floor((((planetLon('Moon',utc)%360)+360)%360)/30);
+  return {
+    summary: out.join('\n'),
+    disp: {dm:dg+'（'+dmEl+'）', dmEl, cnt,
+      sun:_SG[sunSi], moon:_SG[moonSi], asc:_SG[Math.floor(asc/30)],
+      sunEl:['fire','earth','air','water'][sunSi%4], moonEl:['fire','earth','air','water'][moonSi%4],
+      star, type, auth, profile:pSun.line+'/'+dSun.line, unknown}
+  };
+}
+
+/* ===== 合盤速讀規則 ===== */
+const SHENG={木:'火',火:'土',土:'金',金:'水',水:'木'};   // 我生
+const KE={木:'土',火:'金',土:'水',金:'木',水:'火'};      // 我剋
+const EL4NAME={fire:'火象',earth:'土象',air:'風象',water:'水象'};
+function elPair(a,b,layer){
+  if(a===b)return `兩人${layer}同屬<span class="accent">${EL4NAME[a]}</span>——頻率相同，懂彼此在想什麼，但也容易同時卡在同一種盲點裡。`;
+  const good=(a==='fire'&&b==='air')||(a==='air'&&b==='fire')||(a==='earth'&&b==='water')||(a==='water'&&b==='earth');
+  if(good)return `${layer}一個${EL4NAME[a]}、一個${EL4NAME[b]}——天生互相助燃/滋養的組合，相處起來省力。`;
+  return `${layer}一個${EL4NAME[a]}、一個${EL4NAME[b]}——頻率不同，需要「翻譯」：不是不合，是表達方式先天不一樣。`;
+}
+function quickRead(A,B,an,bn){
+  let h='';
+  h+=`<h4>八字｜底層材質的化學反應</h4>`;
+  const ae=A.disp.dmEl,be=B.disp.dmEl;
+  if(ae===be)h+=`<p>${an}與${bn}的日主同屬<span class="accent">${ae}</span>——你們是同一種材質的人，默契快，但強項與短板也重疊：順的時候加倍順，卡的時候一起卡。</p>`;
+  else if(SHENG[ae]===be)h+=`<p>${an}的日主屬<span class="accent">${ae}</span>，${bn}屬<span class="accent">${be}</span>——五行上${an}天生「生」${bn}：${an}容易不自覺地供養、支持${bn}。這是溫柔的結構，但${an}要小心給到透支，${bn}要記得回頭澆水。</p>`;
+  else if(SHENG[be]===ae)h+=`<p>${bn}的日主屬<span class="accent">${be}</span>，${an}屬<span class="accent">${ae}</span>——五行上${bn}天生「生」${an}：${bn}是這段關係裡預設的付出方。被滋養的${an}，別把這當成理所當然。</p>`;
+  else if(KE[ae]===be)h+=`<p>${an}的日主屬<span class="accent">${ae}</span>，${bn}屬<span class="accent">${be}</span>——五行上${an}「剋」${bn}：${an}容易不自覺想管理、修正${bn}。用得好是雕塑，用不好是壓制，這條線是你們要留意的。</p>`;
+  else h+=`<p>${bn}的日主屬<span class="accent">${be}</span>，${an}屬<span class="accent">${ae}</span>——五行上${bn}「剋」${an}：${bn}對${an}有天然的影響力與約束力。${an}是否感覺在${bn}面前特別容易讓步？</p>`;
+  h+=`<h4>占星｜太陽與月亮的頻率</h4>`;
+  h+=`<p>太陽（核心自我）：${an}是${A.disp.sun}、${bn}是${B.disp.sun}。${elPair(A.disp.sunEl,B.disp.sunEl,'太陽')}</p>`;
+  h+=`<p>月亮（情緒需求）：${an}是${A.disp.moon}、${bn}是${B.disp.moon}。${elPair(A.disp.moonEl,B.disp.moonEl,'月亮')}情緒層的相性，往往比個性合不合更決定關係的壽命。</p>`;
+  h+=`<h4>人類圖｜能量的互動方式</h4>`;
+  const sac=t=>t==='生產者'||t==='顯示生產者';
+  if(sac(A.disp.type)&&sac(B.disp.type))h+=`<p>兩人都是<span class="accent">${A.disp.type}／${B.disp.type}</span>——能量都充沛，一起做事效率高；但要小心把關係過成「待辦清單」，忘了停下來只是在一起。</p>`;
+  else if(sac(A.disp.type)||sac(B.disp.type)){const s=sac(A.disp.type)?an:bn,n=sac(A.disp.type)?bn:an;const nt=sac(A.disp.type)?B.disp.type:A.disp.type;h+=`<p>${s}有薦骨動力、${n}是<span class="accent">${nt}</span>——節奏先天不對等。${s}別用自己的產能標準要求${n}；${n}的價值在「看見與引導」，不在拚產出。很多這種組合的摩擦，其實只是節奏問題。</p>`;}
+  else h+=`<p>兩人都是非薦骨類型（${A.disp.type}✕${B.disp.type}）——你們都需要正確的環境與節奏來補充能量，關係裡要刻意安排「各自充電」的空間，別把疲累誤會成不愛。</p>`;
+  if(A.disp.auth==='情緒'||B.disp.auth==='情緒'){const who=A.disp.auth==='情緒'?an:bn;h+=`<p>${who}是<span class="accent">情緒權威</span>——重大決定需要「過夜」。你們吵架時最忌當場逼對方表態；等浪退了再談，結論會完全不同。</p>`;}
+  h+=`<h4>這份速讀沒說完的</h4>`;
+  h+=`<p>以上是結構的表層。你們<span class="accent">為什麼會被彼此吸住、最常見的那種吵法、誰踩了誰的什麼地雷、下次衝突的第一分鐘該怎麼做</span>——這些藏在兩張命盤更深的交叉處，是完整合盤報告才拆得開的部分。</p>`;
+  return h;
+}
+
+/* ===== 主流程 ===== */
+const $id=x=>document.getElementById(x);
+let P1=null,P2=null,SUMMARY='';
+function readPerson(pfx){
+  const date=$id(pfx+'-date').value, time=$id(pfx+'-time').value, unknown=$id(pfx+'-unknown').checked;
+  if(!date)throw new Error('請填寫兩人的出生日期');
+  if(!unknown&&!time)throw new Error('請填寫出生時間，或勾選「不確定出生時間」');
+  const ci=CITY[$id(pfx+'-city').value]||CITY[0];
+  return {name:$id(pfx+'-name').value.trim()||(pfx==='a'?'A':'B'), gender:$id(pfx+'-gender').value,
+    birth_date:date, birth_time:unknown?null:time, unknown_time:unknown,
+    birth_place:ci[0], lon:ci[1], lat:ci[2], tz:ci[3]};
+}
+$id('run').addEventListener('click',()=>{
+  const err=$id('err');err.style.display='none';
+  const btn=$id('run'),load=$id('loading');
+  try{
+    const c1=readPerson('a'), c2=readPerson('b');
+    btn.disabled=true;load.style.display='block';
+    setTimeout(()=>{try{
+      const r1=calcPerson(c1), r2=calcPerson(c2);
+      P1=Object.assign({},c1); P2=Object.assign({},c2);
+      SUMMARY=`【甲｜${c1.name}】\n${r1.summary}\n\n【乙｜${c2.name}】\n${r2.summary}\n\n【關係階段】${$id('relation').value}`;
+      // 對照表
+      const row=(k,a,b)=>`<tr><td class="h">${k}</td><td>${a}</td><td>${b}</td></tr>`;
+      $id('duoTable').innerHTML=
+        `<tr><th></th><th>${c1.name}</th><th>${c2.name}</th></tr>`+
+        row('日主（底層材質）',r1.disp.dm,r2.disp.dm)+
+        row('太陽（核心自我）',r1.disp.sun,r2.disp.sun)+
+        row('月亮（情緒需求）',r1.disp.moon,r2.disp.moon)+
+        row('上升（外在印象）',r1.disp.asc+(r1.disp.unknown?'*':''),r2.disp.asc+(r2.disp.unknown?'*':''))+
+        row('紫微命宮主星',r1.disp.star||'—',r2.disp.star||'—')+
+        row('人類圖類型',r1.disp.type,r2.disp.type)+
+        row('內在權威',r1.disp.auth,r2.disp.auth)+
+        row('人生角色',r1.disp.profile,r2.disp.profile)+
+        ((r1.disp.unknown||r2.disp.unknown)?`<tr><td colspan="3" class="h" style="text-align:left">* 未提供確切時辰，以中午推算，時辰相關項目僅供參考</td></tr>`:'');
+      $id('quick').innerHTML=quickRead(r1,r2,c1.name,c2.name);
+      load.style.display='none';btn.disabled=false;
+      $id('results').style.display='block';
+      $id('results').scrollIntoView({behavior:'smooth'});
+    }catch(e){load.style.display='none';btn.disabled=false;err.textContent='計算發生錯誤：'+e.message;err.style.display='block';console.error(e)}},60);
+  }catch(e){err.textContent=e.message;err.style.display='block'}
+});
+
+/* ===== 付費解鎖 NT$399 ===== */
+const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+function savePending(){
+  const f={};['a-name','a-gender','a-date','a-time','b-name','b-gender','b-date','b-time','relation'].forEach(k=>f[k]=$id(k).value);
+  f['a-unknown']=$id('a-unknown').checked; f['b-unknown']=$id('b-unknown').checked;
+  f['a-city']=$id('a-city').value; f['b-city']=$id('b-city').value;
+  localStorage.setItem('fs_pending2', JSON.stringify({form:f, ts:Date.now()}));
+}
+$id('payBtn').addEventListener('click', async ()=>{
+  const err=$id('payErr'); err.style.display='none';
+  if(!P1||!P2){ err.textContent='請先完成合盤'; err.style.display='block'; return; }
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ savePending(); location.href='login.html?next=pay2'; return; }
+  $id('payModal').style.display='block';
+});
+$id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
+$id('payGo').addEventListener('click', async ()=>{
+  const btn=$id('payGo'), err=$id('payModalErr'); err.style.display='none';
+  btn.disabled=true; btn.textContent='訂單建立中…';
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){ savePending(); location.href='login.html?next=pay2'; return; }
+    const resp=await fetch(window.SB_URL+'/functions/v1/create-order',{
+      method:'POST',
+      headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token,'apikey':window.SB_KEY},
+      body:JSON.stringify({
+        product:'couple',
+        summary:SUMMARY,
+        birth:{p1:P1,p2:P2,relation:$id('relation').value},
+        evidence:$id('payEvidence').value.trim(),
+        intensity:$id('payIntensity').value
+      })
+    });
+    const data=await resp.json();
+    if(!resp.ok||data.error)throw new Error(data.error||('HTTP '+resp.status));
+    localStorage.removeItem('fs_pending2');
+    const f=document.createElement('form'); f.method='POST'; f.action=data.action;
+    Object.entries(data.params).forEach(([k,v])=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;f.appendChild(i)});
+    document.body.appendChild(f); f.submit();
+  }catch(e){
+    err.textContent='無法前往付款：'+e.message; err.style.display='block';
+    btn.disabled=false; btn.textContent='前往付款 NT$399 →';
+  }
+});
+/* 登入後回來：還原兩人資料、自動合盤、打開付款視窗 */
+setTimeout(function resume(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('resume')!=='1')return;
+  try{
+    const p=JSON.parse(localStorage.getItem('fs_pending2')||'null');
+    if(!p||Date.now()-p.ts>3600e3)return;
+    const f=p.form;
+    ['a-name','a-gender','a-date','a-time','b-name','b-gender','b-date','b-time','relation','a-city','b-city'].forEach(k=>{if(f[k]!=null)$id(k).value=f[k]});
+    $id('a-unknown').checked=!!f['a-unknown']; $id('b-unknown').checked=!!f['b-unknown'];
+    setTimeout(()=>{ $id('run').click(); setTimeout(async()=>{
+      const {data:{session}}=await sb.auth.getSession();
+      if(session&&P1&&P2){$id('payModal').style.display='block';}
+    },1500); },300);
+  }catch(e){}
+},0);
+</script>
+</body>
+</html>

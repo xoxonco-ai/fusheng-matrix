@@ -40,8 +40,8 @@ async function orderBanner(userId){
   if(!o) return {html:'', generating:false};
   if(o.status==='paid'||o.status==='generating'){
     return {generating:true, html:`<div class="card center" style="border-color:var(--gold)">
-      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的萬字報告正在生成中…</p>
-      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依你的命盤撰寫「劇本版」與「破局版」兩份報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的報告正在生成中…</p>
+      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依命盤撰寫兩份完整報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
     </div>`};
   }
   if(o.status==='pending' && (Date.now()-new Date(o.created_at).getTime()) < 24*3600e3){
@@ -78,9 +78,10 @@ async function orderBanner(userId){
     box.innerHTML= banner.html || `<div class="card center">
       <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功 ✦</p>
       <p class="muted" style="font-family:var(--sans)">購買後，你的千字精華與萬字報告就會出現在這裡。</p>
-      <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再一鍵解鎖萬字（NT$199，劇本版＋破局版）。</p>
+      <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再一鍵解鎖（單人萬字 NT$199／情侶合盤 NT$399）。</p>
       <div class="row" style="justify-content:center;margin-top:16px">
-        <a class="btn small" href="paipan.html">免費排盤 · 解鎖萬字 →</a>
+        <a class="btn small" href="paipan.html">單人排盤 · NT$199 →</a>
+        <a class="btn ghost small" href="hepan.html">情侶合盤 · NT$399 →</a>
       </div>
       <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:12.5px">有問題？私訊我們：
         <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a> ·
@@ -93,8 +94,8 @@ async function orderBanner(userId){
   // 依個案分組，劇本版 / 破局版 並列
   const byCase={};
   reports.forEach(r=>{ (byCase[r.case_id]=byCase[r.case_id]||{info:r,v:{}}); byCase[r.case_id].v[r.version]=r; });
-  const VL={script:'劇本版',breakthrough:'破局版'};
-  const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本'};
+  const VL={script:'劇本版',breakthrough:'破局版',sync:'同頻版',clash:'碰撞版'};
+  const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本',sync:'你們怎麼吸引彼此',clash:'你們怎麼互相消耗'};
   const col=(g,ver)=>{
     const r=g.v[ver];
     if(!r) return `<div class="vcol"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
@@ -113,9 +114,10 @@ async function orderBanner(userId){
     : '';
   box.innerHTML = banner.html + idx + groups.map((g,i)=>{
     const c=g.info;
+    const pair = (g.v.sync||g.v.clash) ? ['sync','clash'] : ['script','breakthrough'];
     return `<div class="case-block" id="case-${i}">
       <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>
-      <div class="parallel">${col(g,'script')}${col(g,'breakthrough')}</div>
+      <div class="parallel">${col(g,pair[0])}${col(g,pair[1])}</div>
     </div>`;
   }).join('');
 })();

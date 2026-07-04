@@ -64,6 +64,41 @@ function buildSystem(intensity: string): string {
 }
 
 /* ============================================================
+   合盤（情侶/夫妻）系統提示
+============================================================ */
+const relationMap: Record<string, string> = {
+  "曖昧探索": "【關係階段：曖昧探索】兩人還沒在一起或剛開始靠近。重點寫：這段吸引力的本質是什麼、繼續靠近會發生什麼、什麼訊號值得注意。語氣輕盈但誠實，不勸進也不勸退，幫他們看清楚。",
+  "熱戀磨合": "【關係階段：熱戀磨合】在一起了，第一批摩擦正在出現。重點寫：為什麼當初最吸引彼此的地方，現在開始變成摩擦點——這是結構，不是誰變了。給具體的磨合方法。",
+  "穩定婚姻": "【關係階段：穩定・婚姻】長期關係。重點寫：日復一日的相處裡，能量怎麼互相滋養、又怎麼慢性消耗；那些「懶得再說」的地方藏著什麼。給長期經營的具體做法。",
+  "修復期": "【關係階段：修復期】關係出過狀況，正在修。語氣要多接住、少指責。重點寫：反覆發生的那個迴圈的結構原因、兩人各自要認領的部分、修復的實際路徑。不寫「該不該繼續」的判決，寫「如果要修，修什麼」。",
+};
+
+function buildCoupleSystem(relation: string, intensity: string): string {
+  const tone = toneMap[intensity] || toneMap["犀利"];
+  const rel = relationMap[relation] || "";
+  return (
+    "你是「浮生矩陣」的合盤解讀作者，融合八字、紫微斗數、西洋占星、人類圖四套系統，" +
+    "並借鏡榮格（陰影/投射）、依附理論等視角，專門解讀兩個人之間的關係結構。\n" +
+    "\n【讀者設定】讀的人是這段關係中的一方或雙方，完全不懂命理。他們只在乎「你講的是不是我們」。\n" +
+    "\n【白話鐵律——最高優先】\n" +
+    "①整篇用日常口語寫，像很懂命理但講話很白的朋友。短句、可以反問。\n" +
+    "②術語第一次出現必須立刻白話翻譯（例：『他的日主是庚金——講白了，他的出廠設定是一把刀：講效率、講原則，鈍了就煩躁。』）\n" +
+    "③術語只當證據出處輕輕帶過，人話才是主體。\n" +
+    "\n【稱呼鐵律】用兩人的名字（從命盤資料的【甲】【乙】段落取得）稱呼，不要叫「甲方乙方」。對讀者整體說話時用「你們」。\n" +
+    "\n【準確感策略】\n" +
+    "①每一章至少 3 句可打勾的「你們的日常情境」：『你們是不是常常——一個想講清楚、一個想先冷靜』『訊息已讀不回的時候，通常是誰先沉不住氣』這類具體場景（吵架後、旅行規劃、見父母、講到錢…）。\n" +
+    "②每個論斷扣回具體命盤特徵，括號輕巧標註（依據：A的月亮天蠍 ✕ B的月亮射手——一個往深處收、一個往外面跑）。\n" +
+    "③嚴禁巴納姆套話與兩面討好；寧可講窄講深。互補與衝突都要指名道姓講清楚是「誰的什麼」對上「誰的什麼」。\n" +
+    "\n【必含佐證】①兩人各自的「關卡年」若在摘要中提供，挑出彼此重疊或相近的年份寫成可打勾句（例：你們在西元__年前後應該同時經歷過動盪，那段時間對關係是考驗也是黏著劑）。" +
+    "②從兩人五行/月亮/類型推 2~3 個「你們相處的日常慣性」可打勾句。③若提供了「共同經歷的真實事件」，明確點名它並對應回兩張命盤的結構。\n" +
+    "\n【誠實邊界】只根據提供的命盤摘要推論；不判生死離合、不下「該分該留」的判決——把結構講透，選擇留給他們；不給法律/醫療指示。\n" +
+    "\n【最重要的任務】整份報告圍繞一件事：找出這段關係『最核心的一組張力』（最吸引彼此的地方與最消耗彼此的地方通常是同一組結構），" +
+    "開場就講出來、講到兩人對看一眼，之後每一章從不同角度回到這組張力。\n" +
+    (rel ? "\n" + rel + "\n" : "") + "\n" + tone
+  );
+}
+
+/* ============================================================
    章節規劃（兩版 × 各三段生成 ≈ 各一萬字）
 ============================================================ */
 type Plan = { label: string; goal: string; chapters: string[]; splits: [number, number][] };
@@ -107,6 +142,42 @@ const PLANS: Record<string, Plan> = {
     ],
     splits: [[0, 2], [3, 5], [6, 7]],
   },
+  sync: {
+    label: "合盤・同頻版",
+    goal:
+      "把兩張命盤放在一起，講清楚：你們是怎麼吸引彼此的、這段關係運轉得最好的樣子長什麼樣。" +
+      "開場第一段就給這段關係最準的一句總綱（那組核心張力的「禮物面」）。",
+    chapters: [
+      "一、兩張命盤的第一眼——兩人各自是什麼結構的人（各一段白話畫像，用名字），然後點出這段關係的核心引力",
+      "二、吸引力的來源——你們當初為什麼會被彼此吸住：哪些是互補（他有你沒有的）、哪些是同頻（一拍即合的），逐項扣回兩張命盤",
+      "三、相處的預設模式——誰發起誰回應、誰講道理誰講感覺、誰快誰慢；你們能量的自然流向，順著走最省力",
+      "四、三大關係場域——溝通／親密與情感表達／金錢與未來規劃：同一組結構在三個現場的樣子",
+      "五、你們最好的樣子——這段關係運轉最順的時刻長什麼樣、通常發生在什麼條件下、怎麼有意識地多創造這種時刻",
+      "六、相處說明書——為你們量身的 3~4 條具體守則（具體到「下次遇到＿＿就＿＿」），每條說明為什麼剛好剋你們的結構",
+      "七、最終總結——這段關係的核心禮物一句話講清，收在溫暖有力的一段話。" +
+      "最後自然接一小段（像朋友的邀請，絕不能像廣告）：合盤讓你們看見了彼此的結構，但兩個人要一起走，還有很多「當下的選擇」——" +
+      "如果想把這份看見用回你們正在面對的事，歡迎私訊 Instagram 或 Facebook「@floating_matrix 浮生矩陣」，預約兩人一起的「浮生導航」",
+    ],
+    splits: [[0, 2], [3, 4], [5, 6]],
+  },
+  clash: {
+    label: "合盤・碰撞版",
+    goal:
+      "專挑兩張命盤互相打架的地方：你們反覆吵的那件事、互相消耗的迴圈、彼此的地雷與盲區。" +
+      "開場直接說中你們最常見的那一種僵局，講到兩人心裡一震。",
+    chapters: [
+      "一、兩套劇本的對撞點——你們最典型的那一種吵法／僵法（冷戰？追逃？講不到一個頻道上？），開場直接重演一次那個場景",
+      "二、矛盾羅盤——把兩人的差異攤開分類：哪些其實是互補（被誤會成問題的資產）、哪些是真正的結構衝突（要一輩子磨的），各自扣回命盤",
+      "三、衝突迴圈解剖——從觸發點→各自的情緒反應→各自說出口的話→各自的行動→各自心裡留下的結論，一層層拆你們的慣性迴圈，指名誰在哪一層扮演什麼",
+      "四、彼此的地雷與盲區——A最受不了B的其實是＿＿（而那與其說是B的問題，不如說踩到A的什麼結構）；反過來也寫B的。用名字，寫到臉熱",
+      "五、用錯力的場合——你們最常在哪些場景互相消耗（翻舊帳、比較誰付出多、講到未來就卡住…），每個場景給可打勾的細節",
+      "六、拆彈手冊——3~4 條實際可用的破局做法，具體到「下次吵起來的第一分鐘可以怎麼做」，並說明哪一條是誰的功課",
+      "七、最終總結——你們真正要一起練的那一門功課一句話講清；狠在點上、暖在底層，最後把兩人都接住。" +
+      "收尾自然接一小段（像朋友的邀請，絕不能像廣告）：迴圈不是讀完就會停的，是在一次次真實衝突裡練出來的——" +
+      "如果想有人陪你們把這些矛盾拆進現在的處境，歡迎私訊 Instagram 或 Facebook「@floating_matrix 浮生矩陣」，預約兩人一起的「浮生導航」",
+    ],
+    splits: [[0, 2], [3, 4], [5, 6]],
+  },
 };
 
 /* ============================================================
@@ -124,23 +195,28 @@ async function callClaude(apiKey: string, system: string, prompt: string, maxTok
   return text.replace(/^```[a-zA-Z]*\n?/, "").replace(/\n?```$/, "").trim();
 }
 
-function evidenceBlock(evidence: string): string {
+function evidenceBlock(evidence: string, isCouple = false): string {
   const ev = (evidence || "").trim();
   if (!ev) return "";
+  const who = isCouple ? "他們自己說的、共同經歷過的事" : "這個人自己說的、真實發生過的事";
   return (
-    `\n\n【這個人自己說的、真實發生過的事（鐵證）】\n${ev}\n` +
+    `\n\n【${who}（鐵證）】\n${ev}\n` +
     `→ 把這件事當成最有力的佐證：在報告中至少一次明確點名它，說清楚它如何精準對應命盤結構（哪個特徵推得出來），` +
-    `讓他讀到時起雞皮疙瘩。但只用這一件事，不要再杜撰其他事件。\n`
+    `讓${isCouple ? "他們" : "他"}讀到時起雞皮疙瘩。但只用這一件事，不要再杜撰其他事件。\n`
   );
 }
 
 async function generateFull(
   apiKey: string,
-  args: { summary: string; version: string; evidence?: string; intensity?: string },
+  args: { summary: string; version: string; evidence?: string; intensity?: string; relation?: string },
 ): Promise<{ excerpt: string; full: string }> {
-  const plan = PLANS[args.version === "breakthrough" ? "breakthrough" : "script"];
-  const system = buildSystem(args.intensity || "犀利");
-  const evb = evidenceBlock(args.evidence || "");
+  const vkey = ["script", "breakthrough", "sync", "clash"].includes(args.version) ? args.version : "script";
+  const plan = PLANS[vkey];
+  const isCouple = vkey === "sync" || vkey === "clash";
+  const system = isCouple
+    ? buildCoupleSystem(args.relation || "", args.intensity || "犀利")
+    : buildSystem(args.intensity || "犀利");
+  const evb = evidenceBlock(args.evidence || "", isCouple);
   const chapterList = (s: [number, number]) =>
     plan.chapters.slice(s[0], s[1] + 1).map((c) => "・" + c).join("\n");
 
@@ -210,7 +286,8 @@ Deno.serve(async (req: Request) => {
   /* ---------- 模式 A：付費訂單自動生成（內部觸發） ---------- */
   if (body.order_id) {
     if (req.headers.get("x-internal-key") !== SERVICE_KEY) return json({ error: "未授權" }, 401);
-    const version = body.version === "breakthrough" ? "breakthrough" : "script";
+    const version = ["script", "breakthrough", "sync", "clash"].includes(String(body.version))
+      ? String(body.version) : "script";
     const { data: order } = await admin.from("orders").select("*").eq("id", body.order_id).maybeSingle();
     if (!order) return json({ error: "找不到訂單" }, 404);
     if (!order.case_id) return json({ error: "訂單尚未建立個案" }, 400);
@@ -221,6 +298,7 @@ Deno.serve(async (req: Request) => {
         version,
         evidence: order.evidence || "",
         intensity: order.intensity || "犀利",
+        relation: (order.birth && order.birth.relation) || "",
       });
 
       // 寫入報告：直接發布＋解鎖（客戶已付費）
@@ -229,10 +307,11 @@ Deno.serve(async (req: Request) => {
       if (existing) await admin.from("reports").update(payload).eq("id", existing.id);
       else await admin.from("reports").insert(payload);
 
-      // 兩版都完成 → 訂單標記 done
+      // 兩版都完成 → 訂單標記 done（依產品判斷該齊哪兩版）
       const { data: reps } = await admin.from("reports").select("version").eq("case_id", order.case_id).eq("published", true);
       const vs = new Set((reps || []).map((r: { version: string }) => r.version));
-      if (vs.has("script") && vs.has("breakthrough")) {
+      const need = order.product === "couple" ? ["sync", "clash"] : ["script", "breakthrough"];
+      if (need.every((v) => vs.has(v))) {
         await admin.from("orders").update({ status: "done" }).eq("id", order.id);
       }
       return json({ ok: true, version });
@@ -250,10 +329,10 @@ Deno.serve(async (req: Request) => {
   const { data: prof } = await admin.from("profiles").select("role").eq("id", userData.user.id).maybeSingle();
   if (!prof || prof.role !== "admin") return json({ error: "僅限管理員使用" }, 403);
 
-  const { summary, name, version, evidence, intensity } = body as Record<string, string>;
+  const { summary, name, version, evidence, intensity, relation } = body as Record<string, string>;
   if (!summary) return json({ error: "缺少命盤摘要 summary" }, 400);
   try {
-    const { excerpt, full } = await generateFull(apiKey, { summary, version, evidence, intensity });
+    const { excerpt, full } = await generateFull(apiKey, { summary, version, evidence, intensity, relation });
     return json({ excerpt, full, name, version });
   } catch (e) {
     return json({ error: String(e) }, 500);

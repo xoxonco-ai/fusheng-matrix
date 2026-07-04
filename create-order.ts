@@ -58,16 +58,25 @@ Deno.serve(async (req: Request) => {
     const user = userData.user;
 
     // ---- 讀取購買內容 ----
-    const { summary, birth, evidence, intensity } = await req.json();
-    if (!summary || !birth || !birth.birth_date) return json({ error: "缺少命盤資料，請先完成排盤" }, 400);
+    const { summary, birth, evidence, intensity, product } = await req.json();
+    const isCouple = product === "couple";
+    if (!summary || !birth) return json({ error: "缺少命盤資料，請先完成排盤" }, 400);
+    if (isCouple) {
+      if (!birth.p1?.birth_date || !birth.p2?.birth_date) return json({ error: "缺少兩人的出生資料，請先完成合盤" }, 400);
+    } else if (!birth.birth_date) return json({ error: "缺少命盤資料，請先完成排盤" }, 400);
+
+    const AMOUNT = isCouple ? 399 : 199;
+    const ITEM = isCouple ? "浮生矩陣 合盤報告（同頻版＋碰撞版）" : "浮生矩陣 萬字報告（劇本版＋破局版）";
+    const buyerName = isCouple ? (birth.p1?.name || "客戶") : (birth.name || "客戶");
 
     // ---- 建立訂單 ----
     const tradeNo = ("FS" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)).toUpperCase().slice(0, 20);
     const { data: order, error: insErr } = await admin.from("orders").insert({
       user_id: user.id,
       trade_no: tradeNo,
-      amount: 199,
+      amount: AMOUNT,
       status: "pending",
+      product: isCouple ? "couple" : "solo",
       intensity: intensity || "犀利",
       evidence: (evidence || "").trim() || null,
       summary,
@@ -87,13 +96,13 @@ Deno.serve(async (req: Request) => {
         Pay_Mode_No: "2",            // 支付模式
         CustomerId: GMP_ID,
         Order_No: tradeNo,
-        Amount: "199",
+        Amount: String(AMOUNT),
         TransCode: "00",             // 授權
         TransMode: "1",              // 一般交易
         Installment: "0",            // 不分期
-        Buyer_Name: (birth.name || "客戶").slice(0, 20),
+        Buyer_Name: buyerName.slice(0, 20),
         Buyer_Mail: user.email || "",
-        Buyer_Memo: "浮生矩陣 萬字報告（劇本版＋破局版）",
+        Buyer_Memo: ITEM,
         Return_url: `${SUPABASE_URL}/functions/v1/gomypay-notify?return=1`, // 付款完成後瀏覽器導回（會再轉回網站）
         Callback_Url: `${SUPABASE_URL}/functions/v1/gomypay-notify`,        // 背景通知
       };
@@ -109,9 +118,9 @@ Deno.serve(async (req: Request) => {
       MerchantTradeNo: tradeNo,
       MerchantTradeDate: tradeDateTaipei(),
       PaymentType: "aio",
-      TotalAmount: "199",
+      TotalAmount: String(AMOUNT),
       TradeDesc: "FushengMatrix Full Report",
-      ItemName: "浮生矩陣 萬字報告（劇本版＋破局版）",
+      ItemName: ITEM,
       ReturnURL: `${SUPABASE_URL}/functions/v1/ecpay-notify`,
       ClientBackURL: `${SITE_URL}/report.html?from=pay`,
       ChoosePayment: "Credit",

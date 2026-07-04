@@ -59,7 +59,7 @@
 const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
 const $=id=>document.getElementById(id);
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const VLABEL={script:'劇本版', breakthrough:'破局版'};
+const VLABEL={script:'劇本版', breakthrough:'破局版', sync:'合盤・同頻版', clash:'合盤・碰撞版'};
 let ME=null, CLIENTS=[], CASES=[];
 const EDGE_URL = window.SB_URL + '/functions/v1/generate-report';
 
@@ -193,7 +193,7 @@ function renderCases(){
       <h3>${esc(c.name||'未命名')} <span class="pill">${esc(clientName(c.client_id))}</span></h3>
       <div class="meta">${esc(c.gender||'')}　${esc(c.birth_date||'')} ${esc(c.birth_time||'')}　${esc(c.birth_place||'')}${(c.chart&&c.chart.evidence)?'　<span style="color:var(--gold)">📌 已填佐證</span>':''}</div>
       <div class="row" style="margin-bottom:10px">
-        ${['script','breakthrough'].map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
+        ${((c.chart&&c.chart.couple)?['sync','clash']:['script','breakthrough']).map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
         <button class="btn ghost small" onclick="editCase('${c.id}')" style="margin-left:auto">✎ 編輯個案</button>
         <button class="btn ghost small" onclick="delCase('${c.id}')">刪除</button>
       </div>
