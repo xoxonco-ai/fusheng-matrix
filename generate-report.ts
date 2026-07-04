@@ -1,17 +1,14 @@
-// 浮生矩陣 — AI 生成報告 Edge Function（v2：真正萬字・白話・強佐證）
+// 浮生矩陣 — AI 生成報告 Edge Function（v3：接力式分段生成，避開執行時間上限）
 //
-// 兩種呼叫方式：
-//   A. 付費自動生成（ecpay-notify 內部觸發）：
-//      header 帶 x-internal-key = service role key，body { order_id, version }
-//      → 讀訂單 → 分三段生成約萬字 → 直接寫入 reports（發布＋解鎖）→ 更新訂單狀態
-//   B. 管理後台手動生成（admin.html）：
-//      body { summary, name, version, evidence, intensity }（需管理員登入）
-//      → 回傳 { excerpt, full } 給後台填入編輯框
+// 呼叫方式：
+//   A. 訂單自動生成（notify / create-order 免費通道觸發）：
+//      header x-internal-key = service role key，body { order_id, version, part? }
+//      → 每次只寫一段（約1~2分鐘）→ 存進 reports 草稿 → 自動觸發下一段 → 最後一段發布＋解鎖
+//   B. 管理後台手動生成（admin.html，需管理員登入）：
+//      body { summary, name, version, evidence, intensity, relation? }
+//      → 單次精簡生成（約3000字草稿），回傳 { excerpt, full } 給後台編輯框
 //
-// ⚠️ 部署後到 Edge Functions → generate-report → 設定，關閉「Verify JWT」
-//    （內部觸發不帶使用者 JWT；管理員身分改由程式內自行驗證，更安全）
-//
-// Secrets：ANTHROPIC_API_KEY（必要）
+// ⚠️ 此函式須關閉「Verify JWT」。Secrets：ANTHROPIC_API_KEY
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -26,7 +23,7 @@ const json = (o: unknown, status = 200) =>
 const MODEL = "claude-sonnet-4-6";
 
 /* ============================================================
-   語氣與規則（白話・佐證・準確感）
+   語氣與規則
 ============================================================ */
 const toneMap: Record<string, string> = {
   "溫和": "【力道：溫和】語氣溫柔、包容，像很懂你的朋友坐在旁邊輕輕跟你說。一樣要說中、要精準，但點到為止，多給理解與肯定，讓人讀完是被接住、被疼惜的感覺。",
@@ -52,8 +49,8 @@ function buildSystem(intensity: string): string {
     "③嚴禁巴納姆式套話（『你外表堅強內心柔軟』這種對誰都成立的話）、嚴禁模稜兩可與兩面討好。寧可講窄講深，不要講寬講淺。\n" +
     "\n【必含的可驗證佐證】\n" +
     "①「關卡年」：把命盤摘要提供的年份寫成可被打勾的句子：『你在西元__年前後（約__歲），應該經歷過一段低谷、變動或重大抉擇』（抓前後一兩年，不要講死）。挑 2~3 個最關鍵的。\n" +
-    "②「父母線索」：用摘要裡的印星/財星/父母宮，寫一段他與父母的關係與性格議題（例：與母親情感疏離、從小扛著父親的期待）。只談關係與議題，嚴禁編造姓氏、名字、具體事件。\n" +
-    "③「日常線索」：從五行偏枯、月亮星座、人類圖類型推 2~3 個他大概率有的生活慣性（例：休息時也停不下來、答應別人的事快到期限才做、一個人獨處才能充電）。\n" +
+    "②「父母線索」：用摘要裡的印星/財星/父母宮，寫一段他與父母的關係與性格議題。只談關係與議題，嚴禁編造姓氏、名字、具體事件。\n" +
+    "③「日常線索」：從五行偏枯、月亮星座、人類圖類型推 2~3 個他大概率有的生活慣性。\n" +
     "這些段落的目的是讓他覺得「你怎麼會知道」。\n" +
     "\n【誠實邊界】只根據提供的命盤摘要推論，不杜撰未提供的數據；不算生死、不斷病症、不給醫療/投資/法律指示；" +
     "命盤講的是「傾向與結構」，語氣要讓人感到方向感，而不是宿命論。\n" +
@@ -63,9 +60,6 @@ function buildSystem(intensity: string): string {
   );
 }
 
-/* ============================================================
-   合盤（情侶/夫妻）系統提示
-============================================================ */
 const relationMap: Record<string, string> = {
   "曖昧探索": "【關係階段：曖昧探索】兩人還沒在一起或剛開始靠近。重點寫：這段吸引力的本質是什麼、繼續靠近會發生什麼、什麼訊號值得注意。語氣輕盈但誠實，不勸進也不勸退，幫他們看清楚。",
   "熱戀磨合": "【關係階段：熱戀磨合】在一起了，第一批摩擦正在出現。重點寫：為什麼當初最吸引彼此的地方，現在開始變成摩擦點——這是結構，不是誰變了。給具體的磨合方法。",
@@ -86,10 +80,10 @@ function buildCoupleSystem(relation: string, intensity: string): string {
     "③術語只當證據出處輕輕帶過，人話才是主體。\n" +
     "\n【稱呼鐵律】用兩人的名字（從命盤資料的【甲】【乙】段落取得）稱呼，不要叫「甲方乙方」。對讀者整體說話時用「你們」。\n" +
     "\n【準確感策略】\n" +
-    "①每一章至少 3 句可打勾的「你們的日常情境」：『你們是不是常常——一個想講清楚、一個想先冷靜』『訊息已讀不回的時候，通常是誰先沉不住氣』這類具體場景（吵架後、旅行規劃、見父母、講到錢…）。\n" +
+    "①每一章至少 3 句可打勾的「你們的日常情境」：『你們是不是常常——一個想講清楚、一個想先冷靜』這類具體場景（吵架後、旅行規劃、見父母、講到錢…）。\n" +
     "②每個論斷扣回具體命盤特徵，括號輕巧標註（依據：A的月亮天蠍 ✕ B的月亮射手——一個往深處收、一個往外面跑）。\n" +
     "③嚴禁巴納姆套話與兩面討好；寧可講窄講深。互補與衝突都要指名道姓講清楚是「誰的什麼」對上「誰的什麼」。\n" +
-    "\n【必含佐證】①兩人各自的「關卡年」若在摘要中提供，挑出彼此重疊或相近的年份寫成可打勾句（例：你們在西元__年前後應該同時經歷過動盪，那段時間對關係是考驗也是黏著劑）。" +
+    "\n【必含佐證】①兩人各自的「關卡年」若在摘要中提供，挑出彼此重疊或相近的年份寫成可打勾句。" +
     "②從兩人五行/月亮/類型推 2~3 個「你們相處的日常慣性」可打勾句。③若提供了「共同經歷的真實事件」，明確點名它並對應回兩張命盤的結構。\n" +
     "\n【誠實邊界】只根據提供的命盤摘要推論；不判生死離合、不下「該分該留」的判決——把結構講透，選擇留給他們；不給法律/醫療指示。\n" +
     "\n【最重要的任務】整份報告圍繞一件事：找出這段關係『最核心的一組張力』（最吸引彼此的地方與最消耗彼此的地方通常是同一組結構），" +
@@ -99,7 +93,7 @@ function buildCoupleSystem(relation: string, intensity: string): string {
 }
 
 /* ============================================================
-   章節規劃（兩版 × 各三段生成 ≈ 各一萬字）
+   章節規劃（每版三段接力，總計約萬字）
 ============================================================ */
 type Plan = { label: string; goal: string; chapters: string[]; splits: [number, number][] };
 const PLANS: Record<string, Plan> = {
@@ -181,7 +175,7 @@ const PLANS: Record<string, Plan> = {
 };
 
 /* ============================================================
-   生成（分三段呼叫，串成完整萬字）
+   生成核心
 ============================================================ */
 async function callClaude(apiKey: string, system: string, prompt: string, maxTokens = 7000): Promise<string> {
   const resp = await fetch("https://api.anthropic.com/v1/messages", {
@@ -191,7 +185,7 @@ async function callClaude(apiKey: string, system: string, prompt: string, maxTok
   });
   const data = await resp.json();
   if (!resp.ok) throw new Error(data?.error?.message || "AI 服務回應錯誤");
-  let text = (data?.content?.[0]?.text ?? "").trim();
+  const text = (data?.content?.[0]?.text ?? "").trim();
   return text.replace(/^```[a-zA-Z]*\n?/, "").replace(/\n?```$/, "").trim();
 }
 
@@ -201,70 +195,68 @@ function evidenceBlock(evidence: string, isCouple = false): string {
   const who = isCouple ? "他們自己說的、共同經歷過的事" : "這個人自己說的、真實發生過的事";
   return (
     `\n\n【${who}（鐵證）】\n${ev}\n` +
-    `→ 把這件事當成最有力的佐證：在報告中至少一次明確點名它，說清楚它如何精準對應命盤結構（哪個特徵推得出來），` +
+    `→ 把這件事當成最有力的佐證：在報告中至少一次明確點名它，說清楚它如何精準對應命盤結構，` +
     `讓${isCouple ? "他們" : "他"}讀到時起雞皮疙瘩。但只用這一件事，不要再杜撰其他事件。\n`
   );
 }
 
-async function generateFull(
-  apiKey: string,
-  args: { summary: string; version: string; evidence?: string; intensity?: string; relation?: string },
-): Promise<{ excerpt: string; full: string }> {
-  const vkey = ["script", "breakthrough", "sync", "clash"].includes(args.version) ? args.version : "script";
-  const plan = PLANS[vkey];
+type GenArgs = { summary: string; version: string; evidence?: string; intensity?: string; relation?: string };
+function planOf(version: string) {
+  const vkey = ["script", "breakthrough", "sync", "clash"].includes(version) ? version : "script";
   const isCouple = vkey === "sync" || vkey === "clash";
-  const system = isCouple
+  return { plan: PLANS[vkey], isCouple };
+}
+function systemOf(args: GenArgs, isCouple: boolean) {
+  return isCouple
     ? buildCoupleSystem(args.relation || "", args.intensity || "犀利")
     : buildSystem(args.intensity || "犀利");
+}
+const chapterList = (plan: Plan, s: [number, number]) =>
+  plan.chapters.slice(s[0], s[1] + 1).map((c) => "・" + c).join("\n");
+
+// 生成單一段（part 0/1/2）。part 0 同時產出千字精華。
+async function generatePart(apiKey: string, args: GenArgs, part: number, prevText: string): Promise<{ excerpt: string; text: string }> {
+  const { plan, isCouple } = planOf(args.version);
+  const system = systemOf(args, isCouple);
   const evb = evidenceBlock(args.evidence || "", isCouple);
-  const chapterList = (s: [number, number]) =>
-    plan.chapters.slice(s[0], s[1] + 1).map((c) => "・" + c).join("\n");
+  const isLast = part === plan.splits.length - 1;
+  let prompt = `【此人命盤資料】\n${args.summary}${evb}\n\n`;
 
+  if (part === 0) {
+    prompt +=
+      `【任務】撰寫「${plan.label}」報告（完整版約一萬字，分三次寫，這是第一次）。\n${plan.goal}\n\n` +
+      `這一次只寫以下章節（每章約 1000~1300 字，用 markdown 小標題）：\n${chapterList(plan, plan.splits[0])}\n\n` +
+      `請嚴格依下列格式輸出（不要 JSON、不要程式碼圍欄、不要多餘說明）：\n\n` +
+      `===千字精華===\n（約 500~700 字：開場一句最準的總綱＋四套系統各一小段＋一段綜合。` +
+      `要白話、要有打勾句，結尾留鉤子讓人想看完整版，但不要寫「請購買」之類的話）\n\n` +
+      `===報告開始===\n（接著寫上面指定的章節）`;
+  } else {
+    const tail = prevText.length > 3000 ? prevText.slice(-3000) : prevText;
+    prompt +=
+      `【任務】你正在撰寫「${plan.label}」報告（約一萬字，分三次寫，這是第 ${part + 1} 次）。\n` +
+      `以下是前文的結尾（供銜接語氣與避免重複，不要重寫這些內容）：\n…${tail}\n\n` +
+      `請無縫接著寫以下章節（每章約 1000~1300 字，markdown 小標題，開頭不要再放總標題或開場白）：\n${chapterList(plan, plan.splits[part])}\n` +
+      (isLast
+        ? `\n**這是最後一段：務必把「最終總結」完整寫完、好好收尾，絕對不能截斷。**`
+        : `\n寫完指定章節就停，不要提前寫後面的章節。`);
+  }
+
+  const text = await callClaude(apiKey, system, prompt);
   let excerpt = "";
-  let full = "";
-
-  for (let i = 0; i < plan.splits.length; i++) {
-    const isFirst = i === 0;
-    const isLast = i === plan.splits.length - 1;
-    let prompt = `【此人命盤資料】\n${args.summary}${evb}\n\n`;
-
-    if (isFirst) {
-      prompt +=
-        `【任務】撰寫「${plan.label}」報告（完整版約一萬字，分三次寫，這是第一次）。\n${plan.goal}\n\n` +
-        `這一次只寫以下章節（每章約 1000~1300 字，用 markdown 小標題）：\n${chapterList(plan.splits[i])}\n\n` +
-        `請嚴格依下列格式輸出（不要 JSON、不要程式碼圍欄、不要多餘說明）：\n\n` +
-        `===千字精華===\n（約 500~700 字：開場一句最準的總綱＋四套系統各一小段＋一段綜合。` +
-        `要白話、要有打勾句，結尾留鉤子讓人想看完整版，但不要寫「請購買」之類的話）\n\n` +
-        `===報告開始===\n（接著寫上面指定的章節）`;
+  let body = text;
+  if (part === 0) {
+    const TAG_E = "===千字精華===";
+    const TAG_F = "===報告開始===";
+    const iF = text.indexOf(TAG_F);
+    if (iF >= 0) {
+      const iE = text.indexOf(TAG_E);
+      excerpt = text.slice(iE >= 0 ? iE + TAG_E.length : 0, iF).trim();
+      body = text.slice(iF + TAG_F.length).trim();
     } else {
-      const tail = full.length > 3000 ? full.slice(-3000) : full;
-      prompt +=
-        `【任務】你正在撰寫「${plan.label}」報告（約一萬字，分三次寫，這是第 ${i + 1} 次）。\n` +
-        `以下是前文的結尾（供銜接語氣與避免重複，不要重寫這些內容）：\n…${tail}\n\n` +
-        `請無縫接著寫以下章節（每章約 1000~1300 字，markdown 小標題，開頭不要再放總標題或開場白）：\n${chapterList(plan.splits[i])}\n` +
-        (isLast
-          ? `\n**這是最後一段：務必把「最終總結」完整寫完、好好收尾，絕對不能截斷。**`
-          : `\n寫完指定章節就停，不要提前寫後面的章節。`);
-    }
-
-    const text = await callClaude(apiKey, system, prompt);
-
-    if (isFirst) {
-      const TAG_E = "===千字精華===";
-      const TAG_F = "===報告開始===";
-      const iF = text.indexOf(TAG_F);
-      if (iF >= 0) {
-        const iE = text.indexOf(TAG_E);
-        excerpt = text.slice(iE >= 0 ? iE + TAG_E.length : 0, iF).trim();
-        full = text.slice(iF + TAG_F.length).trim();
-      } else {
-        full = text.replace(TAG_E, "").trim();
-      }
-    } else {
-      full += "\n\n" + text;
+      body = text.replace(TAG_E, "").trim();
     }
   }
-  return { excerpt, full };
+  return { excerpt, text: body };
 }
 
 /* ============================================================
@@ -283,45 +275,70 @@ Deno.serve(async (req: Request) => {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json({ error: "缺少內容" }, 400); }
 
-  /* ---------- 模式 A：付費訂單自動生成（內部觸發） ---------- */
+  /* ---------- 模式 A：訂單接力生成（內部觸發） ---------- */
   if (body.order_id) {
     if (req.headers.get("x-internal-key") !== SERVICE_KEY) return json({ error: "未授權" }, 401);
     const version = ["script", "breakthrough", "sync", "clash"].includes(String(body.version))
       ? String(body.version) : "script";
+    const part = Math.max(0, Math.min(2, Number(body.part) || 0));
+
     const { data: order } = await admin.from("orders").select("*").eq("id", body.order_id).maybeSingle();
     if (!order) return json({ error: "找不到訂單" }, 404);
     if (!order.case_id) return json({ error: "訂單尚未建立個案" }, 400);
+    const { plan } = planOf(version);
+    const isLast = part === plan.splits.length - 1;
 
     try {
-      const { excerpt, full } = await generateFull(apiKey, {
-        summary: order.summary,
-        version,
+      // 讀取現有草稿（part>0 需要前文）
+      const { data: existing } = await admin.from("reports").select("id,excerpt,full_content")
+        .eq("case_id", order.case_id).eq("version", version).maybeSingle();
+      const prevText = (part > 0 && existing?.full_content) ? existing.full_content : "";
+
+      const args: GenArgs = {
+        summary: order.summary, version,
         evidence: order.evidence || "",
         intensity: order.intensity || "犀利",
         relation: (order.birth && order.birth.relation) || "",
-      });
+      };
+      const { excerpt, text } = await generatePart(apiKey, args, part, prevText);
 
-      // 寫入報告：直接發布＋解鎖（客戶已付費）
-      const { data: existing } = await admin.from("reports").select("id").eq("case_id", order.case_id).eq("version", version).maybeSingle();
-      const payload = { case_id: order.case_id, version, excerpt, full_content: full, published: true, full_unlocked: true };
+      const newFull = part === 0 ? text : (prevText + "\n\n" + text);
+      const payload: Record<string, unknown> = {
+        case_id: order.case_id, version,
+        full_content: newFull,
+        published: isLast, full_unlocked: isLast,
+      };
+      if (part === 0) payload.excerpt = excerpt;
       if (existing) await admin.from("reports").update(payload).eq("id", existing.id);
       else await admin.from("reports").insert(payload);
 
-      // 兩版都完成 → 訂單標記 done（依產品判斷該齊哪兩版）
+      if (!isLast) {
+        // 接力：觸發下一段
+        const next = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
+          body: JSON.stringify({ order_id: order.id, version, part: part + 1 }),
+        }).catch((e) => console.error("接力觸發失敗", version, part + 1, e));
+        // deno-lint-ignore no-explicit-any
+        (globalThis as any).EdgeRuntime?.waitUntil?.(next);
+        return json({ ok: true, version, part, next: part + 1 });
+      }
+
+      // 最後一段：檢查兩版是否都完成
       const { data: reps } = await admin.from("reports").select("version").eq("case_id", order.case_id).eq("published", true);
       const vs = new Set((reps || []).map((r: { version: string }) => r.version));
       const need = order.product === "couple" ? ["sync", "clash"] : ["script", "breakthrough"];
       if (need.every((v) => vs.has(v))) {
         await admin.from("orders").update({ status: "done" }).eq("id", order.id);
       }
-      return json({ ok: true, version });
+      return json({ ok: true, version, part, done: true });
     } catch (e) {
-      await admin.from("orders").update({ status: "failed", error: `${version} 生成失敗：${String(e)}` }).eq("id", order.id);
+      await admin.from("orders").update({ status: "failed", error: `${version} 第${part + 1}段生成失敗：${String(e)}` }).eq("id", order.id);
       return json({ error: String(e) }, 500);
     }
   }
 
-  /* ---------- 模式 B：管理後台手動生成 ---------- */
+  /* ---------- 模式 B：管理後台手動生成（單次精簡版） ---------- */
   const token = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!token) return json({ error: "請先登入" }, 401);
   const { data: userData } = await admin.auth.getUser(token);
@@ -332,7 +349,23 @@ Deno.serve(async (req: Request) => {
   const { summary, name, version, evidence, intensity, relation } = body as Record<string, string>;
   if (!summary) return json({ error: "缺少命盤摘要 summary" }, 400);
   try {
-    const { excerpt, full } = await generateFull(apiKey, { summary, version, evidence, intensity, relation });
+    const { plan, isCouple } = planOf(version || "script");
+    const system = systemOf({ summary, version: version || "script", intensity, relation }, isCouple);
+    const evb = evidenceBlock(evidence || "", isCouple);
+    const prompt =
+      `【此人命盤資料】\n${summary}${evb}\n\n【任務】撰寫「${plan.label}」報告（後台精簡版）。\n${plan.goal}\n\n` +
+      `章節（每章精煉 300~450 字，markdown 小標題，總計約 3000 字）：\n${plan.chapters.map((c) => "・" + c).join("\n")}\n\n` +
+      `請嚴格依下列格式輸出（不要 JSON、不要圍欄）：\n\n===千字精華===\n（約 500~700 字）\n\n===完整報告===\n` +
+      `（依上述章節，**務必把最後一章完整寫完才結束**）`;
+    const text = await callClaude(apiKey, system, prompt, 6500);
+    const TAG_E = "===千字精華===", TAG_F = "===完整報告===";
+    let excerpt = "", full = text;
+    const iF = text.indexOf(TAG_F);
+    if (iF >= 0) {
+      const iE = text.indexOf(TAG_E);
+      excerpt = text.slice(iE >= 0 ? iE + TAG_E.length : 0, iF).trim();
+      full = text.slice(iF + TAG_F.length).trim();
+    }
     return json({ excerpt, full, name, version });
   } catch (e) {
     return json({ error: String(e) }, 500);
