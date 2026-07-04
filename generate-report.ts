@@ -312,24 +312,36 @@ Deno.serve(async (req: Request) => {
       if (existing) await admin.from("reports").update(payload).eq("id", existing.id);
       else await admin.from("reports").insert(payload);
 
-      if (!isLast) {
-        // 接力：觸發下一段
-        const next = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
+      const relay = async (nextVersion: string, nextPart: number) => {
+        const p = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
           method: "POST",
           headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
-          body: JSON.stringify({ order_id: order.id, version, part: part + 1 }),
-        }).catch((e) => console.error("接力觸發失敗", version, part + 1, e));
+          body: JSON.stringify({ order_id: order.id, version: nextVersion, part: nextPart }),
+        }).catch((e) => console.error("接力觸發失敗", nextVersion, nextPart, e));
         // deno-lint-ignore no-explicit-any
-        (globalThis as any).EdgeRuntime?.waitUntil?.(next);
+        (globalThis as any).EdgeRuntime?.waitUntil?.(p);
+        // 留一小段時間確保請求已送出，避免函式結束時請求被凍結
+        await new Promise((r) => setTimeout(r, 1500));
+      };
+
+      if (!isLast) {
+        // 接力：觸發同版本下一段
+        await relay(version, part + 1);
         return json({ ok: true, version, part, next: part + 1 });
       }
 
-      // 最後一段：檢查兩版是否都完成
+      // 最後一段：檢查兩版是否都完成；若第二版還沒開始 → 接力觸發第二版
+      const need = order.product === "couple" ? ["sync", "clash"] : ["script", "breakthrough"];
       const { data: reps } = await admin.from("reports").select("version").eq("case_id", order.case_id).eq("published", true);
       const vs = new Set((reps || []).map((r: { version: string }) => r.version));
-      const need = order.product === "couple" ? ["sync", "clash"] : ["script", "breakthrough"];
       if (need.every((v) => vs.has(v))) {
         await admin.from("orders").update({ status: "done" }).eq("id", order.id);
+        return json({ ok: true, version, part, done: true });
+      }
+      const other = need.find((v) => v !== version);
+      if (other) {
+        const { data: otherRep } = await admin.from("reports").select("id").eq("case_id", order.case_id).eq("version", other).maybeSingle();
+        if (!otherRep) await relay(other, 0);
       }
       return json({ ok: true, version, part, done: true });
     } catch (e) {

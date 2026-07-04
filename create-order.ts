@@ -89,16 +89,16 @@ Deno.serve(async (req: Request) => {
       }
       await admin.from("orders").update({ case_id: kase.id }).eq("id", order.id);
 
-      const invoke = (version: string) =>
-        fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
-          method: "POST",
-          headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
-          body: JSON.stringify({ order_id: order.id, version }),
-        }).catch((e) => console.error("觸發生成失敗", version, e));
-      const versions = isCouple ? ["sync", "clash"] : ["script", "breakthrough"];
-      const job = Promise.allSettled(versions.map(invoke));
+      // 只觸發第一版第一段；後續段落與第二版由 generate-report 自行接力
+      const firstVersion = isCouple ? "sync" : "script";
+      const job = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
+        body: JSON.stringify({ order_id: order.id, version: firstVersion, part: 0 }),
+      }).catch((e) => console.error("觸發生成失敗", e));
       // deno-lint-ignore no-explicit-any
       (globalThis as any).EdgeRuntime?.waitUntil?.(job);
+      await new Promise((r) => setTimeout(r, 1500)); // 確保請求已送出
 
       return json({ free: true, ok: true, order_id: order.id, case_id: kase.id });
     }
