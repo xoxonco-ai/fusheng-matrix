@@ -171,6 +171,7 @@ td.h{color:var(--muted);font-size:12px;letter-spacing:.1em;white-space:nowrap}
     </select>
     <div class="mrow">
       <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$399 →</button>
+      <button class="cancel" id="freeGo" style="display:none;border-color:var(--gold);color:var(--gold-bright)">⚡ 管理員免費生成</button>
       <button class="cancel" id="payCancel">先不要</button>
     </div>
     <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
@@ -353,9 +354,31 @@ $id('payBtn').addEventListener('click', async ()=>{
   if(!P1||!P2){ err.textContent='請先完成合盤'; err.style.display='block'; return; }
   const {data:{session}}=await sb.auth.getSession();
   if(!session){ savePending(); location.href='login.html?next=pay2'; return; }
+  try{ const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+    if(prof&&prof.role==='admin')$id('freeGo').style.display='inline-block'; }catch(e){}
   $id('payModal').style.display='block';
 });
 $id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
+/* 管理員：跳過付款直接生成合盤 */
+$id('freeGo').addEventListener('click', async ()=>{
+  const btn=$id('freeGo'), err=$id('payModalErr'); err.style.display='none';
+  btn.disabled=true; btn.textContent='生成啟動中…';
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session)throw new Error('請重新登入');
+    const resp=await fetch(window.SB_URL+'/functions/v1/create-order',{
+      method:'POST',
+      headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token,'apikey':window.SB_KEY},
+      body:JSON.stringify({free:true,product:'couple',summary:SUMMARY,birth:{p1:P1,p2:P2,relation:$id('relation').value},evidence:$id('payEvidence').value.trim(),intensity:$id('payIntensity').value})
+    });
+    const data=await resp.json();
+    if(!resp.ok||data.error)throw new Error(data.error||('HTTP '+resp.status));
+    location.href='report.html?from=free';
+  }catch(e){
+    err.textContent='免費生成失敗：'+e.message; err.style.display='block';
+    btn.disabled=false; btn.textContent='⚡ 管理員免費生成';
+  }
+});
 $id('payGo').addEventListener('click', async ()=>{
   const btn=$id('payGo'), err=$id('payModalErr'); err.style.display='none';
   btn.disabled=true; btn.textContent='訂單建立中…';
