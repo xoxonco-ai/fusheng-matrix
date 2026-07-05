@@ -275,6 +275,38 @@ Deno.serve(async (req: Request) => {
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return json({ error: "缺少內容" }, 400); }
 
+  /* ---------- 模式 R：訂單擁有者觸發補跑（掉棒自癒） ----------
+     report.html 輪詢時呼叫：若某版整版缺失、或草稿卡超過 5 分鐘未發布 → 補跑該版 */
+  if (body.resume_order) {
+    const rtoken = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    if (!rtoken) return json({ error: "請先登入" }, 401);
+    const { data: ruser } = await admin.auth.getUser(rtoken);
+    if (!ruser?.user) return json({ error: "登入已過期" }, 401);
+    const { data: rorder } = await admin.from("orders").select("*").eq("id", body.resume_order).maybeSingle();
+    if (!rorder || rorder.user_id !== ruser.user.id) return json({ error: "找不到訂單" }, 404);
+    if (rorder.status !== "generating" || !rorder.case_id) return json({ ok: false, skip: true });
+    const rneed = rorder.product === "couple" ? ["sync", "clash"] : ["script", "breakthrough"];
+    const fired: string[] = [];
+    for (const v of rneed) {
+      const { data: rep } = await admin.from("reports").select("id,published,created_at")
+        .eq("case_id", rorder.case_id).eq("version", v).maybeSingle();
+      const stale = rep && !rep.published && (Date.now() - new Date(rep.created_at).getTime() > 5 * 60 * 1000);
+      if (!rep || stale) {
+        const p = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
+          body: JSON.stringify({ order_id: rorder.id, version: v, part: 0 }),
+        }).catch((e) => console.error("補跑觸發失敗", v, e));
+        // deno-lint-ignore no-explicit-any
+        (globalThis as any).EdgeRuntime?.waitUntil?.(p);
+        fired.push(v);
+        break; // 一次補一版
+      }
+    }
+    if (fired.length) await new Promise((r) => setTimeout(r, 1500));
+    return json({ ok: true, fired });
+  }
+
   /* ---------- 模式 A：訂單接力生成（內部觸發） ---------- */
   if (body.order_id) {
     if (req.headers.get("x-internal-key") !== SERVICE_KEY) return json({ error: "未授權" }, 401);

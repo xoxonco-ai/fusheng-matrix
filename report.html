@@ -35,10 +35,23 @@ $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); loca
 
 // 訂單狀態橫幅：付款後生成中 → 每 20 秒自動更新
 async function orderBanner(userId){
-  const {data:orders} = await sb.from('orders').select('status,error,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(1);
+  const {data:orders} = await sb.from('orders').select('id,status,error,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(1);
   const o = orders && orders[0];
   if(!o) return {html:'', generating:false};
   if(o.status==='paid'||o.status==='generating'){
+    // 掉棒自癒：每 3 分鐘請後端檢查缺失的版本並補跑
+    try{
+      const key='fs_resume_'+o.id;
+      if(Date.now()-(parseInt(localStorage.getItem(key)||'0',10)) > 180000){
+        localStorage.setItem(key, String(Date.now()));
+        const {data:{session}} = await sb.auth.getSession();
+        if(session) fetch(window.SB_URL+'/functions/v1/generate-report',{
+          method:'POST',
+          headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token,'apikey':window.SB_KEY},
+          body:JSON.stringify({resume_order:o.id})
+        }).catch(()=>{});
+      }
+    }catch(e){}
     return {generating:true, html:`<div class="card center" style="border-color:var(--gold)">
       <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的報告正在生成中…</p>
       <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依命盤撰寫兩份完整報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
