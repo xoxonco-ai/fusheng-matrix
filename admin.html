@@ -156,10 +156,22 @@ async function genAI(caseId,version){
   const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（萬字分三段撰寫，約 3～6 分鐘，請耐心等待、勿重複按、勿關閉）';
   const btn=$('ai-'+caseId); if(btn)btn.disabled=true;
   try{
-    const summary=chartSummary(c);
+    // 合盤個案：組合兩人命盤摘要＋關係階段；單人個案：原邏輯
+    const isCouple = !!(c.chart && c.chart.couple);
+    let summary, relation='';
+    if(isCouple){
+      const p2 = c.chart.couple.p2 || {};
+      relation = c.chart.couple.relation || '';
+      const p1name = (c.name||'').split(' ✕ ')[0] || '甲';
+      summary = '【甲｜'+p1name+'】\n' + chartSummary(Object.assign({}, c, {name:p1name}))
+              + '\n\n【乙｜'+(p2.name||'乙')+'】\n' + chartSummary(p2)
+              + '\n\n【關係階段】' + relation;
+    } else {
+      summary = chartSummary(c);
+    }
     const intensity=($('intensity-'+caseId)||{}).value||'犀利';
     const {data:{session}}=await sb.auth.getSession();
-    const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,evidence:(c.chart&&c.chart.evidence)||''})});
+    const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||''})});
     const data=await resp.json();
     if(!resp.ok||data.error){ m.className='msg err'; m.textContent='AI 生成失敗：'+(data.error||resp.status)+'（請確認金鑰與函式已部署）'; return; }
     if($('ex-'+caseId))$('ex-'+caseId).value=data.excerpt||'';
