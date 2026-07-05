@@ -50,6 +50,48 @@
       <div class="msg" id="caseMsg"></div>
     </div>
 
+    <!-- 新增合盤個案 -->
+    <div class="card">
+      <h3 style="font-size:18px;letter-spacing:.05em;margin-bottom:6px">＋ 新增合盤個案（情侶／夫妻）</h3>
+      <div class="grid2">
+        <div>
+          <p style="font-family:var(--sans);font-size:12px;letter-spacing:.25em;color:var(--gold-bright);margin:10px 0 0">甲方</p>
+          <label>姓名 / 暱稱</label><input id="h-a-name" placeholder="甲方稱呼">
+          <label>性別</label><select id="h-a-gender"><option value="女">女</option><option value="男">男</option></select>
+          <label>出生日期</label><input type="date" id="h-a-date">
+          <label>出生時間（不確定可留白）</label><input type="time" id="h-a-time">
+          <label>出生地</label><select id="h-a-city"></select>
+        </div>
+        <div>
+          <p style="font-family:var(--sans);font-size:12px;letter-spacing:.25em;color:var(--gold-bright);margin:10px 0 0">乙方</p>
+          <label>姓名 / 暱稱</label><input id="h-b-name" placeholder="乙方稱呼">
+          <label>性別</label><select id="h-b-gender"><option value="男">男</option><option value="女">女</option></select>
+          <label>出生日期</label><input type="date" id="h-b-date">
+          <label>出生時間（不確定可留白）</label><input type="time" id="h-b-time">
+          <label>出生地</label><select id="h-b-city"></select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div><label>關係階段</label>
+          <select id="h-relation">
+            <option value="曖昧探索">曖昧・還在互相靠近</option>
+            <option value="熱戀磨合" selected>交往中・熱戀與磨合</option>
+            <option value="穩定婚姻">穩定關係・夫妻</option>
+            <option value="修復期">修復期・想把關係修回來</option>
+          </select>
+        </div>
+        <div><label>指派給個案帳號</label><select id="h-client"></select></div>
+      </div>
+      <label>共同經歷的真實事件（選填，AI 會拿來當鐵證）</label>
+      <textarea id="h-evidence" style="min-height:70px" placeholder="例：遠距離兩年、正在籌備婚禮、剛經歷一次大吵、合資買了房…　越具體，報告越準。"></textarea>
+      <div class="row" style="margin-top:18px">
+        <button class="btn" id="hAddGen">⚡ 建立並免費生成完整合盤</button>
+        <button class="btn ghost small" id="hAddOnly">僅建立個案（手動填報告）</button>
+        <span class="muted" style="font-family:var(--sans);font-size:12px">完整生成＝同頻版＋碰撞版各約萬字，約 10 分鐘</span>
+      </div>
+      <div class="msg" id="hMsg"></div>
+    </div>
+
     <h3 style="font-size:16px;letter-spacing:.15em;color:var(--gold);margin:26px 0 14px">個案清單</h3>
     <div id="cases"></div>
   </div>
@@ -65,7 +107,7 @@ const EDGE_URL = window.SB_URL + '/functions/v1/generate-report';
 
 /* ===== 城市（出生地→經緯度時區） ===== */
 const CITY=[['台北',121.5654,25.0330,8],['新北',121.4628,25.0169,8],['基隆',121.7392,25.1276,8],['桃園',121.3010,24.9936,8],['新竹',120.9686,24.8138,8],['台中',120.6839,24.1477,8],['彰化',120.5161,24.0809,8],['嘉義',120.4473,23.4801,8],['台南',120.2270,22.9999,8],['高雄',120.3014,22.6273,8],['屏東',120.4886,22.6826,8],['宜蘭',121.7195,24.7021,8],['花蓮',121.6015,23.9871,8],['台東',121.1444,22.7583,8],['澎湖',119.5793,23.5712,8],['金門',118.3186,24.4321,8],['香港',114.1694,22.3193,8],['澳門',113.5439,22.1987,8],['北京',116.4074,39.9042,8],['上海',121.4737,31.2304,8],['廣州',113.2644,23.1291,8],['深圳',114.0579,22.5431,8],['台中',120.6839,24.1477,8],['東京',139.6917,35.6895,9],['首爾',126.9780,37.5665,9],['新加坡',103.8198,1.3521,8],['吉隆坡',101.6869,3.1390,8],['曼谷',100.5018,13.7563,7],['紐約',-74.0060,40.7128,-5],['洛杉磯',-118.2437,34.0522,-8],['溫哥華',-123.1207,49.2827,-8],['倫敦',-0.1276,51.5074,0],['雪梨',151.2093,-33.8688,10]];
-function buildCity(){const sel=$('c-city');if(!sel)return;sel.innerHTML=CITY.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('');}
+function buildCity(){['c-city','h-a-city','h-b-city'].forEach(id=>{const sel=$(id);if(sel)sel.innerHTML=CITY.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('');});}
 
 /* ===== 命盤摘要計算（給 AI 用） ===== */
 const _s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
@@ -189,7 +231,9 @@ async function loadAll(){
   // 個案帳號（client 角色）
   const {data:profs} = await sb.from('profiles').select('id,display_name,role');
   CLIENTS = (profs||[]).filter(p=>p.role==='client');
-  const sel=$('c-client'); sel.innerHTML='<option value="">（暫不指派）</option>'+CLIENTS.map(c=>`<option value="${c.id}">${esc(c.display_name||c.id)}</option>`).join('');
+  const clientOpts='<option value="">（暫不指派）</option>'+CLIENTS.map(c=>`<option value="${c.id}">${esc(c.display_name||c.id)}</option>`).join('');
+  const sel=$('c-client'); sel.innerHTML=clientOpts;
+  if($('h-client'))$('h-client').innerHTML=clientOpts;
   // 個案與其報告
   const {data:cases} = await sb.from('cases').select('*, reports(*)').order('created_at',{ascending:false});
   CASES = cases||[];
@@ -311,6 +355,58 @@ $('addCase').addEventListener('click', async ()=>{
   const {error}=await sb.from('cases').insert(payload);
   if(error){ m.className='msg err'; m.textContent='建立失敗：'+error.message; }
   else { m.className='msg ok'; m.textContent='已建立個案'; $('c-name').value='';$('c-date').value='';$('c-time').value='';$('c-evidence').value=''; await loadAll(); }
+});
+
+/* ===== 新增合盤個案 ===== */
+function readHP(pfx){
+  const date=$(`h-${pfx}-date`).value, time=$(`h-${pfx}-time`).value;
+  if(!date)throw new Error('請填寫甲乙雙方的出生日期');
+  const ci=CITY[$(`h-${pfx}-city`).value]||CITY[0];
+  return {name:$(`h-${pfx}-name`).value.trim()||(pfx==='a'?'甲':'乙'), gender:$(`h-${pfx}-gender`).value,
+    birth_date:date, birth_time:time||null, unknown_time:!time,
+    birth_place:ci[0], lon:ci[1], lat:ci[2], tz:ci[3]};
+}
+$('hAddGen').addEventListener('click', async ()=>{
+  const m=$('hMsg'); m.className='msg'; m.textContent='';
+  const btn=$('hAddGen'); btn.disabled=true;
+  try{
+    const p1=readHP('a'), p2=readHP('b');
+    const relation=$('h-relation').value, evidence=$('h-evidence').value.trim();
+    m.className='msg ok'; m.textContent='⏳ 排盤計算中…';
+    const summary='【甲｜'+p1.name+'】\n'+chartSummary(p1)+'\n\n【乙｜'+p2.name+'】\n'+chartSummary(p2)+'\n\n【關係階段】'+relation;
+    const {data:{session}}=await sb.auth.getSession();
+    const resp=await fetch(window.SB_URL+'/functions/v1/create-order',{
+      method:'POST',
+      headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token,'apikey':window.SB_KEY},
+      body:JSON.stringify({free:true,product:'couple',summary,birth:{p1,p2,relation},evidence,intensity:'犀利'})
+    });
+    const data=await resp.json();
+    if(!resp.ok||data.error)throw new Error(data.error||('HTTP '+resp.status));
+    if($('h-client').value && data.case_id){
+      await sb.from('cases').update({client_id:$('h-client').value}).eq('id',data.case_id);
+    }
+    m.className='msg ok'; m.textContent='✓ 已建立並啟動生成（同頻版＋碰撞版，約 10 分鐘）。完成後重新整理本頁即可在個案清單看到；若指派了帳號，客戶屆時登入就看得到。';
+    await loadAll();
+  }catch(e){ m.className='msg err'; m.textContent='失敗：'+e.message; }
+  finally{ btn.disabled=false; }
+});
+$('hAddOnly').addEventListener('click', async ()=>{
+  const m=$('hMsg'); m.className='msg'; m.textContent='';
+  try{
+    const p1=readHP('a'), p2=readHP('b');
+    const relation=$('h-relation').value, evidence=$('h-evidence').value.trim();
+    const chart={couple:{relation,p2}}; if(evidence)chart.evidence=evidence;
+    const {error}=await sb.from('cases').insert({
+      client_id:$('h-client').value||null,
+      name:p1.name+' ✕ '+p2.name+'｜合盤',
+      gender:p1.gender, birth_date:p1.birth_date, birth_time:p1.birth_time,
+      birth_place:p1.birth_place, lon:p1.lon, lat:p1.lat, tz:p1.tz,
+      unknown_time:p1.unknown_time, chart, created_by:ME.id
+    });
+    if(error)throw new Error(error.message);
+    m.className='msg ok'; m.textContent='✓ 已建立合盤個案（未生成報告）。在下方清單點「合盤・同頻版／碰撞版」可手動填寫或按 ✨ AI 生成。';
+    await loadAll();
+  }catch(e){ m.className='msg err'; m.textContent='失敗：'+e.message; }
 });
 
 (async ()=>{
