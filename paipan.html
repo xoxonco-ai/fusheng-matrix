@@ -193,23 +193,24 @@ td{color:var(--text);font-weight:300}
     </div>
 
     <div class="cta-final">
-      <h3>解鎖你的完整「萬字報告」</h3>
+      <h3>想看見困住你的完整「萬字報告」？</h3>
       <p>千字讓你看見主線；萬字把你的人生劇本、矛盾盲區與破局之道整份拆開。</p>
-      <p class="price-line"><span class="price">NT$ 199</span><span class="per">一次付費・兩份報告</span></p>
       <p class="pay-points">
         <b>劇本版</b>（約萬字）＋<b>破局版</b>（約萬字）兩份都給<br>
-        付款完成後由系統依你的命盤<b>自動生成</b>，約 5～10 分鐘<br>
+        私訊我們任一平台，<b>為你親自開通</b><br>
         報告存進你的會員帳號，<b>隨時登入重看</b>
       </p>
-      <button class="paybtn" id="payBtn">付費解鎖 · NT$199 ✦</button>
+      <p class="step-label">私訊我們解鎖（任選一個平台）</p>
+      <div class="social-btns">
+        <a class="ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
+        <a class="ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+        <a class="ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+      </div>
+      <button class="paybtn" id="payBtn" style="display:none;margin-top:18px">⚡ 管理員：直接生成萬字 ✦</button>
       <p class="err" id="payErr" style="margin-top:14px"></p>
       <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
-        <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
-        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 NT$399 →</a><br>
-        有任何問題，歡迎私訊：
-        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--muted)">Facebook</a> ·
-        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--muted)">Instagram</a> ·
-        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener" style="color:var(--muted)">Threads</a>
+        <span style="color:var(--gold)">已經開通了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
+        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 →</a>
       </p>
     </div>
     <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
@@ -230,12 +231,12 @@ td{color:var(--text);font-weight:300}
       <option value="狠">狠——不留情面，敢講最痛的</option>
     </select>
     <div class="mrow">
-      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$199 →</button>
-      <button class="cancel" id="freeGo" style="display:none;border-color:var(--gold);color:var(--gold-bright)">⚡ 管理員免費生成</button>
+      <button class="paybtn" id="payGo" style="display:none">前往付款 →</button>
+      <button class="paybtn" id="freeGo" style="display:none;padding:14px 36px;font-size:15px">⚡ 直接生成萬字 →</button>
       <button class="cancel" id="payCancel">先不要</button>
     </div>
     <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
-    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">付款由第三方金流（GoMyPay 萬事達）安全加密處理，本站不會接觸你的卡號。付款完成後報告自動生成（約 5～10 分鐘），存入你的會員帳號。</p>
+    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">生成約 5～10 分鐘（劇本版＋破局版各約萬字），完成後存入會員帳號，可於後台指派給客戶。</p>
   </div>
 </div>
 
@@ -616,13 +617,16 @@ function savePending(){
     ts:Date.now()
   }));
 }
+/* 管理員登入時才顯示直接生成按鈕（一般訪客走私訊） */
+(async ()=>{ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)return;
+  const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+  if(prof&&prof.role==='admin'){ $id('payBtn').style.display='inline-block'; $id('freeGo').style.display='inline-block'; }
+}catch(e){} })();
 $id('payBtn').addEventListener('click', async ()=>{
   const err=$id('payErr'); err.style.display='none';
   if(!CUR_BIRTH){ err.textContent='請先完成排盤'; err.style.display='block'; return; }
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){ savePending(); location.href='login.html?next=pay'; return; }
-  try{ const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
-    if(prof&&prof.role==='admin')$id('freeGo').style.display='inline-block'; }catch(e){}
   $id('payModal').style.display='block';
 });
 $id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
@@ -668,7 +672,7 @@ $id('payGo').addEventListener('click', async ()=>{
     document.body.appendChild(f); f.submit();
   }catch(e){
     err.textContent='無法前往付款：'+e.message; err.style.display='block';
-    btn.disabled=false; btn.textContent='前往付款 NT$199 →';
+    btn.disabled=false; btn.textContent='前往付款 →';
   }
 });
 /* 登入後回來：還原排盤、直接打開付款視窗（延後到 buildCity() 完成後執行） */

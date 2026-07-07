@@ -53,19 +53,19 @@ async function orderBanner(userId){
       }
     }catch(e){}
     return {generating:true, html:`<div class="card center" style="border-color:var(--gold)">
-      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的報告正在生成中…</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 你的報告正在生成中…</p>
       <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依命盤撰寫兩份完整報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
     </div>`};
   }
   if(o.status==='pending' && (Date.now()-new Date(o.created_at).getTime()) < 24*3600e3){
     return {generating:false, html:`<div class="card center">
-      <p style="font-family:var(--sans);font-size:15px;color:var(--muted)">你有一筆尚未完成的付款。<a href="paipan.html" style="color:var(--gold-bright)">回排盤頁重新購買 →</a></p>
+      <p style="font-family:var(--sans);font-size:15px;color:var(--muted)">有一筆未完成的申請。<a href="paipan.html" style="color:var(--gold-bright)">回排盤頁 →</a></p>
     </div>`};
   }
   if(o.status==='failed'){
     return {generating:false, html:`<div class="card center">
       <p style="font-family:var(--sans);font-size:15px;color:var(--crimson-bright,#d98a9c);margin-bottom:6px">報告生成遇到問題</p>
-      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">請不用擔心，你的付款已收到。私訊我們任一平台，會盡快為你補上：
+      <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">請不用擔心，私訊我們任一平台，會盡快為你補上：
       <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a> ·
       <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--gold-bright)">Instagram</a></p>
     </div>`};
@@ -90,13 +90,13 @@ async function orderBanner(userId){
   if(!reports || !reports.length){
     box.innerHTML= banner.html || `<div class="card center">
       <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功 ✦</p>
-      <p class="muted" style="font-family:var(--sans)">購買後，你的千字精華與萬字報告就會出現在這裡。</p>
-      <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再一鍵解鎖（單人萬字 NT$199／情侶合盤 NT$399）。</p>
+      <p class="muted" style="font-family:var(--sans)">開通後，你的千字精華與萬字報告就會出現在這裡。</p>
+      <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再私訊我們為你解鎖（單人萬字／情侶合盤）。</p>
       <div class="row" style="justify-content:center;margin-top:16px">
-        <a class="btn small" href="paipan.html">單人排盤 · NT$199 →</a>
-        <a class="btn ghost small" href="hepan.html">情侶合盤 · NT$399 →</a>
+        <a class="btn small" href="paipan.html">免費排盤 →</a>
+        <a class="btn ghost small" href="hepan.html">情侶合盤 →</a>
       </div>
-      <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:12.5px">有問題？私訊我們：
+      <p class="muted" style="font-family:var(--sans);margin-top:18px;font-size:12.5px">私訊我們解鎖：
         <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a> ·
         <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--gold-bright)">Instagram</a> ·
         <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Threads</a>

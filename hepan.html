@@ -137,18 +137,22 @@ td.h{color:var(--muted);font-size:12px;letter-spacing:.1em;white-space:nowrap}
     </div>
 
     <div class="cta-final">
-      <h3>解鎖你們的完整「合盤報告」</h3>
+      <h3>想看見你們完整的「合盤報告」？</h3>
       <p>兩份報告，一段關係的兩面。</p>
-      <p class="price-line"><span class="price">NT$ 399</span><span class="per">一次付費・兩份合盤報告</span></p>
       <p class="pay-points">
         <b>同頻版</b>——你們怎麼吸引彼此、最好的樣子、相處說明書<br>
         <b>碰撞版</b>——你們怎麼互相消耗、衝突迴圈解剖、拆彈手冊<br>
-        付款後由系統依兩張命盤<b>自動生成</b>（約 5～10 分鐘），存入會員帳號<b>隨時重看</b>
+        私訊我們任一平台<b>為你們開通</b>，報告存進會員帳號<b>隨時重看</b>
       </p>
-      <button class="paybtn" id="payBtn">付費解鎖 · NT$399 ✦</button>
+      <div class="social-btns" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a class="cancel" style="text-decoration:none;padding:13px 30px" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
+        <a class="cancel" style="text-decoration:none;padding:13px 30px" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+        <a class="cancel" style="text-decoration:none;padding:13px 30px" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+      </div>
+      <button class="paybtn" id="payBtn" style="display:none;margin-top:18px">⚡ 管理員：直接生成合盤 ✦</button>
       <p class="err" id="payErr" style="margin-top:14px"></p>
       <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
-        <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的報告 →</a><br>
+        <span style="color:var(--gold)">已經開通了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的報告 →</a><br>
         想看個人完整命盤？<a href="paipan.html" style="color:var(--gold-bright)">單人排盤（免費）→</a>
       </p>
     </div>
@@ -170,12 +174,12 @@ td.h{color:var(--muted);font-size:12px;letter-spacing:.1em;white-space:nowrap}
       <option value="狠">狠——不留情面，敢講最痛的</option>
     </select>
     <div class="mrow">
-      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$399 →</button>
-      <button class="cancel" id="freeGo" style="display:none;border-color:var(--gold);color:var(--gold-bright)">⚡ 管理員免費生成</button>
+      <button class="paybtn" id="payGo" style="display:none">前往付款 →</button>
+      <button class="paybtn" id="freeGo" style="display:none;padding:14px 36px;font-size:15px">⚡ 直接生成合盤 →</button>
       <button class="cancel" id="payCancel">先不要</button>
     </div>
     <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
-    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">付款由第三方金流（GoMyPay 萬事達）安全加密處理，本站不會接觸你的卡號。付款完成後兩份合盤報告自動生成（約 5～10 分鐘），存入你的會員帳號。</p>
+    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">生成約 5～10 分鐘（同頻版＋碰撞版各約萬字），完成後存入會員帳號，可於後台指派給客戶。</p>
   </div>
 </div>
 
@@ -341,7 +345,7 @@ $id('run').addEventListener('click',()=>{
   }catch(e){err.textContent=e.message;err.style.display='block'}
 });
 
-/* ===== 付費解鎖 NT$399 ===== */
+/* ===== 解鎖流程（引流模式：訪客私訊、管理員直接生成；金流保留備用） ===== */
 const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
 function savePending(){
   const f={};['a-name','a-gender','a-date','a-time','b-name','b-gender','b-date','b-time','relation'].forEach(k=>f[k]=$id(k).value);
@@ -349,13 +353,16 @@ function savePending(){
   f['a-city']=$id('a-city').value; f['b-city']=$id('b-city').value;
   localStorage.setItem('fs_pending2', JSON.stringify({form:f, ts:Date.now()}));
 }
+/* 管理員登入時才顯示直接生成按鈕（一般訪客走私訊） */
+(async ()=>{ try{
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)return;
+  const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+  if(prof&&prof.role==='admin'){ $id('payBtn').style.display='inline-block'; $id('freeGo').style.display='inline-block'; }
+}catch(e){} })();
 $id('payBtn').addEventListener('click', async ()=>{
   const err=$id('payErr'); err.style.display='none';
   if(!P1||!P2){ err.textContent='請先完成合盤'; err.style.display='block'; return; }
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session){ savePending(); location.href='login.html?next=pay2'; return; }
-  try{ const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
-    if(prof&&prof.role==='admin')$id('freeGo').style.display='inline-block'; }catch(e){}
   $id('payModal').style.display='block';
 });
 $id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
@@ -404,7 +411,7 @@ $id('payGo').addEventListener('click', async ()=>{
     document.body.appendChild(f); f.submit();
   }catch(e){
     err.textContent='無法前往付款：'+e.message; err.style.display='block';
-    btn.disabled=false; btn.textContent='前往付款 NT$399 →';
+    btn.disabled=false; btn.textContent='前往付款 →';
   }
 });
 /* 登入後回來：還原兩人資料、自動合盤、打開付款視窗 */
