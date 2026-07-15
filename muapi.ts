@@ -162,7 +162,7 @@ export class MuapiClient {
       try {
         const res = await fetch(url, { headers: this.headers });
         if (!res.ok) {
-          if (res.status >= 500) continue; // 上游暫時性錯誤，繼續輪詢
+          if (res.status >= 500 || res.status === 429) continue; // 暫時性錯誤或速率限制，繼續輪詢
           throw new MuapiError(`輪詢失敗：${res.status} ${(await res.text()).slice(0, 200)}`, res.status);
         }
         const data = (await res.json()) as Record<string, unknown>;
