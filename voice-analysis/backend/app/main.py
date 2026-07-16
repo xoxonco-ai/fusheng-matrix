@@ -1,4 +1,5 @@
 """FastAPI application: upload → convert → quality gate → analyze → score."""
+import asyncio
 import shutil
 import tempfile
 import uuid
@@ -77,8 +78,10 @@ async def analyze(
         if size == 0:
             raise HTTPException(status_code=422, detail="檔案是空的")
 
-        # Duration validation before full decode
-        dur = probe_duration(src)
+        # Duration validation before full decode. All CPU/subprocess-heavy
+        # steps below run in the default thread pool so they don't block
+        # the event loop while an analysis is in flight.
+        dur = await asyncio.to_thread(probe_duration, src)
         if dur is not None:
             if dur < settings.min_duration_sec:
                 raise HTTPException(
@@ -93,13 +96,14 @@ async def analyze(
 
         # Safe conversion to mono WAV
         try:
-            wav_path = convert_to_mono_wav(
-                src, workdir, settings.sample_rate, settings.max_duration_sec
+            wav_path = await asyncio.to_thread(
+                convert_to_mono_wav,
+                src, workdir, settings.sample_rate, settings.max_duration_sec,
             )
         except ConversionError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-        y, sr = sf.read(wav_path, dtype="float32")
+        y, sr = await asyncio.to_thread(sf.read, wav_path, dtype="float32")
         duration = len(y) / sr
         if duration < settings.min_duration_sec:
             raise HTTPException(
@@ -107,7 +111,9 @@ async def analyze(
                 detail=f"有效音訊太短（{duration:.1f} 秒），至少需要 {settings.min_duration_sec:.0f} 秒",
             )
 
-        features = extract_features(y, sr, settings.f0_min, settings.f0_max)
+        features = await asyncio.to_thread(
+            extract_features, y, sr, settings.f0_min, settings.f0_max
+        )
         quality = assess_quality(features, settings.min_confidence)
 
         if quality.ok:
@@ -118,7 +124,8 @@ async def analyze(
             scores = None
             status = "insufficient_quality"
 
-        analysis_id = db.save_analysis(
+        analysis_id = await asyncio.to_thread(
+            db.save_analysis,
             settings.db_path,
             nickname=nickname,
             reference=reference,

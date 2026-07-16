@@ -31,7 +31,7 @@ def probe_duration(path: Path) -> float | None:
         if out.returncode != 0:
             return None
         return float(out.stdout.strip())
-    except (subprocess.TimeoutExpired, ValueError):
+    except (subprocess.TimeoutExpired, ValueError, FileNotFoundError):
         return None
 
 
@@ -61,6 +61,9 @@ def convert_to_mono_wav(src: Path, dst_dir: Path, sample_rate: int, max_duration
     except subprocess.TimeoutExpired as exc:
         dst.unlink(missing_ok=True)
         raise ConversionError("轉檔逾時") from exc
+    except FileNotFoundError as exc:
+        dst.unlink(missing_ok=True)
+        raise ConversionError("系統未安裝 ffmpeg，無法進行轉檔") from exc
     if proc.returncode != 0 or not dst.exists() or dst.stat().st_size == 0:
         dst.unlink(missing_ok=True)
         raise ConversionError(f"無法解碼音檔: {proc.stderr.strip()[:300]}")

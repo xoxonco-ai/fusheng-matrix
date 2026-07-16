@@ -69,6 +69,13 @@ export default function ResultView({ result }: { result: AnalysisResult }) {
   const [open, setOpen] = useState<string | null>(null);
   const { features: f, quality, scores } = result;
 
+  // primary/secondary can be null even with scores present (not enough
+  // scorable elements) — treat that the same as insufficient quality.
+  const primary = scores?.primary ?? null;
+  const secondary = scores?.secondary ?? null;
+  const hasConclusion =
+    result.status === "completed" && scores !== null && primary !== null && secondary !== null;
+
   const radarData = scores
     ? ELEMENT_ORDER.map((k) => ({
         element: `${ELEMENT_META[k].zh}`,
@@ -99,7 +106,7 @@ export default function ResultView({ result }: { result: AnalysisResult }) {
         </section>
       )}
 
-      {result.status === "insufficient_quality" || !scores ? (
+      {!hasConclusion || !scores || !primary || !secondary ? (
         <section className="space-y-3 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-center">
           <p className="text-lg font-bold text-red-300">音訊品質不足，無法給出五行結論</p>
           <p className="text-sm text-zinc-300">
@@ -116,19 +123,19 @@ export default function ResultView({ result }: { result: AnalysisResult }) {
         <>
           <section className="rounded-xl bg-zinc-900 p-4 text-center">
             <p className="text-sm text-zinc-400">主型</p>
-            <p className="text-4xl font-bold" style={{ color: ELEMENT_META[scores.primary!]?.color }}>
+            <p className="text-4xl font-bold" style={{ color: ELEMENT_META[primary]?.color }}>
               {scores.primary_zh}
             </p>
             <p className="mt-1 text-xs text-zinc-500">
-              {ELEMENT_META[scores.primary!]?.blurb}
+              {ELEMENT_META[primary]?.blurb}
             </p>
             <p className="mt-3 text-sm text-zinc-400">
               輔型：
-              <span className="font-semibold" style={{ color: ELEMENT_META[scores.secondary!]?.color }}>
+              <span className="font-semibold" style={{ color: ELEMENT_META[secondary]?.color }}>
                 {scores.secondary_zh}
               </span>
               <span className="ml-1 text-xs text-zinc-500">
-                {ELEMENT_META[scores.secondary!]?.blurb}
+                {ELEMENT_META[secondary]?.blurb}
               </span>
             </p>
           </section>

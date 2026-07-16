@@ -32,6 +32,7 @@ export default function Recorder({
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const secondsRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -82,12 +83,12 @@ export default function Recorder({
       recorderRef.current = rec;
       rec.start(250);
       setRecording(true);
+      secondsRef.current = 0;
       setSeconds(0);
       timerRef.current = setInterval(() => {
-        setSeconds((s) => {
-          if (s + 1 >= MAX_SEC) stop();
-          return s + 1;
-        });
+        secondsRef.current += 1;
+        setSeconds(secondsRef.current);
+        if (secondsRef.current >= MAX_SEC) stop();
       }, 1000);
     } catch {
       setError("無法使用麥克風，請確認瀏覽器權限，或改用檔案上傳。");
