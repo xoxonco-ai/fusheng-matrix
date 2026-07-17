@@ -193,24 +193,23 @@ td{color:var(--text);font-weight:300}
     </div>
 
     <div class="cta-final">
-      <h3>想看見困住你的完整「萬字報告」？</h3>
+      <h3>解鎖你的完整「萬字報告」</h3>
       <p>千字讓你看見主線；萬字把你的人生劇本、矛盾盲區與破局之道整份拆開。</p>
+      <p class="price-line"><span class="price">NT$ 199</span><span class="per">一次付費・兩份報告</span></p>
       <p class="pay-points">
         <b>劇本版</b>（約萬字）＋<b>破局版</b>（約萬字）兩份都給<br>
-        私訊我們任一平台，<b>為你親自開通</b><br>
+        付款完成後由系統依你的命盤<b>自動生成</b>，約 5～10 分鐘<br>
         報告存進你的會員帳號，<b>隨時登入重看</b>
       </p>
-      <p class="step-label">私訊我們解鎖（任選一個平台）</p>
-      <div class="social-btns">
-        <a class="ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
-        <a class="ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
-        <a class="ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
-      </div>
-      <button class="paybtn" id="payBtn" style="display:none;margin-top:18px">⚡ 管理員：直接生成萬字 ✦</button>
+      <button class="paybtn" id="payBtn">付費解鎖 · NT$199 ✦</button>
       <p class="err" id="payErr" style="margin-top:14px"></p>
       <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
-        <span style="color:var(--gold)">已經開通了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
-        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 →</a>
+        <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
+        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 NT$399 →</a><br>
+        付款遇到問題？私訊：
+        <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--muted)">Facebook</a> ·
+        <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--muted)">Instagram</a> ·
+        <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener" style="color:var(--muted)">Threads</a>
       </p>
     </div>
     <p class="disclaimer" data-i18n="disc">本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。</p>
@@ -231,12 +230,12 @@ td{color:var(--text);font-weight:300}
       <option value="狠">狠——不留情面，敢講最痛的</option>
     </select>
     <div class="mrow">
-      <button class="paybtn" id="payGo" style="display:none">前往付款 →</button>
-      <button class="paybtn" id="freeGo" style="display:none;padding:14px 36px;font-size:15px">⚡ 直接生成萬字 →</button>
+      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$199 →</button>
+      <button class="cancel" id="freeGo" style="display:none;border-color:var(--gold);color:var(--gold-bright)">⚡ 管理員免費生成</button>
       <button class="cancel" id="payCancel">先不要</button>
     </div>
     <p class="err" id="payModalErr" style="margin-top:12px;text-align:left"></p>
-    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">生成約 5～10 分鐘（劇本版＋破局版各約萬字），完成後存入會員帳號，可於後台指派給客戶。</p>
+    <p style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:16px;line-height:1.8">付款由第三方金流（GoMyPay 萬事達）安全加密處理，本站不會接觸你的卡號。付款完成後報告自動生成（約 5～10 分鐘），存入你的會員帳號。</p>
   </div>
 </div>
 
@@ -407,6 +406,7 @@ function genQianzi(d){
   h+=`<p>這份千字讓你看見<span class="accent">主線</span>。但你為什麼總在同樣的地方卡住、被同樣的人吸引，那些四套系統互相矛盾、藏在更深處的盲區與破局之道，是<span class="accent">萬字報告</span>才拆得開的部分。</p>`;
   h+=`<p class="qz-note">本千字由四套系統實算結果自動生成，為結構性導讀；完整、深入、針對你個人矛盾的解讀，請見萬字報告。</p>`;
   document.getElementById('qianzi-content').innerHTML=h;
+  gateQianzi(); // 未登入 → 顯示 Email 解鎖卡
 }
 
 function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
@@ -617,16 +617,30 @@ function savePending(){
     ts:Date.now()
   }));
 }
-/* 管理員登入時才顯示直接生成按鈕（一般訪客走私訊） */
-(async ()=>{ try{
-  const {data:{session}}=await sb.auth.getSession();
-  if(!session)return;
-  const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
-  if(prof&&prof.role==='admin'){ $id('payBtn').style.display='inline-block'; $id('freeGo').style.display='inline-block'; }
-}catch(e){} })();
+/* ===== 千字精華：需 Email 註冊解鎖（名單入口） ===== */
+async function gateQianzi(){
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session) return; // 已登入 → 直接看千字
+    document.getElementById('qianzi-content').innerHTML =
+      '<div style="text-align:center;padding:28px 10px">'+
+      '<p class="lead" style="margin-bottom:10px">你的千字精華已經生成 ✦</p>'+
+      '<p style="font-family:var(--sans);font-weight:300;font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.9">免費註冊會員（只需 Email），立即解鎖閱讀。<br>精華會永久保存在你的帳號，之後隨時回來看。</p>'+
+      '<button class="paybtn" style="padding:13px 34px;font-size:15px" onclick="goRegisterQz()">輸入 Email 解鎖千字精華 →</button>'+
+      '<p class="qz-note" style="border:none;margin-top:16px">已有帳號？<a href="javascript:goLoginQz()" style="color:var(--gold-bright)">直接登入 →</a></p></div>';
+  }catch(e){}
+}
+window.goRegisterQz=function(){ savePending(); location.href='login.html?next=qz&mode=up'; };
+window.goLoginQz=function(){ savePending(); location.href='login.html?next=qz'; };
+
+/* ===== 付費解鎖（需先登入） ===== */
 $id('payBtn').addEventListener('click', async ()=>{
   const err=$id('payErr'); err.style.display='none';
   if(!CUR_BIRTH){ err.textContent='請先完成排盤'; err.style.display='block'; return; }
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ savePending(); location.href='login.html?next=pay'; return; }
+  try{ const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+    if(prof&&prof.role==='admin')$id('freeGo').style.display='inline-block'; }catch(e){}
   $id('payModal').style.display='block';
 });
 $id('payCancel').addEventListener('click',()=>{$id('payModal').style.display='none'});
@@ -675,10 +689,11 @@ $id('payGo').addEventListener('click', async ()=>{
     btn.disabled=false; btn.textContent='前往付款 →';
   }
 });
-/* 登入後回來：還原排盤、直接打開付款視窗（延後到 buildCity() 完成後執行） */
+/* 登入後回來：還原排盤 → qz 捲到千字 / pay 打開付款視窗（延後到 buildCity() 完成後執行） */
 setTimeout(function resume(){
   const q=new URLSearchParams(location.search);
-  if(q.get('resume')!=='1')return;
+  const mode=q.get('resume');
+  if(!mode)return;
   try{
     const p=JSON.parse(localStorage.getItem('fs_pending')||'null');
     if(!p||Date.now()-p.ts>3600e3)return;
@@ -688,8 +703,15 @@ setTimeout(function resume(){
     document.getElementById('city').dispatchEvent(new Event('change'));
     setTimeout(()=>{ $id('run').click(); setTimeout(async()=>{
       const {data:{session}}=await sb.auth.getSession();
-      if(session&&CUR_BIRTH){$id('payModal').style.display='block';$id('payModal').scrollTop=0;}
-    },1200); },300);
+      if(!session||!CUR_BIRTH)return;
+      if(mode==='pay'){
+        try{ const {data:prof}=await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
+          if(prof&&prof.role==='admin')$id('freeGo').style.display='inline-block'; }catch(e){}
+        $id('payModal').style.display='block';
+      } else {
+        document.getElementById('b-qianzi').scrollIntoView({behavior:'smooth'});
+      }
+    },1500); },300);
   }catch(e){}
 },0);
 

@@ -47,18 +47,22 @@ function setMode(m){mode=m;
 function showMsg(t,ok){const e=$('msg');e.textContent=t;e.className='msg '+(ok?'ok':'err')}
 function hideMsg(){$('msg').className='msg'}
 
-// ?next=pay：從排盤頁來買報告 → 登入後帶回排盤頁繼續付款
-const NEXT = new URLSearchParams(location.search).get('next');
+// ?next=pay/qz：從排盤頁來 → 登入後帶回繼續付款(pay)或解鎖千字(qz)；pay2/qz2 為合盤頁
+const QS = new URLSearchParams(location.search);
+const NEXT = QS.get('next');
 async function routeByRole(){
   const {data:{session}} = await sb.auth.getSession();
   if(!session) return false;
-  if(NEXT==='pay'){ location.href='paipan.html?resume=1'; return true; }
-  if(NEXT==='pay2'){ location.href='hepan.html?resume=1'; return true; }
+  if(NEXT==='pay'){ location.href='paipan.html?resume=pay'; return true; }
+  if(NEXT==='qz'){ location.href='paipan.html?resume=qz'; return true; }
+  if(NEXT==='pay2'){ location.href='hepan.html?resume=pay'; return true; }
+  if(NEXT==='qz2'){ location.href='hepan.html?resume=qz'; return true; }
   const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
   location.href = (prof && prof.role==='admin') ? 'admin.html' : 'report.html';
   return true;
 }
 if(NEXT==='pay'||NEXT==='pay2'){ document.getElementById('modesub').textContent='登入或註冊後，將帶你回到付款步驟'; }
+if(NEXT==='qz'||NEXT==='qz2'){ document.getElementById('modesub').textContent='免費註冊（只需 Email），立即解鎖你的精華內容'; }
 
 $('submit').addEventListener('click', async ()=>{
   hideMsg();
@@ -81,6 +85,8 @@ $('submit').addEventListener('click', async ()=>{
 });
 $('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('submit').click()});
 
+// ?mode=up → 預設切到註冊分頁
+if(QS.get('mode')==='up') setMode('up');
 // 已登入則直接導向
 routeByRole();
 </script>
