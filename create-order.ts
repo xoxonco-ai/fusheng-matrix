@@ -2,7 +2,7 @@
 //
 // 兩種模式：
 //   A. 一般客戶付費：建立訂單 → 回傳 GoMyPay 付款表單參數 → 前端自動送出前往付款頁
-//      （單人盤 NT$199 / 合盤 NT$399；未設定 GOMYPAY_CUSTOMER_ID 時回覆「金流開通中」）
+//      （單人盤 NT$888 / 合盤 NT$1288；未設定 GOMYPAY_CUSTOMER_ID 時回覆「金流開通中」）
 //   B. 管理員免費生成（body.free = true，需管理員登入）：
 //      跳過付款 → 直接建立個案 → 觸發 AI 生成 → 報告進管理員帳號（後台可再指派給客戶）
 //
@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
       if (!birth.p1?.birth_date || !birth.p2?.birth_date) return json({ error: "缺少兩人的出生資料，請先完成合盤" }, 400);
     } else if (!birth.birth_date) return json({ error: "缺少命盤資料，請先完成排盤" }, 400);
 
-    const AMOUNT = isCouple ? 399 : 199;
+    const AMOUNT = isCouple ? 1288 : 888;
     const ITEM = isCouple ? "浮生矩陣 合盤報告（同頻版＋碰撞版）" : "浮生矩陣 萬字報告（劇本版＋破局版）";
     const buyerName = isCouple ? (birth.p1?.name || "客戶") : (birth.name || "客戶");
 

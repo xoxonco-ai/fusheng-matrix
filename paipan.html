@@ -84,12 +84,8 @@ td{color:var(--text);font-weight:300}
 .cta-final{text-align:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:46px 32px;margin-top:34px}
 .cta-final h3{font-size:22px;letter-spacing:.1em;margin-bottom:10px}
 .cta-final p{color:var(--muted);font-family:var(--sans);font-weight:300;font-size:14.5px;margin-bottom:26px}
-.cta-final a{display:inline-block;padding:15px 44px;border-radius:4px;font-size:16px;letter-spacing:.25em;text-decoration:none;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;transition:all .35s}
-.cta-final a:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
-.social-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.social-btns a{padding:13px 30px;font-size:15px;letter-spacing:.12em}
-.cta-final a.ghost{background:transparent;border:1px solid var(--line);color:var(--gold);font-weight:500}
-.cta-final a.ghost:hover{border-color:var(--gold);box-shadow:none;color:var(--gold-bright)}
+.cta-final .qz-note a{color:var(--gold-bright);text-decoration:none}
+.cta-final .qz-note a:hover{text-decoration:underline}
 .step-label{color:var(--gold-bright)!important;font-family:var(--sans);letter-spacing:.18em;font-size:14px;margin-bottom:14px}
 #b-qianzi::before{background:linear-gradient(90deg,transparent,var(--crimson),transparent)}
 .qianzi-body{font-family:var(--serif);line-height:1.95;font-size:16px;color:var(--text)}
@@ -195,17 +191,17 @@ td{color:var(--text);font-weight:300}
     <div class="cta-final">
       <h3>解鎖你的完整「萬字報告」</h3>
       <p>千字讓你看見主線；萬字把你的人生劇本、矛盾盲區與破局之道整份拆開。</p>
-      <p class="price-line"><span class="price">NT$ 199</span><span class="per">一次付費・兩份報告</span></p>
+      <p class="price-line"><span class="price">NT$ 888</span><span class="per">一次付費・兩份報告</span></p>
       <p class="pay-points">
         <b>劇本版</b>（約萬字）＋<b>破局版</b>（約萬字）兩份都給<br>
         付款完成後由系統依你的命盤<b>自動生成</b>，約 5～10 分鐘<br>
         報告存進你的會員帳號，<b>隨時登入重看</b>
       </p>
-      <button class="paybtn" id="payBtn">付費解鎖 · NT$199 ✦</button>
+      <button class="paybtn" id="payBtn">付費解鎖 · NT$888 ✦</button>
       <p class="err" id="payErr" style="margin-top:14px"></p>
       <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
         <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
-        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 NT$399 →</a><br>
+        <span style="color:var(--gold)">想看你們兩個人的關係結構？</span> <a href="hepan.html" style="color:var(--gold-bright)">情侶合盤 NT$1,288 →</a><br>
         付款遇到問題？私訊：
         <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--muted)">Facebook</a> ·
         <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--muted)">Instagram</a> ·
@@ -230,7 +226,7 @@ td{color:var(--text);font-weight:300}
       <option value="狠">狠——不留情面，敢講最痛的</option>
     </select>
     <div class="mrow">
-      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$199 →</button>
+      <button class="paybtn" id="payGo" style="padding:14px 36px;font-size:15px">前往付款 NT$888 →</button>
       <button class="cancel" id="freeGo" style="display:none;border-color:var(--gold);color:var(--gold-bright)">⚡ 管理員免費生成</button>
       <button class="cancel" id="payCancel">先不要</button>
     </div>
