@@ -7,280 +7,163 @@
 <meta name="description" content="紫微斗數、八字命理、西洋占星、人類圖，四套系統交叉驗證，整理出屬於你的生命結構。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d0c0f;
-  --bg-soft:#141117;
-  --panel:#16131a;
-  --bone:#ece6da;
-  --muted:#a09a90;
-  --faint:#726c64;
-  --gold:#c2a878;
-  --gold-bright:#e4cd97;
-  --crimson:#c0808f;
-  --crimson-bright:#dda3b1;
-  --rule:rgba(236,230,218,.11);
-  --rule-strong:rgba(236,230,218,.2);
+  --plum:#2b1932;
+  --plum2:#382143;
+  --plum3:#221029;
+  --cream:#f2e7ea;
+  --persimmon:#e8734a;
+  --persimmon-bright:#f0906c;
+  --jade:#8fc5a9;
+  --jade-bright:#a9d6bf;
+  --muted:#b49bb8;
+  --faint:#8b76901f;
+  --rule:rgba(242,231,234,.13);
+  --rule-strong:rgba(242,231,234,.24);
   --serif:'Noto Serif TC',serif;
   --sans:'Noto Sans TC',sans-serif;
-  --display:'Cormorant Garamond',Georgia,serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  background:var(--bg);
-  color:var(--bone);
-  font-family:var(--serif);
-  font-size:17px;
-  line-height:1.9;
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
-/* 一層極淡的靜態暈光，取代原本的網格＋星點＋旋轉羅盤 */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse at 50% -10%,rgba(194,168,120,.06),transparent 55%);
+  background:var(--plum);color:var(--cream);
+  font-family:var(--serif);font-size:17px;line-height:1.9;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
 main{position:relative;z-index:1}
-::selection{background:rgba(194,168,120,.25);color:var(--bone)}
+::selection{background:rgba(232,115,74,.35);color:var(--cream)}
+a{color:inherit}
 
 /* ---------- 共用 ---------- */
-section{padding:104px 26px;max-width:760px;margin:0 auto}
-.wide{max-width:1060px}
-
-/* 章節抬頭：左對齊、大寫數字索引、細髮絲 */
-.sec-head{
-  display:flex;align-items:baseline;gap:22px;
-  padding-bottom:22px;margin-bottom:52px;
-  border-bottom:1px solid var(--rule);
-}
-.sec-head .idx{
-  font-family:var(--display);font-weight:500;
-  font-size:clamp(30px,5vw,44px);color:var(--gold);
-  line-height:1;flex-shrink:0;font-feature-settings:"lnum";
-}
+section{padding:100px 30px;max-width:820px;margin:0 auto}
+.wide{max-width:1080px}
+.eyebrow{font-family:var(--sans);font-weight:500;letter-spacing:.34em;font-size:12px;color:var(--persimmon)}
+.sec-head{margin-bottom:48px}
+.sec-head .num{font-family:var(--sans);font-weight:500;color:var(--persimmon);font-size:13px;letter-spacing:.1em}
 .sec-head h2{
-  font-size:clamp(24px,4vw,33px);font-weight:600;
-  letter-spacing:.02em;line-height:1.35;color:var(--bone);
+  font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:.04em;
+  line-height:1.2;margin-top:14px;color:var(--cream);
 }
-.sec-head .kicker{
-  font-family:var(--sans);font-weight:400;font-size:12px;
-  letter-spacing:.32em;color:var(--gold);margin-bottom:9px;
-}
+.sec-head h2 .jade{color:var(--jade)}
+.sec-head .lead{color:var(--muted);margin-top:16px;font-size:clamp(16px,2.3vw,18px);max-width:44ch}
 
-.poem{font-size:clamp(16px,2.3vw,18.5px);line-height:1.95;color:var(--bone)}
-.poem p{margin-bottom:1.55em}
+.poem{font-size:clamp(16px,2.3vw,18.5px);line-height:1.95}
+.poem p{margin-bottom:1.5em}
 .poem p:last-child{margin-bottom:0}
 .poem .muted{color:var(--muted)}
-.poem .accent{color:var(--gold-bright)}
+.poem .accent{color:var(--jade-bright)}
+.poem .hot{color:var(--persimmon-bright)}
 .center{text-align:center}
-.lead-measure{max-width:640px;margin-left:auto;margin-right:auto}
+.measure{max-width:620px;margin-left:auto;margin-right:auto}
 
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .9s ease,transform .9s ease}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease}
 .reveal.visible{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
-  html{scroll-behavior:auto}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* ---------- 按鈕 ---------- */
+.btn{display:inline-block;padding:16px 42px;font-family:var(--serif);font-size:16px;letter-spacing:.14em;text-decoration:none;border-radius:2px;transition:background .3s,color .3s,border-color .3s}
+.btn-fill{background:var(--persimmon);color:#2a1017;font-weight:700;border:1px solid var(--persimmon)}
+.btn-fill:hover{background:var(--persimmon-bright);border-color:var(--persimmon-bright)}
+.btn-ghost{color:var(--cream);border:1px solid var(--rule-strong)}
+.btn-ghost:hover{border-color:var(--jade);color:var(--jade-bright)}
+.textlink{color:var(--jade-bright);text-decoration:none;border-bottom:1px solid rgba(143,197,169,.4);padding-bottom:3px;transition:border-color .3s}
+.textlink:hover{border-color:var(--jade)}
+
+/* ---------- HERO ---------- */
+.hero{max-width:none;padding:0;min-height:100vh;display:grid;grid-template-columns:1.12fr .88fr}
+.hero .left{padding:60px clamp(30px,6vw,72px);display:flex;flex-direction:column;justify-content:center}
+.hero .eyebrow{margin-bottom:30px}
+.hero h1{font-weight:700;font-size:clamp(58px,9vw,116px);line-height:1;letter-spacing:.06em;color:var(--cream)}
+.hero .tagline{font-size:clamp(18px,2.7vw,28px);color:var(--jade);margin-top:28px;letter-spacing:.1em;font-weight:500}
+.hero .desc{color:var(--muted);margin-top:22px;max-width:32ch;line-height:1.9;font-size:16px}
+.hero .cta-row{margin-top:40px;display:flex;gap:16px;flex-wrap:wrap}
+.hero .right{
+  background:var(--plum2);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px clamp(30px,4vw,52px);border-left:1px solid var(--rule);
+}
+.hero .right::before{content:"";position:absolute;width:360px;height:360px;border:1px solid var(--persimmon);border-radius:50%;top:-100px;right:-110px;opacity:.45}
+.hero .right::after{content:"";position:absolute;width:230px;height:230px;border:1px solid var(--jade);border-radius:50%;bottom:-70px;left:-80px;opacity:.4}
+.sys-list{position:relative;z-index:1;border-top:1px solid var(--rule)}
+.sys-list .item{display:flex;align-items:baseline;gap:18px;padding:22px 4px;border-bottom:1px solid var(--rule)}
+.sys-list .num{font-family:var(--sans);color:var(--persimmon);font-size:13px;letter-spacing:.08em;width:30px;flex-shrink:0}
+.sys-list .nm{font-weight:600;font-size:21px;letter-spacing:.1em}
+.sys-list .ro{margin-left:auto;color:var(--muted);font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.14em}
+.scroll-hint{position:absolute;bottom:30px;left:clamp(30px,6vw,72px);color:var(--muted);font-family:var(--sans);font-size:11px;letter-spacing:.3em}
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero .left{padding-top:110px;padding-bottom:56px}
+  .hero .right{border-left:none;border-top:1px solid var(--rule);padding:44px 30px}
+  .hero .right::before,.hero .right::after{display:none}
+  .scroll-hint{display:none}
 }
 
-/* ---------- 按鈕：扁平、無漸層、無光暈 ---------- */
-.btn{
-  display:inline-block;padding:15px 40px;
-  font-family:var(--serif);font-size:15.5px;letter-spacing:.14em;
-  text-decoration:none;transition:background .3s,color .3s,border-color .3s;
-}
-.btn-gold{
-  color:#171310;background:var(--gold);border:1px solid var(--gold);font-weight:600;
-}
-.btn-gold:hover{background:var(--gold-bright);border-color:var(--gold-bright)}
-.btn-ghost{color:var(--gold);border:1px solid var(--rule-strong)}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright)}
-.textlink{
-  color:var(--gold);text-decoration:none;font-size:15.5px;letter-spacing:.08em;
-  border-bottom:1px solid var(--rule-strong);padding-bottom:3px;transition:border-color .3s,color .3s;
-}
-.textlink:hover{color:var(--gold-bright);border-color:var(--gold)}
-
-/* ---------- Hero ---------- */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;text-align:center;
-  padding:88px 26px;max-width:none;position:relative;
-}
-.hero-emblem{
-  width:min(560px,90vw);height:min(560px,90vw);
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  opacity:.22;pointer-events:none;z-index:-1;
-}
-.hero-emblem svg{width:100%;height:100%}
-.hero h1{
-  font-size:clamp(46px,10vw,84px);font-weight:600;
-  letter-spacing:.14em;margin-bottom:26px;color:var(--bone);
-}
-.hero .tagline{
-  font-size:clamp(17px,3vw,23px);letter-spacing:.24em;
-  color:var(--gold-bright);margin-bottom:22px;font-weight:400;
-}
-.hero .sys{
-  font-family:var(--sans);font-weight:300;
-  color:var(--muted);font-size:clamp(12.5px,2.2vw,14.5px);
-  letter-spacing:.28em;margin-bottom:44px;
-}
-.hero .scroll-hint{
-  position:absolute;bottom:38px;left:50%;transform:translateX(-50%);
-  color:var(--faint);font-family:var(--sans);font-size:11px;letter-spacing:.34em;
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-}
-.hero .scroll-hint::after{content:"";width:1px;height:34px;background:linear-gradient(var(--rule-strong),transparent)}
-
-/* ---------- 四套系統：編輯式欄列，非浮動卡片 ---------- */
-.systems{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-  margin:8px 0 56px;
-}
-.sys-col{
-  padding:34px 18px;text-align:center;
-  border-left:1px solid var(--rule);
-}
-.sys-col:first-child{border-left:none}
-.sys-col .glyph{
-  font-family:var(--display);font-size:38px;color:var(--gold);
-  display:block;margin-bottom:14px;line-height:1;font-weight:500;
-}
-.sys-col h3{font-size:18px;font-weight:600;letter-spacing:.1em;margin-bottom:8px;color:var(--bone)}
-.sys-col p{font-family:var(--sans);font-weight:300;font-size:13px;color:var(--muted);letter-spacing:.08em}
-@media (max-width:620px){
-  .systems{grid-template-columns:repeat(2,1fr)}
-  .sys-col:nth-child(3),.sys-col:nth-child(4){border-top:1px solid var(--rule)}
-  .sys-col:nth-child(odd){border-left:none}
-}
-
-/* ---------- 兩份報告：扁平面板 ---------- */
-.reports{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px;margin-top:56px}
-.report{
-  background:var(--panel);border:1px solid var(--rule);
-  border-top:2px solid var(--gold);
-  padding:44px 34px;position:relative;
-}
-.report.break{border-top-color:var(--crimson)}
-.report .label{
-  font-family:var(--sans);font-size:11px;letter-spacing:.36em;
-  color:var(--gold);margin-bottom:12px;font-weight:400;
-}
-.report.break .label{color:var(--crimson-bright)}
-.report h3{font-size:clamp(23px,3.4vw,28px);font-weight:600;letter-spacing:.06em;margin-bottom:6px;color:var(--bone)}
+/* ---------- 兩份報告 ---------- */
+.reports{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:26px;margin-top:52px}
+.report{background:var(--plum2);border:1px solid var(--rule);border-top:3px solid var(--jade);padding:44px 34px}
+.report.break{border-top-color:var(--persimmon)}
+.report .label{font-family:var(--sans);font-size:11px;letter-spacing:.32em;color:var(--jade);margin-bottom:12px}
+.report.break .label{color:var(--persimmon)}
+.report h3{font-size:clamp(23px,3.4vw,29px);font-weight:700;letter-spacing:.05em;margin-bottom:6px}
 .report .rsub{color:var(--muted);font-size:14.5px;letter-spacing:.12em;margin-bottom:28px}
-.report .intro{font-size:15px;color:var(--bone);margin-bottom:30px;line-height:1.85}
+.report .intro{font-size:15px;margin-bottom:30px;line-height:1.85}
 .report .intro p{margin-bottom:1.15em}
-.report h4{
-  font-size:12.5px;letter-spacing:.3em;color:var(--gold);
-  margin:30px 0 16px;font-weight:500;
-  padding-bottom:10px;border-bottom:1px solid var(--rule);
-}
-.report.break h4{color:var(--crimson-bright)}
+.report h4{font-size:12.5px;letter-spacing:.28em;color:var(--jade);margin:30px 0 16px;font-weight:500;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.report.break h4{color:var(--persimmon)}
 .report dl{margin:0}
-.report dt{
-  font-size:16px;font-weight:600;letter-spacing:.04em;
-  margin-top:18px;color:var(--gold-bright);
-}
-.report.break dt{color:var(--crimson-bright)}
-.report dd{
-  font-family:var(--sans);font-weight:300;font-size:14px;
-  color:var(--muted);margin-left:0;line-height:1.8;
-}
-.report .feel{
-  margin-top:34px;padding-top:26px;border-top:1px solid var(--rule);font-size:15px;
-}
-.report .feel .feel-title{
-  font-size:12px;letter-spacing:.3em;color:var(--faint);
-  font-family:var(--sans);margin-bottom:12px;
-}
+.report dt{font-size:16px;font-weight:600;letter-spacing:.04em;margin-top:18px;color:var(--jade-bright)}
+.report.break dt{color:var(--persimmon-bright)}
+.report dd{font-family:var(--sans);font-weight:300;font-size:14px;color:var(--muted);line-height:1.8}
+.report .feel{margin-top:34px;padding-top:24px;border-top:1px solid var(--rule);font-size:15px}
+.report .feel .feel-title{font-size:12px;letter-spacing:.28em;color:var(--muted);font-family:var(--sans);margin-bottom:12px}
 
 /* ---------- 千字精華 ---------- */
-.teaser-box{
-  margin-top:52px;border:1px solid var(--rule);background:var(--panel);
-  padding:46px 38px;position:relative;
-}
-.teaser-box::before,.teaser-box::after{
-  content:"";position:absolute;width:22px;height:22px;
-  border:1px solid var(--gold);opacity:.55;
-}
+.teaser-box{margin-top:50px;border:1px solid var(--rule);background:var(--plum2);padding:46px 38px;position:relative}
+.teaser-box::before,.teaser-box::after{content:"";position:absolute;width:22px;height:22px;border:1px solid var(--persimmon);opacity:.7}
 .teaser-box::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
 .teaser-box::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
-.teaser-meta{
-  font-family:var(--sans);font-size:12px;letter-spacing:.2em;
-  color:var(--gold);margin-bottom:24px;display:flex;gap:14px;flex-wrap:wrap;
-}
-.teaser-meta span{border:1px solid var(--rule);padding:4px 13px}
-.teaser-body{font-size:16px;color:var(--bone);line-height:1.9}
+.teaser-meta{font-family:var(--sans);font-size:12px;letter-spacing:.16em;color:var(--jade);margin-bottom:24px;display:flex;gap:12px;flex-wrap:wrap}
+.teaser-meta span{border:1px solid var(--rule);padding:5px 13px}
+.teaser-body{font-size:16px;line-height:1.9}
 .teaser-body p{margin-bottom:1.35em}
 .locked{position:relative;max-height:340px;overflow:hidden}
-.locked::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 35%,var(--panel) 96%);
-}
-.lock-bar{
-  text-align:center;padding-top:24px;
-  font-family:var(--sans);font-weight:300;font-size:13.5px;
-  color:var(--muted);letter-spacing:.12em;
-}
-.lock-bar .lock-line{color:var(--gold-bright);font-family:var(--serif);font-size:15.5px;letter-spacing:.16em;margin-bottom:16px}
+.locked::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 32%,var(--plum2) 96%)}
+.lock-bar{text-align:center;padding-top:24px;font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--muted);letter-spacing:.1em}
+.lock-bar .lock-line{color:var(--persimmon-bright);font-family:var(--serif);font-size:15.5px;letter-spacing:.14em;margin-bottom:16px}
 
-/* ---------- 通用卡列（適合／信任／步驟） ---------- */
-.cols{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
-.panel-card{
-  flex:1;min-width:250px;border:1px solid var(--rule);
-  padding:26px 24px;text-align:left;background:var(--bg-soft);
-}
-.panel-card.warn{border-color:rgba(192,128,143,.32)}
-.panel-card .tag{color:var(--gold);font-family:var(--sans);font-size:12px;letter-spacing:.24em;margin-bottom:14px}
-.panel-card.warn .tag{color:var(--crimson-bright)}
-.panel-card p{margin:0;line-height:2.1;font-size:15.5px}
-.link-card{
-  flex:1;min-width:200px;border:1px solid var(--rule);
-  padding:22px 22px;text-align:left;text-decoration:none;color:inherit;
-  background:var(--bg-soft);transition:border-color .3s;
-}
-.link-card:hover{border-color:var(--rule-strong)}
-.link-card .tag{color:var(--gold);font-family:var(--sans);font-size:12px;letter-spacing:.22em;margin-bottom:9px}
+/* ---------- 卡列 ---------- */
+.cols{display:flex;gap:16px;flex-wrap:wrap}
+.panel-card{flex:1;min-width:250px;border:1px solid var(--rule);padding:28px 26px;text-align:left;background:var(--plum2)}
+.panel-card.jade{border-top:2px solid var(--jade)}
+.panel-card.hot{border-top:2px solid var(--persimmon)}
+.panel-card .tag{font-family:var(--sans);font-size:12px;letter-spacing:.22em;margin-bottom:14px;color:var(--jade)}
+.panel-card.hot .tag{color:var(--persimmon)}
+.panel-card p{margin:0;line-height:2.05;font-size:15.5px}
+.link-card{flex:1;min-width:210px;border:1px solid var(--rule);padding:24px 22px;text-align:left;text-decoration:none;background:var(--plum2);transition:border-color .3s}
+.link-card:hover{border-color:var(--persimmon)}
+.link-card .tag{color:var(--jade);font-family:var(--sans);font-size:12px;letter-spacing:.2em;margin-bottom:9px}
 .link-card .desc{color:var(--muted);font-size:13.5px;line-height:1.9}
-.step .snum{color:var(--gold);font-family:var(--display);font-size:26px;font-weight:500;line-height:1}
-.step .stitle{font-size:16px;margin:8px 0 6px;color:var(--bone)}
+.step .snum{color:var(--persimmon);font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:.1em}
+.step .stitle{font-size:16.5px;margin:8px 0 6px;font-weight:600}
 .step .sdesc{color:var(--muted);font-size:13px;line-height:1.75}
 
 /* ---------- 導航引句 ---------- */
-.nav-qa{
-  margin:44px auto;max-width:600px;
-  border-left:1px solid var(--gold);padding-left:26px;
-}
-.nav-qa p{margin-bottom:1.3em;font-size:clamp(16px,2.3vw,18.5px)}
-.nav-qa .q{color:var(--gold-bright)}
+.nav-qa{margin:44px auto;max-width:600px;border-left:2px solid var(--persimmon);padding-left:26px}
+.nav-qa p{margin-bottom:1.25em;font-size:clamp(16px,2.3vw,18.5px)}
+.nav-qa .q{color:var(--persimmon-bright)}
 
 /* ---------- 宣言 ---------- */
 .manifesto{text-align:center}
-.manifesto .big{
-  font-size:clamp(20px,3.4vw,27px);color:var(--gold-bright);
-  letter-spacing:.1em;margin-top:44px;line-height:1.7;
-}
+.manifesto .big{font-size:clamp(21px,3.6vw,30px);color:var(--jade-bright);letter-spacing:.08em;margin-top:44px;line-height:1.65}
 
-footer{
-  position:relative;z-index:1;text-align:center;padding:52px 24px;
-  border-top:1px solid var(--rule);
-  color:var(--muted);font-family:var(--sans);font-weight:300;
-  font-size:13px;letter-spacing:.18em;
-}
-footer .brand{color:var(--gold);font-family:var(--serif);letter-spacing:.34em;margin-bottom:10px;font-size:16px}
-footer a{color:inherit;opacity:.82}
-footer a:hover{opacity:1;color:var(--gold)}
+footer{position:relative;z-index:1;text-align:center;padding:54px 24px;background:var(--plum3);border-top:1px solid var(--rule);color:var(--muted);font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.18em}
+footer .brand{color:var(--jade);font-family:var(--serif);letter-spacing:.32em;margin-bottom:10px;font-size:16px}
+footer a{opacity:.85;text-decoration:none}
+footer a:hover{opacity:1;color:var(--persimmon-bright)}
 
-@media (max-width:600px){
-  section{padding:76px 22px}
-  .report{padding:36px 26px}
-  .teaser-box{padding:38px 26px}
-}
+@media (max-width:600px){section{padding:72px 24px}.report{padding:36px 26px}.teaser-box{padding:38px 26px}}
 </style>
 </head>
 <body>
@@ -288,32 +171,30 @@ footer a:hover{opacity:1;color:var(--gold)}
 
 <!-- ================= HERO ================= -->
 <header class="hero">
-  <div class="hero-emblem">
-    <svg viewBox="0 0 400 400" fill="none" stroke="rgba(194,168,120,.4)" stroke-width="1">
-      <circle cx="200" cy="200" r="196"/>
-      <circle cx="200" cy="200" r="160" stroke-dasharray="2 6"/>
-      <circle cx="200" cy="200" r="120"/>
-      <circle cx="200" cy="200" r="70" stroke-dasharray="1 5"/>
-      <g opacity=".7">
-        <line x1="200" y1="4" x2="200" y2="40"/><line x1="200" y1="360" x2="200" y2="396"/>
-        <line x1="4" y1="200" x2="40" y2="200"/><line x1="360" y1="200" x2="396" y2="200"/>
-        <line x1="61" y1="61" x2="86" y2="86"/><line x1="314" y1="314" x2="339" y2="339"/>
-        <line x1="339" y1="61" x2="314" y2="86"/><line x1="86" y1="314" x2="61" y2="339"/>
-      </g>
-      <polygon points="200,140 213,200 200,260 187,200" fill="rgba(194,168,120,.22)" stroke="none"/>
-      <polygon points="140,200 200,187 260,200 200,213" fill="rgba(194,168,120,.13)" stroke="none"/>
-    </svg>
+  <div class="left">
+    <div class="eyebrow">FUSHENG MATRIX ・ 浮生矩陣</div>
+    <h1>浮生矩陣</h1>
+    <p class="tagline">看見劇本，才能走出劇本</p>
+    <p class="desc">紫微、八字、占星、人類圖——四套系統交叉驗證，整理出屬於你的生命結構。</p>
+    <div class="cta-row">
+      <a class="btn btn-fill" href="paipan.html">立即免費排盤</a>
+      <a class="btn btn-ghost" href="hepan.html">情侶合盤</a>
+    </div>
+    <div class="scroll-hint">向下捲動</div>
   </div>
-  <h1>浮生矩陣</h1>
-  <p class="tagline">看見劇本，才能走出劇本</p>
-  <p class="sys">紫微斗數 · 八字命理 · 西洋占星 · 人類圖</p>
-  <a class="btn btn-gold" href="paipan.html">立即免費排盤</a>
-  <div class="scroll-hint">向下</div>
+  <div class="right">
+    <div class="sys-list">
+      <div class="item"><span class="num">01</span><span class="nm">紫微斗數</span><span class="ro">命格結構</span></div>
+      <div class="item"><span class="num">02</span><span class="nm">八字命理</span><span class="ro">能量配置</span></div>
+      <div class="item"><span class="num">03</span><span class="nm">西洋占星</span><span class="ro">人格藍圖</span></div>
+      <div class="item"><span class="num">04</span><span class="nm">人類圖</span><span class="ro">運作機制</span></div>
+    </div>
+  </div>
 </header>
 
 <!-- ================= 開場 ================= -->
 <section class="reveal">
-  <div class="poem lead-measure center">
+  <div class="poem measure center">
     <p>四套系統同時上桌。<br>不是為了預測未來。<br>而是為了看見——<span class="accent">你正在用什麼樣的結構活著。</span></p>
     <p class="muted">很多時候，我們以為自己在做選擇。<br>其實只是沿著同一套人生劇本，不斷換場景重複上演。</p>
     <p class="muted">換工作。換伴侶。換城市。換環境。<br>故事卻總是長得差不多。</p>
@@ -326,21 +207,12 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= 四套系統 ================= -->
 <section class="reveal">
   <div class="sec-head">
-    <span class="idx">壹</span>
-    <div>
-      <p class="kicker">四套系統</p>
-      <h2>四套系統，一張人生地圖</h2>
-    </div>
-  </div>
-  <div class="systems">
-    <div class="sys-col"><span class="glyph">紫</span><h3>紫微斗數</h3><p>命格結構</p></div>
-    <div class="sys-col"><span class="glyph">八</span><h3>八字命理</h3><p>能量配置</p></div>
-    <div class="sys-col"><span class="glyph">☉</span><h3>西洋占星</h3><p>人格藍圖</p></div>
-    <div class="sys-col"><span class="glyph">⬡</span><h3>人類圖</h3><p>運作機制</p></div>
+    <span class="num">01 — 四套系統</span>
+    <h2>四套系統，<span class="jade">一張人生地圖</span></h2>
   </div>
   <div class="poem">
     <p class="muted">每套系統都有自己的語言。但真正重要的，不是哪一套比較準。</p>
-    <p>而是當四套系統<span class="accent">同時指向同一件事</span>時，它在說什麼。當四套系統<span class="accent">互相矛盾</span>時，它又在提醒什麼。</p>
+    <p>而是當四套系統<span class="accent">同時指向同一件事</span>時，它在說什麼。當四套系統<span class="hot">互相矛盾</span>時，它又在提醒什麼。</p>
     <p>浮生矩陣不站在任何一套系統裡，而是站在它們之上。透過交叉驗證，整理出屬於你的生命結構。</p>
   </div>
 </section>
@@ -348,14 +220,9 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= 兩份報告 ================= -->
 <section class="reveal wide">
   <div class="sec-head">
-    <span class="idx">貳</span>
-    <div>
-      <p class="kicker">兩個入口</p>
-      <h2>兩份報告，兩個入口</h2>
-    </div>
-  </div>
-  <div class="poem lead-measure center">
-    <p>同一份命盤資料。兩種完全不同的閱讀方式。<br><span class="accent">一份帶你看見自己的主線。一份帶你看見自己的盲區。</span></p>
+    <span class="num">02 — 兩個入口</span>
+    <h2>兩份報告，兩個入口</h2>
+    <p class="lead">同一份命盤資料。兩種完全不同的閱讀方式。一份帶你看見自己的主線，一份帶你看見自己的盲區。</p>
   </div>
 
   <div class="reports">
@@ -420,14 +287,9 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= 千字精華搶先看 ================= -->
 <section class="reveal">
   <div class="sec-head">
-    <span class="idx">參</span>
-    <div>
-      <p class="kicker">搶先看</p>
-      <h2>千字精華</h2>
-    </div>
-  </div>
-  <div class="poem lead-measure center">
-    <p class="muted">完整報告約一萬字，<span class="accent">NT$888 付費解鎖</span>，付款後系統依你的命盤自動生成。這裡先公開千字精華，讓你感受報告的視角。</p>
+    <span class="num">03 — 搶先看</span>
+    <h2>千字精華</h2>
+    <p class="lead">完整報告約一萬字，NT$888 付費解鎖，付款後系統依你的命盤自動生成。這裡先公開千字精華，讓你感受報告的視角。</p>
   </div>
   <div class="teaser-box">
     <div class="teaser-meta">
@@ -452,33 +314,27 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= 適合誰／不適合誰 ================= -->
 <section class="reveal wide">
   <div class="sec-head">
-    <span class="idx">肆</span>
-    <div>
-      <p class="kicker">開始之前先誠實對焦</p>
-      <h2>這裡適合你嗎？</h2>
-    </div>
+    <span class="num">04 — 開始之前先誠實對焦</span>
+    <h2>這裡適合你嗎？</h2>
   </div>
   <div class="cols">
-    <div class="panel-card">
+    <div class="panel-card jade">
       <div class="tag">適合你，如果你——</div>
       <p>明明知道問題，卻一直重複同一種選擇。<br>正處於關係、工作或身份轉換期。<br>看過單一命盤，但仍無法理解矛盾的自己。<br>不想被預言，只想理解自己的運作方式。</p>
     </div>
-    <div class="panel-card warn">
+    <div class="panel-card hot">
       <div class="tag">不適合你，如果你——</div>
       <p>只想知道何時發財、何時離婚。<br>希望有人替你做人生決定。<br>把命盤視為不可改變的判決。<br>正需要醫療、心理危機或法律處理。</p>
     </div>
   </div>
-  <p class="poem muted center" style="margin-top:28px;font-size:15px">最後一種情況，請先尋求合格專業協助——命盤不能取代醫療，這件事沒有例外。</p>
+  <p class="poem muted center" style="margin-top:26px;font-size:15px">最後一種情況，請先尋求合格專業協助——命盤不能取代醫療，這件事沒有例外。</p>
 </section>
 
 <!-- ================= 浮生導航 ================= -->
 <section class="reveal">
   <div class="sec-head">
-    <span class="idx">伍</span>
-    <div>
-      <p class="kicker">從看見劇本，到改寫劇本</p>
-      <h2>浮生導航</h2>
-    </div>
+    <span class="num">05 — 從看見劇本，到改寫劇本</span>
+    <h2>浮生導航</h2>
   </div>
   <div class="poem">
     <p class="muted">浮生導航是一套結合<span class="accent">個人報告、提問工具與陪跑練習</span>的決策校正服務。</p>
@@ -500,13 +356,11 @@ footer a:hover{opacity:1;color:var(--gold)}
 
 <!-- ================= 宣言 ================= -->
 <section class="reveal manifesto">
-  <div class="sec-head" style="justify-content:center">
-    <span class="idx">陸</span>
-    <div>
-      <h2>浮生矩陣想做的事</h2>
-    </div>
+  <div class="sec-head" style="margin-bottom:8px">
+    <span class="num">06</span>
+    <h2>浮生矩陣想做的事</h2>
   </div>
-  <div class="poem center">
+  <div class="poem center" style="margin-top:36px">
     <p class="muted">不是算命。不是預測。更不是告訴你未來會發生什麼。</p>
     <p>而是讓你知道：</p>
     <p class="accent">你正在演哪一齣戲。<br>你為什麼一直演同一齣戲。</p>
@@ -518,11 +372,8 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= 信任底座：四個入口 ================= -->
 <section class="reveal wide">
   <div class="sec-head">
-    <span class="idx">柒</span>
-    <div>
-      <p class="kicker">人、流程、隱私、邊界，全部攤開</p>
-      <h2>開始之前，先看清楚我們是誰</h2>
-    </div>
+    <span class="num">07 — 人、流程、隱私、邊界，全部攤開</span>
+    <h2>開始之前，先看清楚我們是誰</h2>
   </div>
   <div class="cols">
     <a href="about.html" class="link-card">
@@ -547,37 +398,31 @@ footer a:hover{opacity:1;color:var(--gold)}
 <!-- ================= CTA ================= -->
 <section class="reveal wide" id="cta">
   <div class="sec-head">
-    <span class="idx">捌</span>
-    <div>
-      <p class="kicker">開始</p>
-      <h2>解鎖你的浮生矩陣</h2>
-    </div>
-  </div>
-  <div class="poem lead-measure center">
-    <p class="muted">先輸入生辰，<span class="accent">免費排盤看四盤總覽</span>；千字精華免費，只需 Email 註冊。想看見困住你的完整「萬字報告」，<span class="accent">NT$888</span> 一次解鎖劇本版＋破局版。</p>
+    <span class="num">08 — 開始</span>
+    <h2>解鎖你的浮生矩陣</h2>
+    <p class="lead">先輸入生辰，免費排盤看四盤總覽；千字精華免費，只需 Email 註冊。想看見困住你的完整「萬字報告」，NT$888 一次解鎖劇本版＋破局版。</p>
   </div>
 
-  <!-- 如何運作 三步驟 -->
-  <div class="cols" style="max-width:820px;margin:36px auto 8px">
-    <div class="panel-card step">
-      <div class="snum">01</div>
+  <div class="cols" style="max-width:840px">
+    <div class="panel-card step jade">
+      <div class="snum">STEP 01</div>
       <div class="stitle">免費排盤・看總覽</div>
       <div class="sdesc">輸入生辰，四盤總覽免費看；千字精華免費註冊（只需 Email）即可解鎖。</div>
     </div>
-    <div class="panel-card step">
-      <div class="snum">02</div>
+    <div class="panel-card step jade">
+      <div class="snum">STEP 02</div>
       <div class="stitle">付費解鎖・NT$888</div>
       <div class="sdesc">線上付款後系統自動生成劇本版＋破局版兩份萬字，約 5～10 分鐘。</div>
     </div>
-    <div class="panel-card step">
-      <div class="snum">03</div>
+    <div class="panel-card step jade">
+      <div class="snum">STEP 03</div>
       <div class="stitle">登入・看報告</div>
       <div class="sdesc">報告自動存進你的會員帳號，隨時登入重看。</div>
     </div>
   </div>
 
-  <div class="cols" style="justify-content:center;margin:34px auto 22px;max-width:720px">
-    <a class="btn btn-gold" href="paipan.html">立即免費排盤・拿千字精華</a>
+  <div class="cols" style="justify-content:center;margin-top:34px;margin-bottom:22px;max-width:720px;margin-left:auto;margin-right:auto">
+    <a class="btn btn-fill" href="paipan.html">立即免費排盤・拿千字精華</a>
     <a class="btn btn-ghost" href="hepan.html">情侶合盤・看見你們的結構</a>
   </div>
 
@@ -607,7 +452,6 @@ footer a:hover{opacity:1;color:var(--gold)}
 </footer>
 
 <script>
-/* 捲動顯現（尊重 prefers-reduced-motion） */
 const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (rm) {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
