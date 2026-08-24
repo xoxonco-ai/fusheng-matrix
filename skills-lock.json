@@ -1,0 +1,503 @@
+{
+  "version": 1,
+  "skills": {
+    "ab-testing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/ab-testing/SKILL.md",
+      "computedHash": "c42af0107540e71dfe9605eca51b5100d96730d0bddf51085fc0c9429e40083c"
+    },
+    "ad-creative": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/ad-creative/SKILL.md",
+      "computedHash": "0030739f678305d6ea7c0ad3289103567f3d8a868f8eb642b4de0ad3b119827a"
+    },
+    "ads": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/ads/SKILL.md",
+      "computedHash": "569e690ae2defe2abaea3d63dc955e0af5d99cbe2b52d2cb977fd2039aae31a2"
+    },
+    "ai-seo": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/ai-seo/SKILL.md",
+      "computedHash": "a6265a6c9451a25987a94453f638e07bef84eb3f1cd73366d703fee79151cf09"
+    },
+    "analytics": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/analytics/SKILL.md",
+      "computedHash": "11fcba681577e36b5ad88e391d932a9c94fb1e593e94010c750739eefa9c4057"
+    },
+    "aso": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/aso/SKILL.md",
+      "computedHash": "f84a1fb5cb1a8a7f7171bd60ae6850f24a82fa6af94bd5f12e5b3e9227480a34"
+    },
+    "brandkit": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/brandkit/SKILL.md",
+      "computedHash": "12f6ef51bb1def4ebfc0a4703ffeed10bda09a85fcfc9cea534eabab737dbfc9"
+    },
+    "brene-brown-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/brene-brown-perspective/SKILL.md",
+      "computedHash": "64256419fcce96e214193c8e13e12a6ea8925551ed624eb405fbaa3cd6f03bd1"
+    },
+    "churn-prevention": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/churn-prevention/SKILL.md",
+      "computedHash": "527c4740617d9eeea66e14c3f7b7ecede41d6b0520c252f413fdfd0b763a6c64"
+    },
+    "co-marketing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/co-marketing/SKILL.md",
+      "computedHash": "1f447a4e851f9e6be533c41d198e0a1b58d557bcfe57499dace0c7f1349ba6cb"
+    },
+    "cold-email": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/cold-email/SKILL.md",
+      "computedHash": "be0b73511a6244b8b8aa9126225844cfe9e492f4c1ee6bffc57344ce5ee2a6e8"
+    },
+    "community-marketing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/community-marketing/SKILL.md",
+      "computedHash": "d089fdcff8cf5a8623cfaee0fdb005f9470c8c7e3da0a4fb11bc9e10dff5b502"
+    },
+    "competitor-profiling": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/competitor-profiling/SKILL.md",
+      "computedHash": "d691200df7b02d85327192dd2203f97eec5a01e7748e9b171a5c9d6a584dc181"
+    },
+    "competitors": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/competitors/SKILL.md",
+      "computedHash": "6380b59f188f71552e4ea878f41518c387490d583c457f95c4d0f4161ccb7c71"
+    },
+    "content-strategy": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/content-strategy/SKILL.md",
+      "computedHash": "13824c129ab70874c57d766c2d844f8dac7a0b366845f108a73527c9d094c4f6"
+    },
+    "copy-editing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/copy-editing/SKILL.md",
+      "computedHash": "ba4e44a8470b3ae2add3e0ffa74c85d8b0357db4ca2cf8cfa7b4abc9d94fc602"
+    },
+    "copywriting": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/copywriting/SKILL.md",
+      "computedHash": "c8d63b1f77be04fd54981720de65697988810bd28331097dbe0aaf3e166d638a"
+    },
+    "cro": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/cro/SKILL.md",
+      "computedHash": "07f7a27c57e48f4b67230712f8efbc5bcc01611b35321b3c2c2e5279c9304bcd"
+    },
+    "customer-research": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/customer-research/SKILL.md",
+      "computedHash": "a432ee6d37151c4b5b89045e8611f755d657e1339d9d67d928d73875ccd03a01"
+    },
+    "design-taste-frontend": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/design-taste-frontend/SKILL.md",
+      "computedHash": "71e71a46b7a25375e01e1397930446d2fed6da1e8da10414ad33ce8a9678464f"
+    },
+    "design-taste-frontend-v1": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/design-taste-frontend-v1/SKILL.md",
+      "computedHash": "372e0bf88513ba9182876eba45258cd86825a6cb595ef882bf6140f259f10d75"
+    },
+    "directory-submissions": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/directory-submissions/SKILL.md",
+      "computedHash": "b737c3b9b9387bbeefd4fb5a003c1debaf273563f170665f6b9341c6818d121b"
+    },
+    "emails": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/emails/SKILL.md",
+      "computedHash": "261d986c2a1f1f5f823f8c889e16db723edb8a9d0fa5ede8412f981594715c49"
+    },
+    "estes-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/estes-perspective/SKILL.md",
+      "computedHash": "9b495935f0ef07c6dccd54d5085c70161bc9645a0c92bcf3d5f6a02ec7228fdf"
+    },
+    "free-tools": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/free-tools/SKILL.md",
+      "computedHash": "3fd8ab504b9b6d791b307baed7a87f49b455fc084ff367772c7418b8a57ce56d"
+    },
+    "full-output-enforcement": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/full-output-enforcement/SKILL.md",
+      "computedHash": "8d28bf6afe54ea5b085f231ee6a1c58a86df0ae4bbaac979cb9c1d0c8f8af21b"
+    },
+    "gpt-taste": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/gpt-taste/SKILL.md",
+      "computedHash": "b88c816e97d9edabd7c766ffa829e66d43fdc881acc13a348385215d78d905fc"
+    },
+    "hellinger-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/hellinger-perspective/SKILL.md",
+      "computedHash": "18dddb5ff0e62997fb3f8fb6cbd218e448a41388eeababa7719ba4899c9f32f7"
+    },
+    "high-end-visual-design": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/high-end-visual-design/SKILL.md",
+      "computedHash": "dae155d49498a60c8c9d8843525033a3e97a6ee131db9ccda1570bd1c1c71d62"
+    },
+    "image": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/image/SKILL.md",
+      "computedHash": "e4b5511566d08a79f6f5fd26319eaaac0e18e1e238848c5a3fb2e9839e306ebe"
+    },
+    "image-to-code": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/image-to-code/SKILL.md",
+      "computedHash": "73476bfbe9bbc69dc435fa84721462e238e6432b655767154e4bdc93d11608d3"
+    },
+    "imagegen-frontend-mobile": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "computedHash": "9a5f1d40ca12b10898f55315aed2bd604ef702e3973e518dcf14c57d7bade77c"
+    },
+    "imagegen-frontend-web": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+      "computedHash": "589e765f8bb2de90507dd6b306c5fcd8b50378aeb11cfa33cfbc3b9d8666897a"
+    },
+    "industrial-brutalist-ui": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/industrial-brutalist-ui/SKILL.md",
+      "computedHash": "0d8134e37cbb75e32ef3879a5e02875cced30e886711dad92313e13b8594367f"
+    },
+    "launch": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/launch/SKILL.md",
+      "computedHash": "a2b19accde6cace3af7cb9875072163d436eb48f12bab900dff6d312507459e0"
+    },
+    "lead-magnets": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/lead-magnets/SKILL.md",
+      "computedHash": "268c83c38cc49d3e437042f5d4e3c31b822deb6012b9d5d7a1370ae500058018"
+    },
+    "levine-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/levine-perspective/SKILL.md",
+      "computedHash": "87859f2d9d017b30674e274334ee203b6bd4a5a8fc9b8d22a3890feba00f6aad"
+    },
+    "louise-hay-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/louise-hay-perspective/SKILL.md",
+      "computedHash": "ce6dfb6efed9128659330257fb91c1752a9dec4f0a6529a5a1e60775ed6b72de"
+    },
+    "marketing-council": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-council/SKILL.md",
+      "computedHash": "ac7cb3d3b358b5168adb80eea696d00b45183e9d70a8a81309b917ebc911951c"
+    },
+    "marketing-ideas": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-ideas/SKILL.md",
+      "computedHash": "c2a310c97126a0c493bae2b4b0e9fa767598bb2d139a747217fa1d8d7615e85d"
+    },
+    "marketing-loops": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-loops/SKILL.md",
+      "computedHash": "35027841740127f6a2ad5085811ea4bb95a889c27ba43204d4714793e45bcb61"
+    },
+    "marketing-plan": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-plan/SKILL.md",
+      "computedHash": "c6a0c9473c11a6b3c7ffe72bcf76417ce7e1a90330147fa1aac8dc9610ee1e38"
+    },
+    "marketing-psychology": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-psychology/SKILL.md",
+      "computedHash": "50d735eb0f5c36f379ed2200f21aeacc9b9ad85667b5d33ec6111857352a1340"
+    },
+    "mate-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/mate-perspective/SKILL.md",
+      "computedHash": "b8763f6653fccad12afeedd6ae2fb17558e88d2911de99b291d293fd0d82b90e"
+    },
+    "minimalist-ui": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/minimalist-ui/SKILL.md",
+      "computedHash": "54fa208622891e30e1c5f0fa7db62d5a0f20516ecf6228b956ef3856898f29b1"
+    },
+    "muapi-ad-creative": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-ad-creative/SKILL.md",
+      "computedHash": "2f5ae0c0b8aea009f864d40af1b14461ea948e02861fd264f2ac3d457ac275c7"
+    },
+    "muapi-ai-clipping": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-ai-clipping/SKILL.md",
+      "computedHash": "a1e1372f00633d31e77a46bfdbba5f9a9f38db37a579d513a8cc9d64a9bcff7e"
+    },
+    "muapi-cinema-director": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-cinema-director/SKILL.md",
+      "computedHash": "193c49dc389744ecf95127ed59499ac989fae189b9ada29c27a60a95d957a692"
+    },
+    "muapi-instagram-post": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-instagram-post/SKILL.md",
+      "computedHash": "ce5d72d822cf7fd9a1c0f830b2157dc9afc7f2d97d37c1cdd14a473c05a3cd81"
+    },
+    "muapi-logo-creator": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-logo-creator/SKILL.md",
+      "computedHash": "0a4e7b2effc6cc24f8a938c8c1a7c555fe8fac949597e54a42bd075b5e7f654f"
+    },
+    "muapi-nano-banana": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-nano-banana/SKILL.md",
+      "computedHash": "dded8abb4c96dada5f70b73457c070f869a375ad893d3be0d87c748a67061ef6"
+    },
+    "muapi-product-video-ad-maker": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-product-video-ad-maker/SKILL.md",
+      "computedHash": "82df032c91e993ea15cd4e93327543777e28d5771ca9aab5afebe7a4d3de3923"
+    },
+    "muapi-seedance-2": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-seedance-2/SKILL.md",
+      "computedHash": "331fff6bf9701ae5586bff27fb1348a3290d1d9ffcfdbb8be57b163fe520a9ce"
+    },
+    "muapi-social-media-video": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-social-media-video/SKILL.md",
+      "computedHash": "1afb69945bd8d995dd8f80bddf4b86857e5d9294b86dffc289a13af9d55a230b"
+    },
+    "muapi-ugc-video-factory": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-ugc-video-factory/SKILL.md",
+      "computedHash": "7c9f831aafe0b640a447393ec9d47f3efd4af085488775ea66aaaf29dc45f4e3"
+    },
+    "muapi-ui-design": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-ui-design/SKILL.md",
+      "computedHash": "8d77aacc04691e9251695c0ea646d3b9485c88f02b42330cdda7f273565614ee"
+    },
+    "muapi-youtube-shorts": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-youtube-shorts/SKILL.md",
+      "computedHash": "516239672bc2ccca6b47ce387d00619b8f7ae9f264b883998a3ddacd78976228"
+    },
+    "muapi-youtube-thumbnail": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/muapi-youtube-thumbnail/SKILL.md",
+      "computedHash": "69c823155df0483689a45ace20565ffb93762baf8d01dd5d2f20d5c10ec89633"
+    },
+    "offers": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/offers/SKILL.md",
+      "computedHash": "4e49425fc003bfc113cee7757ffa57de0859b1903dec89973cc599c42fca8942"
+    },
+    "onboarding": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/onboarding/SKILL.md",
+      "computedHash": "634b9ba0a4446d9358d3cbc316feefc2e9d618cd88d5a77f0bc6ec895ed5eb5f"
+    },
+    "paywalls": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/paywalls/SKILL.md",
+      "computedHash": "1f0b8d15770d2e7737b818408dc5877b2eadc4cab072cdfb3529349ab059815f"
+    },
+    "pema-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/pema-perspective/SKILL.md",
+      "computedHash": "28218901b39d910e2b00a76ab04c5c170b0fce356b62b6c3c2845f09f1b777d8"
+    },
+    "popups": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/popups/SKILL.md",
+      "computedHash": "95c5cb45dcbb05362168255d97ee68d53a5916d8de779bd08f5f70c9b0cabd36"
+    },
+    "pricing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/pricing/SKILL.md",
+      "computedHash": "7f2dfd6cb6b5924f5dc0b7add2ec46a1665f6796504a7891b0550bb33c2628dd"
+    },
+    "product-marketing": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/product-marketing/SKILL.md",
+      "computedHash": "2fe9e9093e385345d17e0e77d032d68015417c37ceffeb5fb34fc761c46c94a0"
+    },
+    "programmatic-seo": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/programmatic-seo/SKILL.md",
+      "computedHash": "0bbdcbacfbe46fd78d774041ee49afd313505bb435b775dc246f4b8e6981d797"
+    },
+    "prospecting": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/prospecting/SKILL.md",
+      "computedHash": "f7b35b4f30367988b2e71ec30a47c39b3c50a1aac3dfeb5c22e02ad8e86576a9"
+    },
+    "public-relations": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/public-relations/SKILL.md",
+      "computedHash": "1b13653b478b49049e4df4981ea032de63833387c4f914eadaeb070f6ecbdc5c"
+    },
+    "ramana-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/ramana-perspective/SKILL.md",
+      "computedHash": "ad8cf7147c911143d38f7e482c3edfdae37a589856fd3a555bc42fdd8a7f3474"
+    },
+    "redesign-existing-projects": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/redesign-existing-projects/SKILL.md",
+      "computedHash": "7d6c3ad25b958f39bc09280755f5ad3f2ade4775827bf2d7bae5d50a6e990a94"
+    },
+    "referrals": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/referrals/SKILL.md",
+      "computedHash": "1b9228f8c74abd2ad43f72baf34e7de1727dc56fba8ed8a54588bec181c39c97"
+    },
+    "revops": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/revops/SKILL.md",
+      "computedHash": "3ed71e1704d4c27f846ac7a207e66030c91fe6fa7f8ce83bcf7f30fda3badb6d"
+    },
+    "rogers-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/rogers-perspective/SKILL.md",
+      "computedHash": "a98f2b550a9bfc420ba49a5e30dd05973d2816a0603b379fff576a6228a8d0c0"
+    },
+    "sales-enablement": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/sales-enablement/SKILL.md",
+      "computedHash": "554e501e3c5926eced49cae2fd3460a61252d8979891e212aad6e39ff999c703"
+    },
+    "satir-perspective": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/satir-perspective/SKILL.md",
+      "computedHash": "c794a659c20c8601701847c596cd48689a3d44f35e82abdeedcac88e232438c9"
+    },
+    "schema": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/schema/SKILL.md",
+      "computedHash": "2f4807070c77b5c52af3a7e56d2ca5ee12ae2fd8b749d76ab68d3de40f323e78"
+    },
+    "seo-audit": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/seo-audit/SKILL.md",
+      "computedHash": "f2dc52130189068981f21e1c0bdc4471ac7cd9b08d8a1320604411aa0f950385"
+    },
+    "signup": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/signup/SKILL.md",
+      "computedHash": "9efbe9bc357581a924baa33a696b6d58a7126b7a4e4c472cebf18ed3d52cd2fd"
+    },
+    "site-architecture": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/site-architecture/SKILL.md",
+      "computedHash": "48a38c5e2b000d134c3db282364b1014bad362fa91d4618ad8c2eb7cee991208"
+    },
+    "sms": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/sms/SKILL.md",
+      "computedHash": "289111572055b6dd00a34e2111b6d895081b13cb3bf8c8fa3b05717d0e2e2b52"
+    },
+    "social": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/social/SKILL.md",
+      "computedHash": "906a0529e4ee506c3e2ae81d6dab72d98d2933ec3dac0f332d6b8a2e67acf6a0"
+    },
+    "stitch-design-taste": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/stitch-design-taste/SKILL.md",
+      "computedHash": "d8691de48789466a373f770f080933ad1f2d4fa203ad34ff0197c1d6a50586c9"
+    },
+    "video": {
+      "source": "xoxonco-ai/my-frist-project",
+      "sourceType": "github",
+      "skillPath": "skills/video/SKILL.md",
+      "computedHash": "8286d39be8d86f9fc1c39b3c340cdebcf9a490f7606ffde566572baa163b1fe7"
+    }
+  }
+}
