@@ -1,6 +1,27 @@
 {
-  "address_map": {},
+  "address_map": {
+    "wiki/concepts/排盤引擎架構.md": "c-000002",
+    "wiki/concepts/解讀邊界與誠實聲明.md": "c-000004",
+    "wiki/concepts/關卡年推算.md": "c-000003",
+    "wiki/questions/排盤程式碼是否與技術文件一致.md": "c-000005",
+    "wiki/sources/解盤公式技術文件.md": "l-000001"
+  },
   "description": "Ingest delta tracker. Source payloads are create-only.",
-  "sources": {},
+  "sources": {
+    "src-5b529fe7c7f91bcdfdd6": {
+      "captured_path": ".raw/captured/81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454.md",
+      "generated_pages": [
+        "wiki/sources/解盤公式技術文件.md",
+        "wiki/concepts/排盤引擎架構.md",
+        "wiki/concepts/關卡年推算.md",
+        "wiki/concepts/解讀邊界與誠實聲明.md",
+        "wiki/questions/排盤程式碼是否與技術文件一致.md"
+      ],
+      "inbox_path": "inbox/解盤公式.md",
+      "ingested_at": "2026-08-24",
+      "operation_id": "ingest-jiepan-20260824",
+      "sha256": "81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454"
+    }
+  },
   "version": 1
 }

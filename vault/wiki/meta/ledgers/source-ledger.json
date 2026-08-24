@@ -1,5 +1,29 @@
 {
-  "generated_at": "2026-08-24T07:10:00Z",
+  "generated_at": "2026-08-24T07:30:00Z",
   "schema": "claude-obsidian.source-ledger.v1",
-  "sources": {}
+  "sources": {
+    "src-5b529fe7c7f91bcdfdd6": {
+      "title": "浮生矩陣｜解盤公式技術文件",
+      "origin": {
+        "kind": "file",
+        "locator": ".raw/captured/81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454.md"
+      },
+      "content_kind": "document",
+      "content_sha256": "81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454",
+      "authority": "official",
+      "review_status": "active",
+      "ingested_at": "2026-08-24",
+      "retrieved_at": "2026-08-24",
+      "refresh_due": "2027-02-24",
+      "independence_key": "fusheng-matrix-repo",
+      "supersedes": null,
+      "pages": [
+        "wiki/sources/解盤公式技術文件.md",
+        "wiki/concepts/排盤引擎架構.md",
+        "wiki/concepts/關卡年推算.md",
+        "wiki/concepts/解讀邊界與誠實聲明.md",
+        "wiki/questions/排盤程式碼是否與技術文件一致.md"
+      ]
+    }
+  }
 }

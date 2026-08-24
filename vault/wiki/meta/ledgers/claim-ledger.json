@@ -1,5 +1,86 @@
 {
-  "claims": {},
-  "generated_at": "2026-08-24T07:10:00Z",
-  "schema": "claude-obsidian.claim-ledger.v1"
+  "generated_at": "2026-08-24T07:30:00Z",
+  "schema": "claude-obsidian.claim-ledger.v1",
+  "claims": {
+    "clm-engine-deterministic": {
+      "text": "人生羅盤排盤為確定性計算：同一份出生資料在同一版引擎必得同一張命盤，無查表、無隨機，可與第三方排盤軟體對照驗證。",
+      "risk": "normal",
+      "assessment": "provisional",
+      "confidence": "medium",
+      "reviewed_at": "2026-08-24",
+      "location": {
+        "path": "wiki/concepts/排盤引擎架構.md",
+        "anchor": "確定性"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "八、誠實聲明"
+        }
+      ],
+      "supersedes": null,
+      "notes": "來源為產品方技術文件，描述意圖而非實作證據。未讀取 paipan.html 程式碼，故停在 provisional。獨立驗證需拿已知出生資料與第三方軟體對照。"
+    },
+    "clm-gate-years-computed": {
+      "text": "報告中的關卡年由三個實算訊號推得——土星回歸（掃描 27～32 歲，步長 0.05 年）、流年沖日支（14～55 歲）、大運交接（16～56 歲）——非人工編寫。",
+      "risk": "normal",
+      "assessment": "provisional",
+      "confidence": "medium",
+      "reviewed_at": "2026-08-24",
+      "location": {
+        "path": "wiki/concepts/關卡年推算.md",
+        "anchor": "三個訊號"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "五、關卡年（可驗證佐證）"
+        }
+      ],
+      "supersedes": null,
+      "notes": "文件指名實作位於 chartSummary()，但本次未讀取該函式。此主張直接影響對外可驗證性，優先驗證。"
+    },
+    "clm-hd-design-88deg": {
+      "text": "人類圖設計盤取出生前太陽黃經倒退 88 度的時刻，以二分法在出生前 80～95 天區間迭代 60 次逼近。",
+      "risk": "normal",
+      "assessment": "provisional",
+      "confidence": "medium",
+      "reviewed_at": "2026-08-24",
+      "location": {
+        "path": "wiki/concepts/排盤引擎架構.md",
+        "anchor": "三個容易踩到的換算"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "四、人類圖／設計盤（Design）"
+        }
+      ],
+      "supersedes": null,
+      "notes": "88 度太陽弧為人類圖通行作法，但本紀錄只能由本文件佐證，未取得獨立來源，亦未驗證程式實作的收斂行為。"
+    },
+    "clm-parent-inference-restricted": {
+      "text": "技術文件明文規定父母線索只談關係與性格議題，嚴禁推測姓氏或具體事件。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-24",
+      "location": {
+        "path": "wiki/concepts/解讀邊界與誠實聲明.md",
+        "anchor": "硬性禁止"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "六、父母線索（佐證用）"
+        }
+      ],
+      "supersedes": null,
+      "notes": "這是關於文件自身規定的主張，官方來源即為權威，可直接引用。不等同於實際產出必然遵守此規定——那是另一個待驗證的主張。"
+    }
+  }
 }
