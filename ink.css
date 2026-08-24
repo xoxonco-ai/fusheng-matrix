@@ -1,0 +1,193 @@
+/* ==========================================================================
+   浮生矩陣 · 水墨設計系統
+   東方水墨：墨底 + 宣紙纖維 + 硃砂
+   全站共用 token 與基底。各頁只在自己的 <style> 裡寫版面差異。
+   ========================================================================== */
+
+:root{
+  /* ---------- 墨 ---------- */
+  --ink-900:#0b0a09;   /* 焦墨・最深 */
+  --ink-800:#14120f;   /* 濃墨・頁面主底 */
+  --ink-700:#1b1915;   /* 重墨・抬高面 */
+  --ink-600:#24211b;   /* 中墨・卡片底 */
+  --ink-500:#312d25;   /* 淡墨・分隔 */
+
+  /* ---------- 紙・月白 ---------- */
+  --paper:#ddd6c8;        /* 主文字・月白 */
+  --paper-dim:#a49d90;    /* 次要文字 */
+  --paper-faint:#85806f;  /* 最淡・註腳（對 --ink-800 為 4.8:1，符合 WCAG AA） */
+
+  /* ---------- 硃砂（主強調） ---------- */
+  --cinnabar:#a8412f;
+  --cinnabar-light:#cd6549;
+  --cinnabar-deep:#762a1e;
+
+  /* ---------- 赭石（次強調） ---------- */
+  --ochre:#9c7043;
+  --ochre-light:#bb8f5d;
+
+  /* ---------- 線 ---------- */
+  --rule:rgba(221,214,200,.13);
+  --rule-strong:rgba(221,214,200,.22);
+
+  /* ---------- 字 ---------- */
+  --serif:'Noto Serif TC',Songti TC,SimSun,serif;
+  --sans:'Noto Sans TC',system-ui,sans-serif;
+
+  /* ---------- 字距（水墨版一律收緊） ---------- */
+  --ls-title:.04em;   /* 大標 */
+  --ls-body:.015em;   /* 內文 */
+  --ls-label:.12em;   /* 小標籤 */
+
+  /* ---------- 筆鋒（手繪墨線，供 .ink-rule 與 h2::after 共用） ---------- */
+  --brush:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 14' preserveAspectRatio='none'%3E%3Cpath d='M1,8.1 C58,6.6 118,4.9 198,4.2 C288,3.4 358,3.7 438,4.6 C508,5.4 558,6.3 599,6.9 L599,8.2 C558,9.1 508,10.2 438,10.9 C358,11.7 288,11.2 198,10.1 C118,9.1 58,8.7 1,8.1 Z' fill='%23ddd6c8' fill-opacity='.34'/%3E%3C/svg%3E");
+  --brush-cinnabar:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 14' preserveAspectRatio='none'%3E%3Cpath d='M1,8.1 C58,6.6 118,4.9 198,4.2 C288,3.4 358,3.7 438,4.6 C508,5.4 558,6.3 599,6.9 L599,8.2 C558,9.1 508,10.2 438,10.9 C358,11.7 288,11.2 198,10.1 C118,9.1 58,8.7 1,8.1 Z' fill='%23a8412f' fill-opacity='.85'/%3E%3C/svg%3E");
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+
+body{
+  background:var(--ink-800);
+  color:var(--paper);
+  font-family:var(--serif);
+  font-weight:400;
+  line-height:1.95;
+  letter-spacing:var(--ls-body);
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* --------------------------------------------------------------------------
+   墨暈：不規則、不對稱的暈染底。取代原本置中對稱的星空 + 網格。
+   -------------------------------------------------------------------------- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(58% 40% at 16% 6%,  rgba(72,66,55,.55) 0%, transparent 64%),
+    radial-gradient(44% 32% at 90% 22%, rgba(52,47,39,.50) 0%, transparent 62%),
+    radial-gradient(66% 28% at 58% 74%, rgba(44,40,33,.46) 0%, transparent 68%),
+    radial-gradient(38% 44% at 6% 62%,  rgba(38,35,29,.42) 0%, transparent 66%);
+}
+
+/* --------------------------------------------------------------------------
+   宣紙：纖維 + 顆粒。兩層疊加，靠 blend mode 融進墨色而不是浮在上面。
+   -------------------------------------------------------------------------- */
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.5;mix-blend-mode:overlay;
+  background-image:
+    /* 顆粒 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)' opacity='0.42'/%3E%3C/svg%3E"),
+    /* 橫向纖維 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.018' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23f)' opacity='0.3'/%3E%3C/svg%3E");
+  background-size:260px 260px,420px 420px;
+}
+
+main,header,footer,section{position:relative;z-index:1}
+
+/* --------------------------------------------------------------------------
+   標題：實心月白，不做漸層、不發光。字距收到 .04em。
+   -------------------------------------------------------------------------- */
+h1,h2,h3,h4{font-family:var(--serif);color:var(--paper);letter-spacing:var(--ls-title)}
+h1{font-weight:700}
+h2{font-weight:700;font-size:clamp(25px,4vw,35px);line-height:1.5}
+h3{font-weight:600}
+h4{font-weight:600}
+
+a{color:var(--cinnabar-light);text-decoration:none}
+
+/* --------------------------------------------------------------------------
+   墨線：手繪筆觸感的分隔。中間厚、兩端收鋒，帶輕微起伏。
+   取代原本 ✦ 置中的對稱 divider。
+   -------------------------------------------------------------------------- */
+.ink-rule{
+  display:block;height:13px;border:0;
+  background:no-repeat center/100% 100% var(--brush);
+}
+/* 短鋒：段落內用 */
+.ink-rule.short{width:132px}
+/* 硃砂鋒 */
+.ink-rule.cinnabar{background-image:var(--brush-cinnabar)}
+
+/* --------------------------------------------------------------------------
+   印章：硃砂方印，替代 ✦ 當視覺記號。輕微傾斜，像手蓋上去的。
+   -------------------------------------------------------------------------- */
+.seal{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;flex:none;
+  background:var(--cinnabar);color:#f2ece0;
+  font-family:var(--serif);font-weight:700;font-size:15px;
+  line-height:1.15;letter-spacing:0;text-align:center;
+  transform:rotate(-2.5deg);
+  box-shadow:inset 0 0 0 1px rgba(242,236,224,.22);
+}
+.seal.sm{width:32px;height:32px;font-size:11px}
+.seal.two{font-size:13px;padding:3px}
+
+/* --------------------------------------------------------------------------
+   小標籤：字距不再拉到 .3em，收到 .12em，改用 sans 與淡墨色。
+   -------------------------------------------------------------------------- */
+.label{
+  font-family:var(--sans);font-weight:400;
+  font-size:12px;letter-spacing:var(--ls-label);
+  color:var(--paper-faint);
+}
+
+/* --------------------------------------------------------------------------
+   按鈕：實心方塊，無圓角、無漸層、無發光。hover 只做墨色加深。
+   -------------------------------------------------------------------------- */
+.btn{
+  display:inline-block;padding:14px 34px;
+  font-family:var(--serif);font-size:15.5px;font-weight:600;
+  letter-spacing:.1em;text-decoration:none;
+  border:0;cursor:pointer;border-radius:0;
+  transition:background-color .25s ease,color .25s ease,border-color .25s ease;
+}
+.btn-cinnabar{background:var(--cinnabar);color:#f4efe4}
+.btn-cinnabar:hover{background:var(--cinnabar-deep);color:#f4efe4}
+.btn-ghost{
+  background:transparent;color:var(--paper);
+  box-shadow:inset 0 0 0 1px var(--rule-strong);
+}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1px var(--paper-dim);color:var(--paper)}
+
+/* --------------------------------------------------------------------------
+   表單：方角、墨底、聚焦時邊線轉硃砂。
+   -------------------------------------------------------------------------- */
+input,select,textarea{
+  font-family:var(--sans);font-size:15px;letter-spacing:.02em;
+  color:var(--paper);background:rgba(11,10,9,.55);
+  border:1px solid var(--rule-strong);border-radius:0;
+  padding:12px 14px;width:100%;outline:none;
+  transition:border-color .25s ease;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--cinnabar)}
+::placeholder{color:var(--paper-faint)}
+
+/* --------------------------------------------------------------------------
+   進場：淡入為主，位移縮到 10px 且加隨機延遲，避免整頁同步上浮。
+   尊重 prefers-reduced-motion。
+   -------------------------------------------------------------------------- */
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform .9s ease}
+.reveal.visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+
+/* --------------------------------------------------------------------------
+   卡片：無邊框。靠墨色深淺與留白分隔。
+   -------------------------------------------------------------------------- */
+.ink-card{
+  background:var(--ink-700);
+  padding:32px 28px;
+  border:0;border-radius:0;
+}
+.ink-card--deep{background:var(--ink-600)}
+
+/* 硃砂側鋒：需要標記重點的卡片，左緣一道硃砂 */
+.ink-card--marked{box-shadow:inset 3px 0 0 var(--cinnabar)}
+.ink-card--marked-ochre{box-shadow:inset 3px 0 0 var(--ochre)}
+
+::selection{background:var(--cinnabar);color:#f4efe4}
