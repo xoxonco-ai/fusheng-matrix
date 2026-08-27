@@ -191,3 +191,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--cinnabar)}
 .ink-card--marked-ochre{box-shadow:inset 3px 0 0 var(--ochre)}
 
 ::selection{background:var(--cinnabar);color:#f4efe4}
+
+/* --------------------------------------------------------------------------
+   鍵盤焦點：硃砂外框。滑鼠點擊不顯示，只在鍵盤操作時出現。
+   -------------------------------------------------------------------------- */
+:where(a,button,[tabindex]):focus-visible{
+  outline:2px solid var(--cinnabar-light);
+  outline-offset:3px;
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--cinnabar-light);
+  outline-offset:1px;
+}
