@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>浮生矩陣｜我的報告</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ink.css">
 <link rel="stylesheet" href="members.css">
 <style>.wrap{max-width:1180px}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -53,7 +54,7 @@ async function orderBanner(userId){
       }
     }catch(e){}
     return {generating:true, html:`<div class="card center" style="border-color:var(--gold)">
-      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px">✦ 付款成功，你的報告正在生成中…</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:6px"> 付款成功，你的報告正在生成中…</p>
       <p class="muted" style="font-family:var(--sans);font-size:13.5px;line-height:1.9">系統正依命盤撰寫兩份完整報告，約需 5～10 分鐘。<br>本頁會自動更新，也可以先關掉，之後隨時登入回來看。</p>
     </div>`};
   }
@@ -89,7 +90,7 @@ async function orderBanner(userId){
   if(error){ box.innerHTML=`<div class="card"><div class="msg err" style="display:block">讀取失敗：${esc(error.message)}</div></div>`; return; }
   if(!reports || !reports.length){
     box.innerHTML= banner.html || `<div class="card center">
-      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功 ✦</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--gold-bright);margin-bottom:8px">登入成功</p>
       <p class="muted" style="font-family:var(--sans)">購買後，你的萬字報告就會出現在這裡。</p>
       <p class="muted" style="font-family:var(--sans);margin-top:14px;font-size:13.5px">還沒有報告？先免費排盤，再付費解鎖（單人萬字 NT$888／情侶合盤 NT$1,288）。</p>
       <div class="row" style="justify-content:center;margin-top:16px">
