@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-24T07:30:00Z",
+  "generated_at": "2026-08-27T05:05:00Z",
   "schema": "claude-obsidian.source-ledger.v1",
   "sources": {
     "src-5b529fe7c7f91bcdfdd6": {
@@ -19,6 +19,29 @@
       "supersedes": null,
       "pages": [
         "wiki/sources/解盤公式技術文件.md",
+        "wiki/concepts/排盤引擎架構.md",
+        "wiki/concepts/關卡年推算.md",
+        "wiki/concepts/解讀邊界與誠實聲明.md",
+        "wiki/questions/排盤程式碼是否與技術文件一致.md"
+      ]
+    },
+    "src-26ef87d2e9881ea4316f": {
+      "title": "paipan.html（單人排盤實作）",
+      "origin": {
+        "kind": "file",
+        "locator": ".raw/captured/2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a.html"
+      },
+      "content_kind": "code",
+      "content_sha256": "2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a",
+      "authority": "primary",
+      "review_status": "active",
+      "ingested_at": "2026-08-27",
+      "retrieved_at": "2026-08-27",
+      "refresh_due": "2026-11-27",
+      "independence_key": "fusheng-matrix-repo",
+      "supersedes": null,
+      "pages": [
+        "wiki/sources/paipan 單人排盤實作.md",
         "wiki/concepts/排盤引擎架構.md",
         "wiki/concepts/關卡年推算.md",
         "wiki/concepts/解讀邊界與誠實聲明.md",

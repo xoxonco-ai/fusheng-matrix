@@ -3,7 +3,7 @@ type: meta
 title: Hot Cache
 status: developing
 created: 2026-08-24
-updated: 2026-08-24
+updated: 2026-08-27
 tags:
   - meta
   - hot-cache
@@ -13,23 +13,25 @@ tags:
 
 ## Last Updated
 
-2026-08-24，ingest 操作 `ingest-jiepan-20260824` 完成。
+2026-08-27，ingest 操作 `ingest-paipan-20260827` 完成。
 
 ## Key Recent Facts
 
-- 排盤掛在三個開源引擎上：lunar-javascript 1.7.7（八字）、iztro 2.5.8（紫微）、astronomy-engine 2.1.19（占星＋人類圖共用）。
-- 占星與人類圖共用同一份黃經，差別只在切法：12 星座每 30°，64 閘門每 5.625°。
-- 關卡年來自三個獨立訊號：土星回歸、流年沖日支、大運交接；AI 只挑 2～3 個寫進報告。
-- 硬性禁止：猜姓氏、猜具體事件、把命盤寫成命運宣判。
-- 出生時間不確定時受影響的是連鎖四項：八字時柱、紫微命宮、上升、人類圖類型。
+- 排盤計算路徑**無隨機性、無當下時間**：`Math.random()` 只在星空背景動畫，`Date.now()` 只在快取時戳。確定性已由程式碼證實。
+- 技術文件 12 項可查驗參數，**11 項與 `paipan.html` 逐字相符**。`GATE_ORDER` 64 元素完全相同且為 1–64 完整排列。
+- **唯一落差**：父母線索防護字串只寫「嚴禁猜姓氏」，文件宣稱的「具體事件」沒進防護，全檔搜不到這四個字。
+- `paipan.html` 有三處計算邏輯各兩份實作（閘門轉換、時辰索引、設計盤二分），改一邊會靜默漂移。
+- `hepan.html` 取了父母宮主星但變數從未使用——死程式碼，不是防護缺口。
 
 ## Recent Changes
 
-- 擷取來源 `解盤公式.md`（8,423 bytes）至不可變區。
-- 新增 1 個來源頁、3 個概念頁、1 個問題頁。
-- 記錄 4 則主張：3 則 provisional、1 則 accepted。
+- 擷取 `paipan.html`（87,982 bytes）至不可變區。
+- 三則主張 provisional → accepted；新增 `clm-doc-code-consistent`、`clm-parent-guard-narrower`。
+- 問題頁 [[排盤程式碼是否與技術文件一致]] 已解答，含逐項對照表。
 
 ## Active Threads
 
-- 把 `paipan.html` / `hepan.html` 吃進來，驗證 provisional 主張 → [[排盤程式碼是否與技術文件一致]]。
-- 優先驗證順序：關卡年三訊號 → 紫微時辰索引 23 點邊界 → 人類圖 302° 起點。
+- **可修**：`paipan.html` 599 行標籤改成「嚴禁猜姓氏或具體事件」，一行字。
+- **可修**：三處重複實作收斂成單一函式，避免漂移。
+- **待驗**：拿已知出生資料與第三方排盤軟體對照，這才是真正的獨立佐證。
+- **未讀**：`hepan.html`、`admin.html`。
