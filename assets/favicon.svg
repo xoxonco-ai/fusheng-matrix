@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="浮生矩陣">
+  <rect width="64" height="64" fill="#14120f"/>
+  <rect x="9" y="9" width="46" height="46" fill="#a8412f" transform="rotate(-2.5 32 32)"/>
+  <text x="32" y="33" fill="#f4efe4" font-family="Noto Serif TC, Songti TC, SimSun, serif"
+        font-size="34" font-weight="700" text-anchor="middle" dominant-baseline="central"
+        transform="rotate(-2.5 32 32)">浮</text>
+</svg>
