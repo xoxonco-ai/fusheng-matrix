@@ -13,6 +13,42 @@ tags:
 
 Newest completed operations appear first.
 
+## 2026-08-27 — `ingest-paipan-fix-20260827`
+
+修補稽核發現的防護落差，並把修補後的檔案重新擷取為新快照。
+
+**程式碼變更**：`paipan.html` 599 行
+
+```diff
+-【父母線索｜只談關係/性格議題，嚴禁猜姓氏】
++【父母線索｜只談關係/性格議題，嚴禁猜姓氏或具體事件】
+```
+
+一行、一處字串替換。改動位於 template literal 的純文字內，未引入 JS
+metacharacter；修改後 inline JavaScript 通過 `node --check`。
+
+**來源狀態**
+
+| 來源 | 變動 |
+|------|------|
+| `src-26ef87d2…`（稽核版 `2b791137…`） | active → **superseded** |
+| `src-a18adecb…`（修補版 `e5206373…`） | 新增 active，`supersedes` 前者 |
+
+舊快照未被覆寫，仍在 `.raw/captured/`。
+
+**主張評估變動**
+
+| 主張 | 變動 |
+|------|------|
+| `clm-parent-guard-narrower` | accepted → **deprecated**（落差已消除） |
+| `clm-parent-guard-fixed` | 新增 **accepted**，`supersedes` 前者 |
+| `clm-doc-code-consistent` | 文字錨定稽核快照，補記修補結果 |
+| `clm-engine-deterministic` / `clm-gate-years-computed` / `clm-hd-design-88deg` | 補上修補版快照為支持證據，維持現行有效支持 |
+
+**未涵蓋**：修補後未重跑完整參數稽核（差異僅一個字串，不影響任何計算）；
+防護字串是否真被模型遵守未抽查。
+
+
 ## 2026-08-27 — `ingest-paipan-20260827`
 
 第二輪 ingest，目的是驗證第一輪留下的 provisional 主張。

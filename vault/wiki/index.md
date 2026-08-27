@@ -16,7 +16,7 @@ This catalog is updated by completed knowledge operations.
 ## Sources
 
 - [[解盤公式技術文件]] — 人生羅盤排盤引擎的公開技術規格（official，2026-08-24）
-- [[paipan 單人排盤實作]] — 單人排盤頁完整實作（primary，2026-08-27）
+- [[paipan 單人排盤實作]] — 單人排盤頁完整實作（primary，2026-08-27，兩份快照）
 
 ## Concepts
 
@@ -30,4 +30,4 @@ This catalog is updated by completed knowledge operations.
 
 ## Questions
 
-- [[排盤程式碼是否與技術文件一致]] — 已解答：12 項參數 11 項吻合，父母防護有落差
+- [[排盤程式碼是否與技術文件一致]] — 已解答並修補：12 項參數現全數相符

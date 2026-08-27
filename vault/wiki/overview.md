@@ -21,12 +21,13 @@ This local-first vault compounds source-backed knowledge over time.
 
 ## 目前的證據狀態
 
-六則主張全部 `accepted`。第一輪只有文件時，三則技術主張停在 `provisional`；
-第二輪讀了 `paipan.html` 逐項比對後才升上來。
+七則主張：六則 `accepted`、一則 `deprecated`。第一輪只有文件時，
+三則技術主張停在 `provisional`；第二輪讀了 `paipan.html` 逐項比對後升上來。
 
-**一則矛盾證據已保留**：`clm-parent-guard-narrower`——文件說父母線索
-「嚴禁猜測姓氏或具體事件」，程式碼的防護字串只寫了「嚴禁猜姓氏」。
-兩邊都記著，以第一手的程式碼為準。
+**一則主張走完了完整生命週期**：`clm-parent-guard-narrower` 記錄了
+文件與程式碼的落差（文件說禁止「姓氏或具體事件」，防護字串只寫了「姓氏」），
+落差修補後轉為 `deprecated`，由 `clm-parent-guard-fixed` 取代。
+舊主張與它的矛盾證據都沒有刪除——這類落差會再發生，紀錄留著才有參考價值。
 
 ## 未解的部分
 

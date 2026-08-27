@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T05:05:00Z",
+  "generated_at": "2026-08-27T05:35:00Z",
   "schema": "claude-obsidian.claim-ledger.v1",
   "claims": {
     "clm-engine-deterministic": {
@@ -22,6 +22,11 @@
           "source_id": "src-26ef87d2e9881ea4316f",
           "relation": "supports",
           "locator": "Math.random() 僅 242 行星空動畫；Date.now() 僅 613、695 行快取；chartSummary() 與排盤主流程皆無"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "修補版位元組僅 599 行字串不同，計算路徑未變動"
         }
       ],
       "supersedes": null,
@@ -47,6 +52,11 @@
           "source_id": "src-26ef87d2e9881ea4316f",
           "relation": "supports",
           "locator": "chartSummary() 583-593 行：for(age=27;age<=32;age+=0.05)、for(y=Y+14;y<=Y+55;y++)、_ag>=16&&_ag<=56"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "chartSummary() 583-593 行，修補版未變動"
         }
       ],
       "supersedes": null,
@@ -72,13 +82,18 @@
           "source_id": "src-26ef87d2e9881ea4316f",
           "relation": "supports",
           "locator": "490、574 行：tg=(sunLon(utc)-88+360)%360，lo=utc-95*864e5，hi=utc-80*864e5，for(i=0;i<60;i++)；HB/B 陣列各 13 個天體"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "490、574 行，修補版未變動"
         }
       ],
       "supersedes": null,
       "notes": "程式碼逐字相符。未驗證二分法在極端輸入下的收斂行為，也未取得人類圖 88 度慣例的獨立來源。"
     },
     "clm-doc-code-consistent": {
-      "text": "技術文件所述的 12 項可查驗參數中，11 項與 paipan.html 實作逐字相符；唯一落差是父母線索的禁止範圍。",
+      "text": "技術文件所述的 12 項可查驗參數，於快照 2b791137 稽核時 11 項與 paipan.html 逐字相符；唯一落差（父母線索禁止範圍）已於同日修補，修補版 12 項全符。",
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
@@ -97,10 +112,15 @@
           "source_id": "src-5b529fe7c7f91bcdfdd6",
           "relation": "supports",
           "locator": "全文各章節參數"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "修補後 12 項參數全數相符"
         }
       ],
       "supersedes": null,
-      "notes": "GATE_ORDER 以程式逐一比對，64 元素完全相同且為 1-64 的完整排列。此主張只涵蓋 paipan.html；hepan.html 與 admin.html 未查。"
+      "notes": "GATE_ORDER 以程式逐一比對，64 元素完全相同且為 1-64 的完整排列。此主張只涵蓋 paipan.html；hepan.html 與 admin.html 未查。 2026-08-27 補記：唯一落差已修補，見 clm-parent-guard-fixed。"
     },
     "clm-parent-inference-restricted": {
       "text": "技術文件明文規定父母線索只談關係與性格議題，嚴禁推測姓氏或具體事件。",
@@ -125,7 +145,7 @@
     "clm-parent-guard-narrower": {
       "text": "paipan.html 送給 AI 的父母線索防護字串只寫「嚴禁猜姓氏」，未涵蓋技術文件所稱的「具體事件」；全檔搜不到「具體事件」字樣。",
       "risk": "normal",
-      "assessment": "accepted",
+      "assessment": "deprecated",
       "confidence": "high",
       "reviewed_at": "2026-08-27",
       "location": {
@@ -145,7 +165,32 @@
         }
       ],
       "supersedes": null,
-      "notes": "文件與實作在此不一致，兩邊證據都保留。程式碼是第一手，以程式碼為準：目前擋住猜事件的只有「只談關係/性格議題」這個較弱的正面表述。修補只需改 599 行標籤。hepan.html 無此問題——它取了父母宮主星但變數從未使用（死程式碼）。"
+      "notes": "此主張於快照 2b791137 為真，已於 2026-08-27 修補，由 clm-parent-guard-fixed 取代。保留紀錄的理由：這類「文件規範與送進模型的字串各自獨立」的落差會再發生，刪掉就失去了它曾經存在過的證據。文件的 contradicts 證據一併保留。"
+    },
+    "clm-parent-guard-fixed": {
+      "text": "paipan.html 599 行送給 AI 的父母線索防護字串為「只談關係/性格議題，嚴禁猜姓氏或具體事件」，與技術文件的規定一致。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/解讀邊界與誠實聲明.md",
+        "anchor": "硬性禁止"
+      },
+      "evidence": [
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "599 行：【父母線索｜只談關係/性格議題，嚴禁猜姓氏或具體事件】"
+        },
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "六、父母線索（佐證用）"
+        }
+      ],
+      "supersedes": "clm-parent-guard-narrower",
+      "notes": "修補僅替換一個字串，未動計算邏輯，inline JavaScript 通過 node --check。防護字串存在不等於模型必然遵守——那要靠實際產出抽查，尚未做。"
     }
   }
 }

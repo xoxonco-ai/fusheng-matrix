@@ -4,7 +4,7 @@ type: source
 title: paipan.html（單人排盤實作）
 created: 2026-08-27
 updated: 2026-08-27
-status: developing
+status: mature
 tags:
   - source
   - 排盤
@@ -13,8 +13,8 @@ source_type: code
 author: 浮生矩陣
 date_published: ""
 url: ""
-source_id: src-26ef87d2e9881ea4316f
-sha256: 2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a
+source_id: src-a18adecb8477cace4c61
+sha256: e5206373e27f51c0badf09bc846f06ec6d7d2d8bda7e296aabb5735e067fe2ed
 authority: primary
 independence_key: fusheng-matrix-repo
 review_state: active
@@ -27,7 +27,7 @@ claim_ids:
   - clm-gate-years-computed
   - clm-hd-design-88deg
   - clm-doc-code-consistent
-  - clm-parent-guard-narrower
+  - clm-parent-guard-fixed
 related:
   - "[[解盤公式技術文件]]"
   - "[[排盤引擎架構]]"
@@ -43,11 +43,20 @@ related:
 浮生矩陣「人生羅盤」單人排盤頁的完整實作——HTML、CSS、四套命理系統的
 JavaScript 計算、三語系文案、金流與 Supabase 串接，全在一個檔案裡。
 
-不可變副本：`.raw/captured/2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a.html`
-
 - 權威層級：`primary`（實作本身，不是對實作的描述）
-- 大小：87,982 bytes
 - 擷取方式：本機檔案，無網路抓取
+
+## 版本歷史
+
+兩份快照都保留著，舊的不會被覆寫——這是查證當時說了什麼的唯一依據。
+
+| 快照 | SHA-256 前綴 | 狀態 | 內容 |
+|------|-------------|------|------|
+| 稽核版 | `2b791137…546a` | `superseded` | 父母線索防護只寫「嚴禁猜姓氏」 |
+| 修補版 | `e5206373…e2ed` | `active` | 防護補成「嚴禁猜姓氏或具體事件」 |
+
+兩份差異僅 599 行一個字串，其餘位元組相同。修補後 inline JavaScript
+通過 `node --check` 語法檢查。
 
 ## 為什麼權威層級是 primary 而非 official
 
@@ -77,4 +86,5 @@ JavaScript 計算、三語系文案、金流與 Supabase 串接，全在一個�
 
 - `hepan.html`（合盤）與 `admin.html`（後台）不在本次擷取範圍
 - 未執行程式、未與第三方排盤軟體對照實際輸出
+- 修補後未重跑完整參數稽核（差異僅一個字串，不影響任何計算）
 - 未檢視 CDN 上的三個開源引擎本身的實作

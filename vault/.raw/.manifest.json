@@ -32,6 +32,17 @@
       "ingested_at": "2026-08-24",
       "operation_id": "ingest-jiepan-20260824",
       "sha256": "81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454"
+    },
+    "src-a18adecb8477cace4c61": {
+      "captured_path": ".raw/captured/e5206373e27f51c0badf09bc846f06ec6d7d2d8bda7e296aabb5735e067fe2ed.html",
+      "generated_pages": [
+        "wiki/sources/paipan 單人排盤實作.md"
+      ],
+      "inbox_path": "inbox/paipan.html",
+      "ingested_at": "2026-08-27",
+      "operation_id": "ingest-paipan-fix-20260827",
+      "sha256": "e5206373e27f51c0badf09bc846f06ec6d7d2d8bda7e296aabb5735e067fe2ed",
+      "supersedes": "src-26ef87d2e9881ea4316f"
     }
   },
   "version": 1
