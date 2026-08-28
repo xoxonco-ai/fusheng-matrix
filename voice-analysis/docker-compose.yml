@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      VA_KEEP_AUDIO: "${VA_KEEP_AUDIO:-false}"
+      VA_MIN_CONFIDENCE: "${VA_MIN_CONFIDENCE:-40}"
+      VA_CORS_ORIGINS: "${VA_CORS_ORIGINS:-http://localhost:3000}"
+    volumes:
+      - backend-data:/srv/data
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    environment:
+      API_BASE: "http://backend:8000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:
