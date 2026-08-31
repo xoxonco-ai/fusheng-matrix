@@ -1,0 +1,241 @@
+/* ==========================================================================
+   浮生矩陣 · App 殼層（全站共用）
+   手機優先的直欄版式＋底部導覽。色票與字體 token 來自 ink.css。
+   ========================================================================== */
+
+/* ---------- App 直欄：所有頁面內容鎖在一條手機欄裡，桌機也維持 App 感 ---------- */
+.app{
+  position:relative;z-index:1;
+  max-width:520px;margin:0 auto;
+  min-height:100dvh;
+  padding:0 18px calc(96px + env(safe-area-inset-bottom));
+  background:var(--ink-800);
+  box-shadow:0 0 0 1px var(--rule);
+}
+@media (min-width:720px){
+  body{background:var(--ink-900)}
+}
+
+/* ---------- 頂欄 ---------- */
+.appbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:12px;
+  height:58px;margin:0 -18px;padding:0 18px;
+  background:rgba(20,18,15,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--rule);
+}
+@media (prefers-reduced-transparency:reduce){
+  .appbar{background:var(--ink-800);backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+.appbar .brand{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--serif);font-weight:700;font-size:17px;
+  letter-spacing:.1em;color:var(--paper);text-decoration:none;
+}
+.appbar .brand .seal.sm{width:28px;height:28px;font-size:14px}
+.appbar .spacer{margin-left:auto}
+.appbar a.textlink{
+  font-family:var(--sans);font-size:13px;letter-spacing:.06em;
+  color:var(--paper-dim);text-decoration:none;
+}
+.appbar a.textlink:hover{color:var(--paper)}
+
+/* ---------- 底部導覽 ---------- */
+.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:flex;justify-content:center;
+  background:rgba(20,18,15,.96);
+  border-top:1px solid var(--rule);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.tabbar .tabs{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  width:min(520px,100%);
+}
+.tabbar a{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:9px 0 8px;text-decoration:none;
+  color:var(--paper-faint);
+  font-family:var(--sans);font-size:11px;letter-spacing:.08em;
+}
+.tabbar a .g{
+  font-family:var(--serif);font-weight:700;font-size:18px;line-height:1;
+}
+.tabbar a.active{color:var(--cinnabar-light)}
+.tabbar a:hover{color:var(--paper-dim)}
+.tabbar a.active:hover{color:var(--cinnabar-light)}
+
+/* ---------- 區塊標題 ---------- */
+.sec-head{
+  display:flex;align-items:baseline;gap:10px;
+  margin:34px 0 14px;
+}
+.sec-head h2{
+  font-size:19px;font-weight:600;letter-spacing:.06em;
+  line-height:1.5;color:var(--paper);
+}
+.sec-head .more{
+  margin-left:auto;font-family:var(--sans);font-size:12px;
+  letter-spacing:.06em;color:var(--paper-faint);text-decoration:none;white-space:nowrap;
+}
+.sec-head .more:hover{color:var(--ochre-light)}
+
+/* ---------- 產品卡：橫向滑動 ---------- */
+.rail{
+  display:flex;gap:12px;overflow-x:auto;
+  margin:0 -18px;padding:2px 18px 10px;
+  scroll-snap-type:x proximity;
+  scrollbar-width:none;
+}
+.rail::-webkit-scrollbar{display:none}
+.pcard{
+  flex:0 0 170px;scroll-snap-align:start;
+  display:flex;flex-direction:column;
+  background:var(--ink-700);
+  text-decoration:none;color:var(--paper);
+  transition:background-color .25s ease;
+}
+.pcard:hover{background:var(--ink-600)}
+.pcard .art{
+  height:118px;display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid var(--rule);
+}
+.pcard .art .stamp{
+  width:56px;height:56px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:700;font-size:26px;color:#f4efe4;
+  background:var(--cinnabar);transform:rotate(-2.5deg);
+  box-shadow:inset 0 0 0 1px rgba(242,236,224,.22);
+}
+.pcard .art .stamp.ochre{background:var(--ochre)}
+.pcard .art .stamp.deep{background:var(--cinnabar-deep)}
+.pcard .art .stamp.outline{
+  background:transparent;color:var(--paper-dim);
+  box-shadow:inset 0 0 0 1px var(--rule-strong);
+}
+.pcard .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.pcard .nm{font-family:var(--serif);font-weight:600;font-size:15px;letter-spacing:.04em;line-height:1.5}
+.pcard .ds{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--paper-dim);line-height:1.7}
+.pcard .pr{
+  margin-top:auto;padding-top:8px;
+  font-family:var(--sans);font-size:12px;letter-spacing:.04em;color:var(--ochre-light);
+}
+.pcard .pr b{font-weight:500}
+.pcard .pr{line-height:1.7}
+.pcard .pr.free{color:var(--cinnabar-light)}
+
+/* ---------- 通用卡片列 ---------- */
+.tile{
+  display:block;background:var(--ink-700);
+  padding:18px 18px 16px;margin-bottom:10px;
+  text-decoration:none;color:var(--paper);
+  transition:background-color .25s ease;
+}
+a.tile:hover{background:var(--ink-600)}
+.tile .t{font-family:var(--serif);font-weight:600;font-size:15.5px;letter-spacing:.04em;margin-bottom:4px}
+.tile .d{font-family:var(--sans);font-weight:300;font-size:13px;color:var(--paper-dim);line-height:1.85}
+
+/* ---------- 小字 ---------- */
+.finebar{
+  margin-top:30px;padding:22px 0 8px;border-top:1px solid var(--rule);
+  font-family:var(--sans);font-weight:300;font-size:12px;
+  color:var(--paper-faint);letter-spacing:.05em;line-height:2;text-align:center;
+}
+.finebar a{color:inherit;text-decoration:none}
+.finebar a:hover{color:var(--paper-dim)}
+.finebar .rowlinks{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+
+/* ==========================================================================
+   動態層（motion pass）
+   參考 open-props 緩動、animatedbuttons 的純 CSS 互動、
+   interfaces.rauno.me 的微互動準則：互動 <200ms、按壓縮放 .96、
+   hover 只在支援 hover 的裝置出現、尊重 prefers-reduced-motion。
+   ========================================================================== */
+:root{
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-spring:linear(0,.006,.025 2.8%,.101 6.1%,.539 18.9%,.721 25.3%,.849 31.5%,.937 38.1%,.968 41.8%,.991 45.7%,1.006 50.1%,1.015 55%,1.017 63.9%,1.001);
+  --dur-fast:.15s;--dur-med:.35s;--dur-slow:.7s;
+}
+
+/* ---------- 墨暈呼吸：整頁底層極緩慢地流動 ---------- */
+@keyframes ink-drift{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-1.5%,1%,0) scale(1.04)}
+  100%{transform:translate3d(0,0,0) scale(1)}
+}
+body::before{animation:ink-drift 46s ease-in-out infinite;will-change:transform}
+
+/* ---------- 按鈕：硃砂填墨 + 按壓 ---------- */
+.btn{position:relative;overflow:hidden;transition:color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:var(--cinnabar-deep);
+  transform:scaleY(0);transform-origin:bottom;
+  transition:transform .28s var(--ease-out);
+}
+.btn-cinnabar{z-index:0}
+@media (hover:hover){
+  .btn-cinnabar:hover{background:var(--cinnabar)}
+  .btn-cinnabar:hover::after{transform:scaleY(1)}
+  .btn-ghost:hover{transform:translateY(-1px)}
+}
+.btn:active{transform:scale(.96)}
+button.runbtn:active,button.paybtn:active{transform:scale(.97)}
+*{-webkit-tap-highlight-color:transparent}
+
+/* ---------- 印章：懸停微顫（jelly），像剛蓋上去 ---------- */
+@keyframes stamp-jelly{
+  0%{transform:rotate(-2.5deg) scale(1)}
+  30%{transform:rotate(-1deg) scale(1.08,.94)}
+  55%{transform:rotate(-3.4deg) scale(.96,1.05)}
+  75%{transform:rotate(-2.2deg) scale(1.03,.98)}
+  100%{transform:rotate(-2.5deg) scale(1)}
+}
+@media (hover:hover){
+  .pcard:hover .stamp,.appbar .brand:hover .seal{animation:stamp-jelly .55s var(--ease-out)}
+}
+
+/* ---------- 印章落款：進場時「蓋」下來 ---------- */
+@keyframes stamp-in{
+  0%{opacity:0;transform:rotate(-8deg) scale(1.6)}
+  60%{opacity:1;transform:rotate(-1.6deg) scale(.94)}
+  100%{opacity:1;transform:rotate(-2.5deg) scale(1)}
+}
+.appbar .seal{animation:stamp-in .6s var(--ease-out) both;animation-delay:.15s}
+
+/* ---------- 筆刷線：像一筆畫出來 ---------- */
+@keyframes brush-draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero .brushline{transform-origin:left center;animation:brush-draw .9s var(--ease-out) .3s both}
+
+/* ---------- 產品卡：進場錯落 + 懸停浮起 ---------- */
+.rail .pcard{transition:background-color var(--dur-fast) var(--ease-out),transform .25s var(--ease-out),box-shadow .25s var(--ease-out)}
+@media (hover:hover){
+  .rail .pcard:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+}
+.rail.visible .pcard{animation:card-in .55s var(--ease-out) both}
+@keyframes card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rail.visible .pcard:nth-child(1){animation-delay:.02s}
+.rail.visible .pcard:nth-child(2){animation-delay:.08s}
+.rail.visible .pcard:nth-child(3){animation-delay:.14s}
+.rail.visible .pcard:nth-child(4){animation-delay:.2s}
+.rail.visible .pcard:nth-child(5){animation-delay:.26s}
+.rail.visible .pcard:nth-child(6){animation-delay:.32s}
+
+/* ---------- tile 與 tabbar 微互動 ---------- */
+a.tile{transition:background-color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+@media (hover:hover){a.tile:hover{transform:translateX(4px)}}
+.tabbar a .g{transition:transform .3s var(--ease-spring)}
+.tabbar a:active .g{transform:scale(1.25)}
+.tabbar a.active .g{animation:stamp-in .5s var(--ease-out) both}
+
+/* ---------- 今日一句：换句時淡出淡入 ---------- */
+.daily .line{transition:opacity .45s var(--ease-out),transform .45s var(--ease-out)}
+.daily .line.swap{opacity:0;transform:translateY(6px)}
+
+/* ---------- 減少動態 ---------- */
+@media (prefers-reduced-motion:reduce){
+  body::before{animation:none}
+  .btn,.btn::after,.pcard,.tabbar a .g,a.tile{transition:none;animation:none}
+  .appbar .seal,.hero .brushline,.rail.visible .pcard,.tabbar a.active .g{animation:none}
+  .daily .line{transition:none}
+}

@@ -27,735 +27,337 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="ink.css">
+<link rel="stylesheet" href="app.css">
 <style>
-/* ==========================================================================
-   首頁版面。色票、字體、按鈕、卡片等共用 token 全部來自 ink.css。
-   本檔只寫首頁專屬的版面結構。
-   ========================================================================== */
+/* ---------- 首頁專屬 ---------- */
 
-/* ---------- 版面節奏：刻意不等距 ---------- */
-.band{padding:104px 28px}
-.band > .inner{max-width:1080px;margin:0 auto}
-.band.open{padding:120px 28px 88px}
-.band.tight{padding:76px 28px}
-.band.close{padding:112px 28px 148px}
-
-hr.ink-rule.divider{width:min(100% - 56px,1080px);margin:0 auto}
-
-/* ---------- 標題：左對齊 + 筆鋒收尾 ---------- */
-h2{text-align:left;position:relative;padding-bottom:19px;margin-bottom:15px}
-h2::after{
-  content:"";position:absolute;left:0;bottom:0;
-  width:104px;height:12px;
-  background:no-repeat left bottom/100% 100% var(--brush-cinnabar);
-}
-.sub{
-  font-family:var(--sans);font-weight:300;font-size:14.5px;
-  letter-spacing:.08em;color:var(--paper-dim);margin-bottom:50px;
-}
-.centered{text-align:center}
-.centered h2{text-align:center}
-.centered h2::after{left:50%;transform:translateX(-50%);background-position:center bottom}
-
-/* ---------- 內文 ---------- */
-.poem{font-size:clamp(16px,2.2vw,18.5px);color:var(--paper);max-width:34em}
-.poem p{margin-bottom:1.5em}
-.poem p:last-child{margin-bottom:0}
-.poem .muted{color:var(--paper-dim)}
-.poem .accent{color:var(--ochre-light)}
-.centered .poem{max-width:38em;margin-left:auto;margin-right:auto}
-
-/* ==========================================================================
-   導覽列：單行，68px，不超過 80px 上限
-   ========================================================================== */
-.topnav{
-  position:sticky;top:0;z-index:40;
-  height:68px;display:flex;align-items:center;gap:28px;
-  padding:0 28px;background:rgba(20,18,15,.88);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--rule);
-}
-@media (prefers-reduced-transparency:reduce){
-  .topnav{background:var(--ink-800);backdrop-filter:none;-webkit-backdrop-filter:none}
-}
-.topnav .wordmark{
-  font-family:var(--serif);font-weight:700;font-size:19px;
-  letter-spacing:.14em;color:var(--paper);white-space:nowrap;
-}
-.topnav .links{display:flex;align-items:center;gap:26px;margin-left:auto}
-.topnav .links a{
-  font-family:var(--sans);font-weight:400;font-size:14px;
-  letter-spacing:.06em;color:var(--paper-dim);white-space:nowrap;
-  transition:color .25s ease;
-}
-.topnav .links a:hover{color:var(--paper)}
-.topnav .links a.nav-cta{
-  padding:9px 20px;background:var(--cinnabar);color:#f4efe4;
-  font-family:var(--serif);font-weight:600;font-size:14.5px;letter-spacing:.08em;
-  white-space:nowrap;transition:background-color .25s ease;
-}
-.topnav .links a.nav-cta:hover{background:var(--cinnabar-deep);color:#f4efe4}
-.topnav .only-wide{display:inline}
-@media (max-width:860px){
-  .topnav{gap:16px;padding:0 20px;height:62px}
-  .topnav .links{gap:18px}
-  .topnav .only-wide{display:none}
-  .topnav .wordmark{font-size:17px;letter-spacing:.1em}
-}
-
-/* ==========================================================================
-   1 · Hero：不對稱分割。左邊文字，右邊硃砂印
-   ========================================================================== */
-.hero{
-  min-height:calc(100dvh - 68px);
-  max-width:1080px;margin:0 auto;padding:72px 28px 96px;
-  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
-  align-items:center;gap:56px;
-}
+/* 開場 */
+.hero{padding:34px 0 6px}
 .hero h1{
-  font-size:clamp(46px,8.4vw,86px);font-weight:700;
-  letter-spacing:.06em;line-height:1.12;color:var(--paper);margin-bottom:20px;
+  font-size:30px;font-weight:700;letter-spacing:.06em;
+  line-height:1.4;color:var(--paper);margin-bottom:10px;
 }
-.hero .hero-brush{width:min(258px,58vw);margin:0 0 26px}
-.hero .tagline{
-  font-size:clamp(19px,3vw,26px);letter-spacing:.06em;
-  color:var(--paper);margin-bottom:38px;line-height:1.6;
-}
-.hero-mark{
-  justify-self:center;display:flex;align-items:center;justify-content:center;
-  width:min(260px,42vw);aspect-ratio:1;
-  background:var(--cinnabar);color:#f4efe4;
-  transform:rotate(-2.5deg);
-  box-shadow:inset 0 0 0 2px rgba(242,236,224,.24);
-}
-.hero-mark .col{display:flex;flex-direction:column;align-items:center;gap:6px}
-.hero-mark .col span{
-  font-family:var(--serif);font-weight:700;display:block;
-  font-size:clamp(52px,9vw,86px);line-height:1;
-}
-@media (max-width:860px){
-  .hero{
-    grid-template-columns:1fr;gap:44px;
-    padding:60px 22px 84px;min-height:calc(100dvh - 62px);
-    align-content:center;
-  }
-  .hero-mark{justify-self:start;width:148px;order:-1}
-  .hero-mark .col span{font-size:46px}
-}
-
-/* ==========================================================================
-   3 · 四套系統：髮絲欄，無卡片底、無邊框
-   ========================================================================== */
-.systems{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:0;margin:8px 0 56px;border-top:1px solid var(--rule);
-}
-.systems > div{
-  padding:32px 24px 30px 0;border-bottom:1px solid var(--rule);
-}
-.systems > div + div{padding-left:26px;box-shadow:inset 1px 0 0 var(--rule)}
-.systems .glyph{
-  display:block;font-family:var(--serif);font-weight:700;
-  font-size:44px;line-height:1;color:var(--cinnabar-light);margin-bottom:18px;
-}
-.systems h3{font-size:18px;font-weight:600;letter-spacing:.05em;margin-bottom:6px}
-.systems p{
-  font-family:var(--sans);font-weight:300;font-size:13.5px;
-  color:var(--paper-dim);letter-spacing:.03em;
-}
-.systems-note{max-width:34em;margin-left:auto}
-@media (max-width:760px){
-  .systems{grid-template-columns:repeat(2,1fr)}
-  .systems > div{padding:26px 18px 24px 0}
-  .systems > div:nth-child(2n){padding-left:20px;box-shadow:inset 1px 0 0 var(--rule)}
-  .systems > div:nth-child(2n+1){padding-left:0;box-shadow:none}
-  .systems .glyph{font-size:36px;margin-bottom:12px}
-  .systems-note{margin-left:0}
-}
-
-/* ==========================================================================
-   4 · 兩份報告：不對稱雙欄，內容收成三組
-   ========================================================================== */
-.reports{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:30px;margin-top:52px;align-items:start;
-}
-.report{background:var(--ink-700);padding:46px 36px;box-shadow:inset 3px 0 0 var(--ochre)}
-.report.break{box-shadow:inset 3px 0 0 var(--cinnabar);margin-top:56px}
-.report h3{font-size:clamp(23px,3vw,28px);font-weight:700;letter-spacing:.04em;margin-bottom:6px}
-.report .rsub{color:var(--paper-dim);font-size:14.5px;letter-spacing:.04em;margin-bottom:30px}
-.report .intro{font-size:15.5px;color:var(--paper);margin-bottom:34px}
-.report .intro p{margin-bottom:1.2em}
-.report .intro p:last-child{margin-bottom:0}
-.cluster{margin-top:30px;padding-top:24px;border-top:1px solid var(--rule)}
-.cluster > h4{
-  font-family:var(--sans);font-weight:500;font-size:12.5px;
-  letter-spacing:.14em;color:var(--ochre-light);margin-bottom:16px;
-}
-.report.break .cluster > h4{color:var(--cinnabar-light)}
-.cluster dl{margin:0}
-.cluster dt{font-size:15.5px;font-weight:600;letter-spacing:.03em;margin-top:16px;color:var(--paper)}
-.cluster dt:first-child{margin-top:0}
-.cluster dd{
+.hero .brushline{width:186px;margin:0 0 14px}
+.hero p{
   font-family:var(--sans);font-weight:300;font-size:14px;
-  color:var(--paper-dim);margin-left:0;line-height:1.85;
+  color:var(--paper-dim);letter-spacing:.04em;line-height:1.9;
 }
-.report .feel{margin-top:34px;padding-top:26px;border-top:1px solid var(--rule);font-size:15.5px}
-.report .feel .feel-title{
-  font-family:var(--sans);font-size:12.5px;letter-spacing:.14em;
-  color:var(--paper-faint);margin-bottom:12px;
-}
-@media (max-width:860px){
-  .reports{grid-template-columns:1fr;gap:22px}
-  .report{padding:36px 24px}
-  .report.break{margin-top:0}
-}
+.hero .cta-row{display:flex;gap:10px;margin-top:20px}
+.hero .cta-row .btn{padding:13px 26px;font-size:15px;flex:1;text-align:center}
 
-/* ==========================================================================
-   5 · 千字精華：整幅墨面
-   ========================================================================== */
-.teaser{background:var(--ink-700);padding:56px 44px;margin-top:46px;box-shadow:inset 3px 0 0 var(--cinnabar)}
+/* 今日一句 */
+.daily{
+  margin-top:26px;background:var(--ink-700);
+  padding:18px 20px 16px;
+  box-shadow:inset 3px 0 0 var(--cinnabar);
+}
+.daily .lab{
+  font-family:var(--sans);font-size:11.5px;letter-spacing:.12em;
+  color:var(--paper-faint);margin-bottom:8px;display:flex;justify-content:space-between;
+}
+.daily .line{font-size:16px;letter-spacing:.04em;line-height:1.9;color:var(--paper)}
+
+/* 四套系統 */
+.sys4{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--rule);border-left:1px solid var(--rule);
+}
+.sys4 > div{
+  border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  padding:14px 6px 12px;text-align:center;
+}
+.sys4 .glyph{
+  display:block;font-family:var(--serif);font-weight:700;
+  font-size:24px;line-height:1;color:var(--cinnabar-light);margin-bottom:8px;
+}
+.sys4 h3{font-size:13px;font-weight:600;letter-spacing:.05em;margin-bottom:2px}
+.sys4 p{font-family:var(--sans);font-weight:300;font-size:10.5px;color:var(--paper-faint);letter-spacing:.04em}
+.sys-note{
+  font-family:var(--sans);font-weight:300;font-size:13px;color:var(--paper-dim);
+  line-height:2;margin-top:14px;
+}
+.sys-note b{color:var(--ochre-light);font-weight:500}
+
+/* 千字精華 */
+.teaser{background:var(--ink-700);padding:22px 20px;box-shadow:inset 3px 0 0 var(--cinnabar)}
 .teaser-meta{
-  font-family:var(--sans);font-size:12px;letter-spacing:.1em;
-  color:var(--paper-dim);margin-bottom:26px;display:flex;gap:10px;flex-wrap:wrap;
+  font-family:var(--sans);font-size:11px;letter-spacing:.08em;
+  color:var(--paper-dim);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;
 }
-.teaser-meta span{background:var(--ink-600);padding:5px 12px}
-.teaser-body{font-size:16px;color:var(--paper);max-width:44em}
-.teaser-body p{margin-bottom:1.4em}
-.locked{position:relative;max-height:340px;overflow:hidden}
-.locked::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 32%,var(--ink-700) 96%)}
-.lock-bar{padding-top:28px;font-family:var(--sans);font-weight:300;font-size:14px;color:var(--paper-dim);letter-spacing:.04em}
+.teaser-meta span{background:var(--ink-600);padding:4px 10px}
+.teaser-body{font-size:15px;color:var(--paper);line-height:2}
+.teaser-body p{margin-bottom:1.2em}
+.locked{position:relative;max-height:250px;overflow:hidden}
+.locked::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,var(--ink-700) 96%)}
+.lock-bar{
+  padding-top:14px;font-family:var(--sans);font-weight:300;font-size:12.5px;
+  color:var(--paper-dim);letter-spacing:.04em;line-height:1.9;
+}
 .lock-bar .lock-line{
-  font-family:var(--serif);font-size:16.5px;letter-spacing:.06em;
-  color:var(--ochre-light);margin:18px 0 14px;
-}
-@media (max-width:600px){.teaser{padding:36px 24px}}
-
-/* ==========================================================================
-   6 · 適合誰：對照，中間一道墨線，不用卡片
-   ========================================================================== */
-.fitpair{
-  display:grid;grid-template-columns:1fr 1px 1fr;gap:44px;
-  margin-top:44px;align-items:start;
-}
-.fitpair .rule-v{background:var(--rule);align-self:stretch}
-.fitpair h3{
-  font-family:var(--sans);font-weight:400;font-size:13px;
-  letter-spacing:.12em;margin-bottom:18px;
-}
-.fitpair .yes h3{color:var(--ochre-light)}
-.fitpair .no h3{color:var(--cinnabar-light)}
-.fitpair ul{list-style:none;margin:0;padding:0}
-.fitpair li{
-  font-size:15.5px;line-height:1.9;color:var(--paper);
-  padding:11px 0;border-bottom:1px solid var(--rule);
-}
-.fitpair li:last-child{border-bottom:0}
-.fitpair .no li{color:var(--paper-dim)}
-@media (max-width:760px){
-  .fitpair{grid-template-columns:1fr;gap:34px}
-  .fitpair .rule-v{height:1px;align-self:auto}
+  font-family:var(--serif);font-size:15px;letter-spacing:.06em;
+  color:var(--ochre-light);margin-bottom:6px;
 }
 
-/* ==========================================================================
-   7 · 浮生導航：硃砂側鋒引文
-   ========================================================================== */
-.qa{
-  margin:46px 0;max-width:34em;
-  box-shadow:inset 2px 0 0 var(--ochre);padding-left:26px;
+/* 適合誰 */
+.fit{display:grid;gap:10px}
+.fit .col{background:var(--ink-700);padding:16px 18px}
+.fit h3{
+  font-family:var(--sans);font-weight:500;font-size:12px;
+  letter-spacing:.1em;margin-bottom:10px;
 }
-.qa p{margin-bottom:1.35em;font-size:clamp(16px,2.2vw,18.5px)}
-.qa p:last-child{margin-bottom:0}
-.qa .q{color:var(--ochre-light)}
-
-/* ==========================================================================
-   8 · 宣言
-   ========================================================================== */
-.manifesto .poem p{margin-bottom:1.3em}
-.manifesto .big{
-  font-size:clamp(21px,3.4vw,28px);color:var(--paper);
-  font-weight:600;letter-spacing:.05em;margin-top:48px;line-height:1.75;
+.fit .yes h3{color:var(--ochre-light)}
+.fit .no h3{color:var(--cinnabar-light)}
+.fit ul{list-style:none;margin:0;padding:0}
+.fit li{
+  font-family:var(--sans);font-weight:300;font-size:13.5px;line-height:1.9;
+  color:var(--paper);padding:7px 0;border-top:1px solid var(--rule);
 }
-
-/* ==========================================================================
-   9 · 三步驟：時間軸，用墨線串起來，不是三張等寬卡
-   ========================================================================== */
-.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:48px;position:relative}
-.flow::before{
-  content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--rule);
-}
-.flow > div{padding:0 28px 0 0;position:relative}
-.flow > div + div{padding-left:28px}
-.flow .dot{
-  width:19px;height:19px;background:var(--cinnabar);
-  transform:rotate(-2.5deg);margin-bottom:24px;position:relative;
-}
-.flow h3{font-size:17.5px;font-weight:600;letter-spacing:.04em;margin-bottom:10px}
-.flow p{
-  font-family:var(--sans);font-weight:300;font-size:13.5px;
-  color:var(--paper-dim);line-height:1.95;
-}
-@media (max-width:760px){
-  .flow{grid-template-columns:1fr;gap:32px}
-  .flow::before{left:9px;right:auto;top:0;bottom:0;width:1px;height:auto}
-  .flow > div{padding:0 0 0 40px}
-  .flow > div + div{padding-left:40px}
-  .flow .dot{position:absolute;left:0;top:2px;margin-bottom:0}
+.fit li:first-child{border-top:0}
+.fit .no li{color:var(--paper-dim)}
+.fit-note{
+  font-family:var(--sans);font-weight:300;font-size:12px;
+  color:var(--paper-faint);line-height:1.9;margin-top:10px;
 }
 
-/* ==========================================================================
-   10 · 信任四入口：髮絲列，不是四張卡
-   ========================================================================== */
-.entries{margin-top:44px;border-top:1px solid var(--rule)}
-.entries a{
-  display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr) auto;
-  gap:24px;align-items:baseline;
-  padding:26px 4px;border-bottom:1px solid var(--rule);
-  color:inherit;transition:background-color .3s ease,padding-left .3s ease;
-}
-.entries a:hover{background:var(--ink-700);padding-left:18px}
-.entries .k{font-size:17px;font-weight:600;letter-spacing:.04em;color:var(--paper)}
-.entries .d{font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--paper-dim);line-height:1.9}
-.entries .arrow{color:var(--ochre-light);font-size:15px}
-@media (max-width:760px){
-  .entries a{grid-template-columns:1fr auto;gap:6px 16px}
-  .entries .d{grid-column:1 / -1}
-}
-
-/* ==========================================================================
-   11 · 最終 CTA
-   ========================================================================== */
-.btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:40px}
-.social-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-
-/* ---------- 頁尾 ---------- */
-footer{
-  text-align:center;padding:56px 24px 108px;
-  border-top:1px solid var(--rule);
-  color:var(--paper-faint);font-family:var(--sans);font-weight:300;
-  font-size:13px;letter-spacing:.06em;position:relative;z-index:1;
-}
-footer .brand{
-  font-family:var(--serif);font-size:16px;font-weight:600;
-  color:var(--paper-dim);letter-spacing:.12em;margin-bottom:16px;
-}
-footer .flinks{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
-footer a{color:inherit;opacity:.85}
-footer a:hover{color:var(--paper-dim);opacity:1}
-
-/* ---------- 手機常駐 CTA ---------- */
-.sticky-cta{
-  display:none;position:fixed;left:0;right:0;bottom:0;z-index:45;
-  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(20,18,15,.94);border-top:1px solid var(--rule);
-}
-.sticky-cta a{display:block;text-align:center;width:100%}
-/* 滑過 hero 之後才出現，避免第一屏出現兩顆一樣的按鈕 */
-@media (max-width:760px){
-  .sticky-cta{display:block;transform:translateY(100%);transition:transform .35s ease}
-  body.past-hero .sticky-cta{transform:none}
-}
-@media (prefers-reduced-motion:reduce){.sticky-cta{transition:none}}
-
-/* ---------- 進場：依序而非同步 ---------- */
-.stagger > *{opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
-.stagger.visible > *{opacity:1;transform:none}
-.stagger.visible > *:nth-child(2){transition-delay:.08s}
-.stagger.visible > *:nth-child(3){transition-delay:.16s}
-.stagger.visible > *:nth-child(4){transition-delay:.24s}
-@media (prefers-reduced-motion:reduce){
-  .stagger > *{opacity:1;transform:none;transition:none}
-}
-
-@media (max-width:600px){
-  .band{padding:78px 22px}
-  .band.open{padding:88px 22px 66px}
-  .band.tight{padding:58px 22px}
-  .band.close{padding:88px 22px 112px}
-  hr.ink-rule.divider{width:calc(100% - 44px)}
-}
+/* 淡入 */
+.reveal{opacity:0;transform:translateY(8px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <a class="wordmark" href="#top">浮生矩陣</a>
-  <div class="links">
-    <a class="only-wide" href="#reports">兩份報告</a>
-    <a class="only-wide" href="#teaser">千字精華</a>
-    <a class="only-wide" href="hepan.html">情侶合盤</a>
-    <a href="faq.html">常見問題</a>
-    <a href="login.html">登入</a>
-    <a class="nav-cta" href="paipan.html">免費排盤</a>
-  </div>
-</nav>
+<div class="app">
 
-<main id="top">
+  <nav class="appbar">
+    <a class="brand" href="index.html"><span class="seal sm" aria-hidden="true">浮</span>浮生矩陣</a>
+    <span class="spacer"></span>
+    <a class="textlink" href="faq.html">常見問題</a>
+    <a class="textlink" href="login.html">登入</a>
+  </nav>
 
-<!-- ================= 1 · HERO ================= -->
-<header class="hero">
-  <div>
-    <h1>浮生矩陣</h1>
-    <hr class="ink-rule cinnabar hero-brush">
-    <p class="tagline">看見劇本，才能走出劇本</p>
-    <a class="btn btn-cinnabar" href="paipan.html">免費排盤</a>
-  </div>
-  <div class="hero-mark" aria-hidden="true"><div class="col"><span>浮</span><span>生</span></div></div>
-</header>
-
-<!-- ================= 2 · 開場 ================= -->
-<section class="band open reveal">
-  <div class="inner">
-    <div class="poem">
-      <p>四套系統同時上桌。<br>不是為了預測未來。<br>而是為了看見：<span class="accent">你正在用什麼樣的結構活著。</span></p>
-      <p class="muted">很多時候，我們以為自己在做選擇。<br>其實只是沿著同一套人生劇本，不斷換場景重複上演。</p>
-      <p class="muted">換工作。換伴侶。換城市。換環境。<br>故事卻總是長得差不多。</p>
-      <p>浮生矩陣要做的，不是告訴你答案。<br>而是讓你看見：</p>
-      <p class="accent">你為什麼總是在同樣的地方卡住。<br>你為什麼總是被同樣的人吸引。<br>你為什麼明明很努力，卻始終走不出某些循環。</p>
-      <p>當劇本被看見。<br>改變才真正開始。</p>
+  <!-- 開場 -->
+  <header class="hero">
+    <h1>看見劇本，<br>才能走出劇本</h1>
+    <hr class="ink-rule cinnabar brushline">
+    <p>紫微、八字、西洋占星、人類圖，四套命盤同時攤開。<br>不預測未來，只做一件事：讓你看見自己一直在用什麼結構活著。</p>
+    <div class="cta-row">
+      <a class="btn btn-cinnabar" href="paipan.html">免費排盤</a>
+      <a class="btn btn-ghost" href="hepan.html">情侶合盤</a>
     </div>
+  </header>
+
+  <!-- 今日一句 -->
+  <section class="daily reveal" aria-label="今日一句">
+    <p class="lab"><span>今日一句</span><span id="daily-date"></span></p>
+    <p class="line" id="daily-line">很多時候我們以為在做選擇，其實只是換個場景，把同一齣戲再演一次。</p>
+  </section>
+
+  <!-- 產品 -->
+  <div class="sec-head reveal">
+    <h2>你想看哪一份</h2>
   </div>
-</section>
+  <div class="rail reveal" role="list">
+    <a class="pcard" role="listitem" href="paipan.html">
+      <div class="art"><span class="stamp" aria-hidden="true">排</span></div>
+      <div class="body">
+        <span class="nm">免費排盤</span>
+        <span class="ds">四套命盤總覽即時算給你，千字精華免費看。</span>
+        <span class="pr free"><b>免費</b>・不用註冊</span>
+      </div>
+    </a>
+    <a class="pcard" role="listitem" href="paipan.html">
+      <div class="art"><span class="stamp ochre" aria-hidden="true">劇</span></div>
+      <div class="body">
+        <span class="nm">劇本版</span>
+        <span class="ds">四套系統共同指向的主線：你到底用什麼結構在活。</span>
+        <span class="pr"><b>NT$888</b>・與破局版合購</span>
+      </div>
+    </a>
+    <a class="pcard" role="listitem" href="paipan.html">
+      <div class="art"><span class="stamp deep" aria-hidden="true">破</span></div>
+      <div class="body">
+        <span class="nm">破局版</span>
+        <span class="ds">專看四套系統打架的地方：矛盾、盲區、反覆的迴圈。</span>
+        <span class="pr"><b>NT$888</b>・與劇本版合購</span>
+      </div>
+    </a>
+    <a class="pcard" role="listitem" href="hepan.html">
+      <div class="art"><span class="stamp" aria-hidden="true">同</span></div>
+      <div class="body">
+        <span class="nm">合盤・同頻版</span>
+        <span class="ds">你們怎麼被彼此吸住，這段關係最好的樣子。</span>
+        <span class="pr"><b>NT$1,288</b>・與碰撞版合購</span>
+      </div>
+    </a>
+    <a class="pcard" role="listitem" href="hepan.html">
+      <div class="art"><span class="stamp deep" aria-hidden="true">撞</span></div>
+      <div class="body">
+        <span class="nm">合盤・碰撞版</span>
+        <span class="ds">你們反覆吵的那件事，結構上到底發生了什麼。</span>
+        <span class="pr"><b>NT$1,288</b>・與同頻版合購</span>
+      </div>
+    </a>
+    <a class="pcard" role="listitem" href="about.html">
+      <div class="art"><span class="stamp outline" aria-hidden="true">航</span></div>
+      <div class="body">
+        <span class="nm">浮生導航</span>
+        <span class="ds">一對一陪跑：把報告裡的看見，用回你正卡住的事。</span>
+        <span class="pr">私訊預約</span>
+      </div>
+    </a>
+  </div>
 
-<hr class="ink-rule divider">
-
-<!-- ================= 3 · 四套系統 ================= -->
-<section class="band reveal" id="systems">
-  <div class="inner">
+  <!-- 四套系統 -->
+  <div class="sec-head reveal">
     <h2>四套系統，一張人生地圖</h2>
-    <p class="sub">每一套都有自己的語言，重點在它們交會的地方</p>
-    <div class="systems stagger">
+  </div>
+  <section class="reveal">
+    <div class="sys4">
       <div><span class="glyph">紫</span><h3>紫微斗數</h3><p>命格結構</p></div>
       <div><span class="glyph">八</span><h3>八字命理</h3><p>能量配置</p></div>
       <div><span class="glyph">☉</span><h3>西洋占星</h3><p>人格藍圖</p></div>
       <div><span class="glyph">⬡</span><h3>人類圖</h3><p>運作機制</p></div>
     </div>
-    <div class="poem systems-note">
-      <p class="muted">每套系統都有自己的語言。<br>但真正重要的，不是哪一套比較準。</p>
-      <p>而是當四套系統<span class="accent">同時指向同一件事</span>時，它在說什麼。<br>當四套系統<span class="accent">互相矛盾</span>時，它又在提醒什麼。</p>
-      <p>浮生矩陣不站在任何一套系統裡。<br>而是站在它們之上。<br>透過交叉驗證，整理出屬於你的生命結構。</p>
-    </div>
+    <p class="sys-note">重點不是哪一套比較準。四套<b>同時指向同一件事</b>，那通常是你的核心設定；四套<b>互相矛盾</b>的地方，往往就是你反覆卡住的原因。</p>
+  </section>
+
+  <!-- 千字精華 -->
+  <div class="sec-head reveal">
+    <h2>千字精華，先感受一下</h2>
+    <a class="more" href="paipan.html">排我的 →</a>
   </div>
-</section>
-
-<hr class="ink-rule divider">
-
-<!-- ================= 4 · 兩份報告 ================= -->
-<section class="band reveal" id="reports">
-  <div class="inner">
-    <h2>兩份報告，兩個入口</h2>
-    <div class="poem">
-      <p>同一份命盤資料。兩種完全不同的閱讀方式。<br><span class="accent">一份帶你看見自己的主線。一份帶你看見自己的盲區。</span></p>
+  <section class="teaser reveal" id="teaser">
+    <div class="teaser-meta">
+      <span>範例節錄</span><span>完整版 ≈ 10,000 字</span><span>NT$888 解鎖兩版</span>
     </div>
-
-    <div class="reports">
-
-      <!-- 劇本版 -->
-      <article class="report">
-        <h3>浮生矩陣｜劇本版</h3>
-        <p class="rsub">看見你的人生主線</p>
-        <div class="intro">
-          <p>當四套系統同時說同一件事。<br>那件事通常不是巧合。<br>而是你的核心設定。</p>
-          <p>劇本版的任務，是把四套系統共同指向的內容整理出來。那些反覆出現在你生命裡的特質。那些始終伴隨你的天賦。那些你以為是問題，卻其實是你運作方式的部分。</p>
-        </div>
-
-        <div class="cluster">
-          <h4>你是誰</h4>
-          <dl>
-            <dt>基礎命盤總覽</dt><dd>四套系統完整資料整理。</dd>
-            <dt>劇本原型</dt><dd>你的核心人格結構。</dd>
-            <dt>運作方式</dt><dd>你如何思考。如何做決定。如何推動事情前進。</dd>
-          </dl>
-        </div>
-
-        <div class="cluster">
-          <h4>你在哪裡卡住</h4>
-          <dl>
-            <dt>人生羅盤</dt><dd>四套系統如何看待你的優勢、盲點與建議。</dd>
-            <dt>三大人生場域</dt><dd>事業。關係。財富。看似不同的課題，其實來自同一套底層機制。</dd>
-            <dt>隱藏關卡</dt><dd>那些最容易被忽略，卻最容易讓人生卡關的地方。</dd>
-          </dl>
-        </div>
-
-        <div class="cluster">
-          <h4>怎麼用它</h4>
-          <dl>
-            <dt>思維工具箱</dt><dd>把複雜的人生問題拆回可理解的結構。</dd>
-            <dt>軍團編制</dt><dd>將你的命盤轉譯成一套專屬角色系統。讓抽象的命理結構，變成可以實際運用的語言。</dd>
-            <dt>最終總結</dt><dd>一份濃縮的人生說明書。讓你知道：自己是誰。自己怎麼運作。自己適合如何前進。</dd>
-          </dl>
-        </div>
-
-        <div class="feel">
-          <p class="feel-title">讀完的感覺</p>
-          <p>被理解。被看見。<br>很多過去無法解釋的事情突然有了脈絡。<br>你不再需要一直懷疑自己。</p>
-        </div>
-      </article>
-
-      <!-- 破局版 -->
-      <article class="report break">
-        <h3>浮生矩陣｜破局版</h3>
-        <p class="rsub">找出困住你的那套劇本</p>
-        <div class="intro">
-          <p>人生最大的盲點。<br>通常不是不知道自己是誰。<br>而是太相信自己講給自己的故事。</p>
-          <p>破局版不看四套系統一致的地方。它專門看四套系統互相打架的地方。因為那些矛盾，往往藏著最值得注意的訊號：你最慣性的保護機制。你最習慣的自我欺騙。你最容易掉進的人生迴圈。你最難承認的執念。</p>
-          <p>破局版的任務，不是安慰你。而是讓你看見那些一直影響你，卻從未被看見的部分。</p>
-        </div>
-
-        <div class="cluster">
-          <h4>看見矛盾</h4>
-          <dl>
-            <dt>四張不同的臉</dt><dd>四套系統眼中的你。可能根本不是同一個人。</dd>
-            <dt>矛盾羅盤</dt><dd>哪些地方一致。哪些地方正在衝突。</dd>
-          </dl>
-        </div>
-
-        <div class="cluster">
-          <h4>拆解劇本</h4>
-          <dl>
-            <dt>自我敘事拆解</dt><dd>你以為的自己。有多少來自結構。有多少來自習慣。</dd>
-            <dt>劇本迴圈</dt><dd>從情緒。到語言。到行動。到信念。一層一層往下拆。</dd>
-            <dt>用錯版本的自己</dt><dd>事業。關係。財富。你最常在哪裡演錯角色。</dd>
-          </dl>
-        </div>
-
-        <div class="cluster">
-          <h4>找出核心</h4>
-          <dl>
-            <dt>思維病毒掃描</dt><dd>那些看起來合理。卻讓你反覆繞圈的念頭。</dd>
-            <dt>軍團叛將</dt><dd>那個最讓你頭痛的角色。其實不是敵人。只是被放錯了位置。</dd>
-            <dt>最終總結</dt><dd>找出真正困住你的核心模式。讓你知道下一步該校正什麼。</dd>
-          </dl>
-        </div>
-
-        <div class="feel">
-          <p class="feel-title">讀完的感覺</p>
-          <p>被拆穿。被戳破。<br>也終於知道自己為什麼一直卡在同樣的地方。</p>
-        </div>
-      </article>
-
+    <div class="teaser-body locked">
+      <p>「你不是不會做決定。你只是每次都用同一種方式做決定。」</p>
+      <p>四套系統攤開之後，第一個浮現的訊號，是你的『推進方式』與『等待機制』之間的矛盾。紫微命宮的格局顯示你習慣主動佈局、先發制人；但人類圖的類型卻提醒你，你的能量設計需要回應，而不是發起。這不是哪一套錯了——這正是你反覆經歷「衝出去、撞牆、退回來」循環的結構原因。</p>
+      <p>八字的能量配置進一步說明了這個循環的燃料從哪裡來：你的行動力來自壓力，而非渴望。當環境安穩，你反而不安；當局勢混亂，你卻異常清醒。</p>
     </div>
+    <div class="lock-bar">
+      <p class="lock-line">完整劇本，付費解鎖後展開</p>
+      <p>NT$888 一次解鎖「劇本版＋破局版」兩份萬字，付款後自動生成，存進你的帳號隨時重看。</p>
+    </div>
+  </section>
+
+  <!-- 適合誰 -->
+  <div class="sec-head reveal">
+    <h2>這裡適合你嗎</h2>
   </div>
-</section>
-
-<hr class="ink-rule divider">
-
-<!-- ================= 5 · 千字精華 ================= -->
-<section class="band reveal" id="teaser">
-  <div class="inner">
-    <h2>千字精華，搶先看</h2>
-    <div class="poem">
-      <p class="muted">完整報告約一萬字，<span class="accent">NT$888 付費解鎖</span>，付款後系統依你的命盤自動生成。<br>這裡先公開千字精華，讓你感受報告的視角。</p>
+  <section class="fit reveal">
+    <div class="col yes">
+      <h3>適合你，如果你——</h3>
+      <ul>
+        <li>明明知道問題，卻一直重複同一種選擇。</li>
+        <li>正處於關係、工作或身份的轉換期。</li>
+        <li>看過單一命盤，仍無法理解矛盾的自己。</li>
+        <li>不想被預言，只想理解自己的運作方式。</li>
+      </ul>
     </div>
-    <div class="teaser">
-      <div class="teaser-meta">
-        <span>範例節錄</span><span>完整版 ≈ 10,000 字</span><span>NT$888 解鎖兩版</span>
-      </div>
-      <div class="teaser-body locked">
-        <p>「你不是不會做決定。你只是每次都用同一種方式做決定。」</p>
-        <p>四套系統攤開之後，第一個浮現的訊號，是你的『推進方式』與『等待機制』之間的矛盾。紫微命宮的格局顯示你習慣主動佈局、先發制人；但人類圖的類型卻提醒你，你的能量設計需要回應，而不是發起。這不是哪一套錯了——這正是你反覆經歷「衝出去、撞牆、退回來」循環的結構原因。</p>
-        <p>八字的能量配置進一步說明了這個循環的燃料從哪裡來：你的行動力來自壓力，而非渴望。當環境安穩，你反而不安；當局勢混亂，你卻異常清醒。這解釋了為什麼你總在穩定的時候親手製造變動。</p>
-        <p>西洋占星的人格藍圖則補上最後一塊：你對外展現的形象，與你內在真正的需求，分屬兩個幾乎相反的星座能量。別人以為你要的是舞台。你真正要的，是被理解之後的安靜。</p>
-        <p>當四套系統同時指向這件事，它就不是巧合，而是你的核心設定……</p>
-      </div>
-      <div class="lock-bar">
-        <hr class="ink-rule short cinnabar">
-        <p class="lock-line">完整劇本，付費解鎖後展開</p>
-        <p>剩餘約 9,000 字：劇本原型、三大人生場域、隱藏關卡、軍團編制、最終總結。<br>NT$888 一次解鎖「劇本版＋破局版」兩份萬字。</p>
-      </div>
+    <div class="col no">
+      <h3>不適合你，如果你——</h3>
+      <ul>
+        <li>只想知道何時發財、何時離婚。</li>
+        <li>希望有人替你做人生決定。</li>
+        <li>正需要醫療、心理危機或法律協助——請先找合格專業，命盤不能取代醫療。</li>
+      </ul>
     </div>
+  </section>
+
+  <!-- 信任 -->
+  <div class="sec-head reveal">
+    <h2>開始之前，把話講清楚</h2>
   </div>
-</section>
+  <section class="reveal">
+    <a class="tile" href="about.html">
+      <span class="t">關於浮生矩陣</span>
+      <span class="d">一個覺察品牌，不是一間算命館。誰建立這套系統、浮生導航是什麼。</span>
+    </a>
+    <a class="tile" href="about.html#how">
+      <span class="t">報告如何產生</span>
+      <span class="d">實算＋框架＋AI 撰寫＋人工把關，四關攤開講，不裝神祕。</span>
+    </a>
+    <a class="tile" href="privacy.html">
+      <span class="t">隱私與資料安全</span>
+      <span class="d">生辰資料只用於生成你的報告，不轉售、不做名單，可隨時刪除。</span>
+    </a>
+    <a class="tile" href="faq.html">
+      <span class="t">常見問題與使用邊界</span>
+      <span class="d">是算命嗎？被說中就是準嗎？危機時怎麼辦？</span>
+    </a>
+  </section>
 
-<hr class="ink-rule divider">
-
-<!-- ================= 6 · 適合誰 ================= -->
-<section class="band reveal">
-  <div class="inner">
-    <h2>這裡適合你嗎？</h2>
-    <p class="sub">開始之前，先誠實對焦</p>
-    <div class="fitpair">
-      <div class="yes">
-        <h3>適合你，如果你——</h3>
-        <ul>
-          <li>明明知道問題，卻一直重複同一種選擇。</li>
-          <li>正處於關係、工作或身份轉換期。</li>
-          <li>看過單一命盤，但仍無法理解矛盾的自己。</li>
-          <li>不想被預言，只想理解自己的運作方式。</li>
-        </ul>
-      </div>
-      <div class="rule-v" aria-hidden="true"></div>
-      <div class="no">
-        <h3>不適合你，如果你——</h3>
-        <ul>
-          <li>只想知道何時發財、何時離婚。</li>
-          <li>希望有人替你做人生決定。</li>
-          <li>把命盤視為不可改變的判決。</li>
-          <li>正需要醫療、心理危機或法律處理。</li>
-        </ul>
-      </div>
+  <!-- 頁尾 -->
+  <footer class="finebar">
+    <div class="rowlinks">
+      <a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
+      <a href="https://line.me/ti/g2/S2fEbId6TK7W2aHun6nTzG7O9LArqxfZ_V3E7Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" rel="noopener">LINE 社群</a>
     </div>
-    <p class="sub" style="margin:34px 0 0">最後一種情況，請先尋求合格專業協助——命盤不能取代醫療，這件事沒有例外。</p>
-  </div>
-</section>
+    <p>FUSHENG MATRIX © 2026 · 看見劇本，才能走出劇本</p>
+  </footer>
 
-<hr class="ink-rule divider">
-
-<!-- ================= 7 · 浮生導航 ================= -->
-<section class="band tight reveal">
-  <div class="inner">
-    <h2>浮生導航</h2>
-    <p class="sub">從看見劇本，到改寫劇本</p>
-    <div class="poem">
-      <p class="muted">浮生導航是一套結合<span class="accent">個人報告、提問工具與陪跑練習</span>的決策校正服務。</p>
-      <p>報告讓你看見結構。<br><span class="accent">導航讓你開始使用結構。</span></p>
-      <p class="muted">很多人拿到命盤之後。知道了。理解了。<br>卻依然不知道下一步怎麼做。</p>
-      <p>因為人生真正困難的。<br>從來不是知道答案。<br>而是在現實裡做決定。</p>
-    </div>
-    <div class="qa">
-      <p><span class="q">當你站在人生岔路口時——</span></p>
-      <p>如何分辨那是直覺。還是逃避？</p>
-      <p>如何分辨那是機會。還是執念？</p>
-      <p>如何分辨那是真正想要的。還是習慣性反應？</p>
-    </div>
-    <div class="poem">
-      <p>浮生導航的目的。不是替你做決定。<br>而是幫助你建立一套<span class="accent">屬於自己的判斷系統</span>。</p>
-      <p class="muted">讓你在一次又一次的人生選擇裡。<br>逐漸走出舊劇本。<br>活成更接近自己的版本。</p>
-    </div>
-  </div>
-</section>
-
-<hr class="ink-rule divider">
-
-<!-- ================= 8 · 宣言 ================= -->
-<section class="band reveal manifesto centered">
-  <div class="inner">
-    <h2>浮生矩陣想做的事</h2>
-    <div class="poem" style="margin-top:48px">
-      <p class="muted">不是算命。不是預測。<br>更不是告訴你未來會發生什麼。</p>
-      <p>而是讓你知道：</p>
-      <p class="accent">你正在演哪一齣戲。<br>你為什麼一直演同一齣戲。</p>
-      <p>以及。<br>當你終於看見劇本之後。<br>你能不能開始寫下新的故事。</p>
-      <p class="big">看見劇本，才能走出劇本。<br>看見自己，才能成為自己。</p>
-    </div>
-  </div>
-</section>
-
-<hr class="ink-rule divider">
-
-<!-- ================= 9 · 怎麼開始 ================= -->
-<section class="band reveal">
-  <div class="inner">
-    <h2>怎麼開始</h2>
-    <p class="sub">從免費排盤到看完報告，三個動作</p>
-    <div class="flow stagger">
-      <div>
-        <div class="dot" aria-hidden="true"></div>
-        <h3>免費排盤，看總覽</h3>
-        <p>輸入生辰，四盤總覽免費看；千字精華免費註冊（只需 Email）即可解鎖。</p>
-      </div>
-      <div>
-        <div class="dot" aria-hidden="true"></div>
-        <h3>付費解鎖 NT$888</h3>
-        <p>線上付款後系統自動生成劇本版＋破局版兩份萬字，約 5～10 分鐘。</p>
-      </div>
-      <div>
-        <div class="dot" aria-hidden="true"></div>
-        <h3>登入，看報告</h3>
-        <p>報告自動存進你的會員帳號，隨時登入重看。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="ink-rule divider">
-
-<!-- ================= 10 · 信任底座 ================= -->
-<section class="band reveal">
-  <div class="inner">
-    <h2>開始之前，先看清楚我們是誰</h2>
-    <p class="sub">人、流程、隱私、邊界，全部攤開</p>
-    <div class="entries">
-      <a href="about.html">
-        <span class="k">關於浮生矩陣</span>
-        <span class="d">誰建立這套系統、為什麼能整合四套語言、浮生導航是什麼。</span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="about.html#how">
-        <span class="k">報告如何產生</span>
-        <span class="d">實算＋框架＋AI 撰寫＋人工校閱，流程誠實攤開，不裝神祕。</span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="privacy.html">
-        <span class="k">隱私與資料安全</span>
-        <span class="d">生辰資料只用於生成你的報告，不轉售、不做名單，可隨時刪除。</span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-      <a href="faq.html">
-        <span class="k">常見問題與使用邊界</span>
-        <span class="d">是算命嗎？被說中就是準嗎？適合誰？危機時怎麼辦？</span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ================= 11 · CTA ================= -->
-<section class="band close reveal centered" id="cta">
-  <div class="inner">
-    <h2>解鎖你的浮生矩陣</h2>
-    <div class="poem" style="margin-top:24px">
-      <p class="muted">先輸入生辰，<span class="accent">免費排盤看四盤總覽</span>；千字精華免費，只需 Email 註冊。<br>想看見困住你的完整「萬字報告」，<span class="accent">NT$888</span> 一次解鎖劇本版＋破局版。</p>
-    </div>
-
-    <div class="btns">
-      <a class="btn btn-cinnabar" href="paipan.html">免費排盤</a>
-      <a class="btn btn-ghost" href="hepan.html">情侶合盤</a>
-    </div>
-
-    <p class="sub" style="margin:44px 0 0">有任何問題，私訊我們</p>
-    <div class="social-row">
-      <a class="btn btn-ghost" href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>
-      <a class="btn btn-ghost" href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>
-      <a class="btn btn-ghost" href="https://www.threads.com/@floating_matrix" target="_blank" rel="noopener">Threads</a>
-      <a class="btn btn-ghost" href="https://line.me/ti/g2/S2fEbId6TK7W2aHun6nTzG7O9LArqxfZ_V3E7Q?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank" rel="noopener">LINE 社群</a>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <p class="brand">浮生矩陣</p>
-  <div class="flinks">
-    <a href="about.html">關於浮生矩陣</a>
-    <a href="about.html#how">報告如何產生</a>
-    <a href="privacy.html">隱私與資料安全</a>
-    <a href="faq.html">常見問題</a>
-    <a href="login.html">會員登入</a>
-  </div>
-  <p>FUSHENG MATRIX © 2026 · 看見劇本，才能走出劇本</p>
-</footer>
-
-<div class="sticky-cta">
-  <a class="btn btn-cinnabar" href="paipan.html">免費排盤</a>
 </div>
 
+<!-- 底部導覽 -->
+<nav class="tabbar" aria-label="主導覽">
+  <div class="tabs">
+    <a class="active" href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
+    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
+    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
+    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
+  </div>
+</nav>
+
 <script>
-/* 捲動顯現。IntersectionObserver，不掛 scroll 事件。 */
+/* 捲動顯現 */
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
   });
-}, { threshold: .12 });
-document.querySelectorAll('.reveal, .stagger').forEach(el => io.observe(el));
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-/* 手機常駐 CTA：滑過 hero 之後才出現。同樣用 IntersectionObserver，不掛 scroll 事件。 */
-const hero = document.querySelector('.hero');
-if (hero) {
-  new IntersectionObserver(([e]) => {
-    document.body.classList.toggle('past-hero', !e.isIntersecting);
-  }, { threshold: 0 }).observe(hero);
+/* 今日一句：依日期輪換，同一天所有人看到同一句 */
+const LINES = [
+  "很多時候我們以為在做選擇，其實只是換個場景，把同一齣戲再演一次。",
+  "同一個設定，放對位置是能力，用過頭就是消耗。",
+  "你不是矛盾，你只是不同版本的自己在不同情境接管。",
+  "真正讓人累的，往往不是事情太多，而是很少允許事情停在「還沒處理好」。",
+  "看見不是為了改掉。先看見，就已經多了一個選擇。",
+  "換工作、換伴侶、換城市——故事卻總是長得差不多的話，值得看一眼劇本。",
+  "A 是真的，B 也是真的。問題從來不是哪一個才是你。",
+  "有些保護機制曾經幫過你。今天讓你累的，也是同一個。",
+  "劇本再次出現時，比上次早一點發現「我又走到這裡了」，就是破局的開始。",
+  "盤是說明書，不是命令。",
+  "你以為是個性的地方，有些其實是盔甲。",
+  "不用相信任何一份報告。只留下讓你停了一下的地方。",
+  "知道答案從來不難。難的是在現實裡做決定。",
+  "看見自己，才能成為自己。",
+];
+const d = new Date();
+const key = Math.floor(d.getTime() / 86400000);
+const lineEl = document.getElementById('daily-line');
+let idx = key % LINES.length;
+lineEl.textContent = LINES[idx];
+document.getElementById('daily-date').textContent =
+  `${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+
+/* 每 9 秒緩緩換下一句（尊重減少動態設定；分頁不在前景時不換） */
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduceMotion) {
+  setInterval(() => {
+    if (document.hidden) return;
+    lineEl.classList.add('swap');
+    setTimeout(() => {
+      idx = (idx + 1) % LINES.length;
+      lineEl.textContent = LINES[idx];
+      lineEl.classList.remove('swap');
+    }, 450);
+  }, 9000);
 }
 </script>
 </body>

@@ -6,6 +6,7 @@
 <title>浮生矩陣｜我的報告</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="ink.css">
+<link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="members.css">
 <style>.wrap{max-width:1180px}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -136,5 +137,15 @@ async function orderBanner(userId){
   }).join('');
 })();
 </script>
+
+<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
+<nav class="tabbar" aria-label="主導覽">
+  <div class="tabs">
+    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
+    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
+    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
+    <a class="active" href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
+  </div>
+</nav>
 </body>
 </html>

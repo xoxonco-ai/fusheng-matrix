@@ -14,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <link rel="stylesheet" href="ink.css">
+<link rel="stylesheet" href="app.css">
 <style>
 :root{--gold:#9c7043;--gold-bright:#bb8f5d;--crimson:#a8412f;--crimson-bright:#cd6549;--line:rgba(221,214,200,.13);--bg:#14120f;--bg2:#1b1915;--bg3:#24211b;--text:#ddd6c8;--muted:#a49d90;--serif:'Noto Serif TC',Songti TC,SimSun,serif;--sans:'Noto Sans TC',system-ui,sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -454,5 +455,15 @@ setTimeout(function resume(){
   }catch(e){}
 },0);
 </script>
+
+<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
+<nav class="tabbar" aria-label="主導覽">
+  <div class="tabs">
+    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
+    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
+    <a class="active" href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
+    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
+  </div>
+</nav>
 </body>
 </html>
