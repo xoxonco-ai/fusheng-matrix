@@ -194,9 +194,24 @@ function chartSummary(c){
   return out.join('\n');
 }
 
+// 把 HTTP 狀態翻成看得懂的原因。546 最容易被誤判成金鑰／部署問題，
+// 但它其實是 Supabase Edge Function 超過 CPU／記憶體／wall-clock 上限被終止，
+// 函式根本來不及回傳自己的錯誤。要查是哪一項，看 Supabase Dashboard →
+// Edge Functions → generate-report → Logs。
+function genErrText(status, err){
+  if(status===546) return '546 生成函式超過 Supabase 資源上限被終止（CPU／記憶體／執行時間）。'
+    + '這不是金鑰或部署問題。請到 Supabase Dashboard → Edge Functions → generate-report → Logs 看是哪一項，'
+    + '並考慮再調低 ADMIN_MAX_TOKENS 或改成接力式生成。';
+  if(status===504) return '504 生成逾時（超過 150 秒未回應）。同樣要縮小單次產出或改成接力式。';
+  if(status===401||status===403) return (err||status)+'（登入或管理員權限問題）';
+  if(status===404) return '404 找不到函式，請確認 generate-report 已部署。';
+  if(err) return String(err);
+  return status+'（未預期的錯誤，請看 Supabase 的 Edge Function Logs）';
+}
+
 async function genAI(caseId,version){
   const c=CASES.find(x=>x.id===caseId);
-  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（萬字分三段撰寫，約 3～6 分鐘，請耐心等待、勿重複按、勿關閉）';
+  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（後台精簡版約 1,800 字，單次生成約 1～2 分鐘，請勿重複按、勿關閉）';
   const btn=$('ai-'+caseId); if(btn)btn.disabled=true;
   try{
     // 合盤個案：組合兩人命盤摘要＋關係階段；單人個案：原邏輯
@@ -216,7 +231,7 @@ async function genAI(caseId,version){
     const {data:{session}}=await sb.auth.getSession();
     const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||''})});
     const data=await resp.json();
-    if(!resp.ok||data.error){ m.className='msg err'; m.textContent='AI 生成失敗：'+(data.error||resp.status)+'（請確認金鑰與函式已部署）'; return; }
+    if(!resp.ok||data.error){ m.className='msg err'; m.textContent='AI 生成失敗：'+genErrText(resp.status,data.error); return; }
     if($('ex-'+caseId))$('ex-'+caseId).value=data.excerpt||'';
     if($('fc-'+caseId))$('fc-'+caseId).value=data.full||'';
     m.className='msg ok'; m.textContent='✓ AI 已生成，請檢查內容後勾選發布／解鎖並儲存。';

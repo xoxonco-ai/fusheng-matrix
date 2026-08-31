@@ -25,6 +25,9 @@ const json = (o: unknown, status = 200) =>
   new Response(JSON.stringify(o), { status, headers: { ...CORS, "content-type": "application/json" } });
 
 const MODEL = "claude-sonnet-4-6";
+// 後台單次生成的輸出上限。見模式 B 的註解：這個值是為了避開 Edge Function
+// 的資源上限（HTTP 546），不是為了省錢。調高之前請先改成接力式。
+const ADMIN_MAX_TOKENS = 4000;
 
 /* ============================================================
    語氣與規則（v4：浮生矩陣核心生命閱讀引擎）
@@ -541,10 +544,14 @@ Deno.serve(async (req: Request) => {
     const evb = evidenceBlock(evidence || "", isCouple);
     const prompt =
       `【此人命盤資料】\n${summary}${evb}\n\n【任務】撰寫「${plan.label}」報告（後台精簡版）。\n${plan.goal}\n\n` +
-      `章節（每章精煉 250~380 字，markdown 小標題；「只看一頁」與「矩陣證據附錄」各約 300 字，總計約 3500 字）：\n${plan.chapters.map((c) => "・" + c).join("\n")}\n\n` +
-      `請嚴格依下列格式輸出（不要 JSON、不要圍欄）：\n\n===千字精華===\n（約 500~700 字）\n\n===完整報告===\n` +
+      `章節（每章精煉 140~200 字，markdown 小標題；「只看一頁」與「矩陣證據附錄」各約 180 字，總計約 1800 字）：\n${plan.chapters.map((c) => "・" + c).join("\n")}\n\n` +
+      `請嚴格依下列格式輸出（不要 JSON、不要圍欄）：\n\n===千字精華===\n（約 400~550 字）\n\n===完整報告===\n` +
       `（依上述章節，**務必把最後一章完整寫完才結束**）`;
-    const text = await callClaude(apiKey, system, prompt, 8000);
+    // ADMIN_MAX_TOKENS 刻意壓低：Supabase Edge Function 單一請求有 CPU／記憶體／
+    // wall-clock 上限，超過會被直接終止並回傳 HTTP 546（不會進到下面的 catch）。
+    // 模式 A 用接力分段避開這件事；模式 B 是單次請求，只能靠縮小單次產出。
+    // 若之後要恢復萬字規模，必須讓模式 B 也改成接力（回 202 + 前端輪詢）。
+    const text = await callClaude(apiKey, system, prompt, ADMIN_MAX_TOKENS);
     const TAG_E = "===千字精華===", TAG_F = "===完整報告===";
     let excerpt = "", full = text;
     const iF = text.indexOf(TAG_F);
