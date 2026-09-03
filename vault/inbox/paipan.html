@@ -13,46 +13,45 @@
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<link rel="stylesheet" href="ink.css">
-<link rel="stylesheet" href="app.css">
 <style>
-:root{--gold:#9c7043;--gold-bright:#bb8f5d;--crimson:#a8412f;--crimson-bright:#cd6549;--line:rgba(221,214,200,.13);--bg:#14120f;--bg2:#1b1915;--bg3:#24211b;--text:#ddd6c8;--muted:#a49d90;--serif:'Noto Serif TC',Songti TC,SimSun,serif;--sans:'Noto Sans TC',system-ui,sans-serif;}
+:root{--bg:#070b16;--bg2:#0c1224;--bg3:#101831;--gold:#c9a86a;--gold-bright:#e8cf9a;--crimson:#b05a6e;--crimson-bright:#d98a9c;--text:#e9e5db;--muted:#9298ad;--line:rgba(201,168,106,.25);--serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--serif);line-height:1.85;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(201,168,106,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,106,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 20%,#000 30%,transparent 75%);}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
 main{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:30px 22px 120px}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:12px}
 .topbar a{color:var(--muted);text-decoration:none;font-family:var(--sans);font-size:13px;letter-spacing:.2em}
 .topbar a:hover{color:var(--gold)}
-.brandmark{color:var(--paper);letter-spacing:.1em;font-size:18px;font-weight:600}
+.brandmark{color:var(--gold);letter-spacing:.3em;font-size:18px}
 .langbar{display:flex;gap:6px}
-.langbar button{font-family:var(--sans);font-size:12px;letter-spacing:.05em;padding:6px 13px;border-radius:0;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--muted);transition:all .25s}
+.langbar button{font-family:var(--sans);font-size:12px;letter-spacing:.05em;padding:6px 13px;border-radius:3px;cursor:pointer;background:transparent;border:1px solid var(--line);color:var(--muted);transition:all .25s}
 .langbar button:hover{border-color:var(--gold);color:var(--gold)}
-.langbar button.active{background:var(--cinnabar);color:#f4efe4;border-color:var(--gold);font-weight:600}
-.hero h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.04em;text-align:left;color:var(--paper);position:relative;padding-bottom:18px}
-.hero h1::after{content:"";position:absolute;left:0;bottom:0;width:96px;height:12px;background:no-repeat left bottom/100% 100% var(--brush-cinnabar)}
-.hero p{text-align:left;color:var(--paper-dim);font-family:var(--sans);font-weight:300;letter-spacing:.08em;font-size:14px;margin-top:16px}
-.hero .sysline{text-align:left;color:var(--ochre-light);letter-spacing:.08em;font-size:14px;margin-top:6px}
-.card{border:0;border-radius:0;background:var(--ink-600);padding:38px 32px;margin-top:34px}
+.langbar button.active{background:linear-gradient(135deg,var(--gold-bright),var(--gold));color:#0a0e1a;border-color:var(--gold);font-weight:600}
+.hero h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.14em;text-align:center;background:linear-gradient(180deg,#f3e8cf,var(--gold) 75%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{text-align:center;color:var(--muted);font-family:var(--sans);font-weight:300;letter-spacing:.15em;font-size:14px;margin-top:14px}
+.hero .sysline{text-align:center;color:var(--gold);letter-spacing:.25em;font-size:14px;margin-top:8px}
+.card{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:38px 32px;margin-top:34px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:560px){.grid2{grid-template-columns:1fr}}
-label{display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.1em;color:var(--gold);margin:0 0 8px}
-input,select{width:100%;padding:12px 14px;border-radius:0;border:1px solid var(--rule-strong);background:rgba(11,10,9,.55);color:var(--text);font-family:var(--sans);font-size:15px;outline:none;transition:border-color .3s}
+label{display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.18em;color:var(--gold);margin:0 0 8px}
+input,select{width:100%;padding:12px 14px;border-radius:4px;border:1px solid rgba(201,168,106,.3);background:rgba(7,11,22,.7);color:var(--text);font-family:var(--sans);font-size:15px;outline:none;transition:border-color .3s}
 input:focus,select:focus{border-color:var(--gold)}
 .field{margin-bottom:4px}
 .hint{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:6px}
 .chk{display:flex;align-items:center;gap:8px;margin-top:10px;color:var(--text);font-family:var(--sans);font-size:13px;cursor:pointer}
-.chk input{width:auto;accent-color:var(--cinnabar)}
-.warn{display:none;border:1px solid var(--crimson);background:rgba(168,65,47,.12);border-radius:0;padding:14px 18px;margin-bottom:24px;font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--crimson-bright);line-height:1.7}
+.chk input{width:auto;accent-color:var(--gold)}
+.warn{display:none;border:1px solid var(--crimson);background:rgba(176,90,110,.1);border-radius:8px;padding:14px 18px;margin-bottom:24px;font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--crimson-bright);line-height:1.7}
 .caveat{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--crimson-bright);margin-top:10px}
-.runbtn{width:100%;margin-top:30px;padding:16px;cursor:pointer;font-family:var(--serif);font-size:17px;letter-spacing:.1em;font-weight:600;color:#f4efe4;background:var(--cinnabar);border:none;border-radius:0;transition:all .35s}
-.runbtn:hover{background:var(--cinnabar-deep)}
+.runbtn{width:100%;margin-top:30px;padding:16px;cursor:pointer;font-family:var(--serif);font-size:17px;letter-spacing:.3em;font-weight:600;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));border:none;border-radius:4px;transition:all .35s}
+.runbtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
 .runbtn:disabled{opacity:.5;cursor:wait}
 #results{margin-top:44px;display:none}
-.sys-block{border:0;border-radius:0;background:var(--ink-600);padding:34px 30px;margin-bottom:26px;position:relative;overflow:hidden}
-.sys-block{box-shadow:inset 3px 0 0 var(--ochre)}
+.sys-block{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px;margin-bottom:26px;position:relative;overflow:hidden}
+.sys-block::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 .sys-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;flex-wrap:wrap}
-.sys-head .num{font-size:13px;color:var(--gold);font-family:var(--sans);letter-spacing:.1em}
+.sys-head .num{font-size:13px;color:var(--gold);font-family:var(--sans);letter-spacing:.3em}
 .sys-head h2{font-size:22px;font-weight:600;letter-spacing:.1em}
 .sys-head .en{color:var(--muted);font-family:var(--sans);font-size:12px;letter-spacing:.2em}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:9px 20px;font-size:15px}
@@ -65,13 +64,13 @@ td{color:var(--text);font-weight:300}
 .bazi-table td.row-h{color:var(--muted);font-size:11px;letter-spacing:.1em;white-space:nowrap}
 .bazi-table td.gz{font-size:20px;color:var(--gold-bright);font-family:var(--serif);font-weight:600}
 .balance{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:4px 0 6px}
-.bal{border:1px solid var(--line);border-radius:0;padding:8px 4px;text-align:center;font-family:var(--sans)}
+.bal{border:1px solid var(--line);border-radius:5px;padding:8px 4px;text-align:center;font-family:var(--sans)}
 .bal .c{font-size:18px;color:var(--gold-bright);font-weight:600}
 .bal .n{font-size:11px;color:var(--muted);margin-top:2px}
-.bal.wood{box-shadow:inset 0 -3px 0 #5f8464}.bal.fire{box-shadow:inset 0 -3px 0 #a8412f}.bal.earth{box-shadow:inset 0 -3px 0 #9c7043}.bal.metal{box-shadow:inset 0 -3px 0 #b9b3a6}.bal.water{box-shadow:inset 0 -3px 0 #4a6480}
+.bal.wood{box-shadow:inset 0 -3px 0 #6fae7a}.bal.fire{box-shadow:inset 0 -3px 0 #c8636e}.bal.earth{box-shadow:inset 0 -3px 0 #c9a86a}.bal.metal{box-shadow:inset 0 -3px 0 #cfd3da}.bal.water{box-shadow:inset 0 -3px 0 #5f86c4}
 .subhead{font-family:var(--sans);font-size:12px;letter-spacing:.2em;color:var(--gold);margin:20px 0 8px}
 .planet-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;font-family:var(--sans);font-size:13.5px}
-.planet-row .pl{border:1px solid var(--line);border-radius:0;padding:9px 12px}
+.planet-row .pl{border:1px solid var(--line);border-radius:5px;padding:9px 12px}
 .planet-row .pl b{color:var(--gold-bright);font-weight:600;margin-right:6px}
 .planet-row .pl .h{color:var(--muted);font-size:11px;float:right}
 .planet-row .pl .rx{color:var(--crimson-bright);font-size:11px}
@@ -79,22 +78,22 @@ td{color:var(--text);font-weight:300}
 .hd-type .big{font-size:28px;color:var(--gold-bright);font-weight:700;letter-spacing:.08em}
 .hd-type .sub{font-family:var(--sans);color:var(--muted);font-size:13px;letter-spacing:.2em;margin-top:4px}
 .centers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-family:var(--sans);font-size:12px;margin-top:6px}
-.ctr{border:1px solid var(--line);border-radius:0;padding:9px 6px;text-align:center;color:var(--muted)}
-.ctr.on{background:var(--ink-600);border-color:var(--cinnabar);color:var(--cinnabar-light);font-weight:500}
-.tag{display:inline-block;font-family:var(--sans);font-size:11.5px;border:1px solid var(--line);border-radius:0;padding:3px 9px;margin:3px 4px 0 0;color:var(--muted)}
-.cta-final{text-align:center;border:0;border-radius:0;background:var(--ink-600);padding:46px 32px;margin-top:34px}
+.ctr{border:1px solid var(--line);border-radius:5px;padding:9px 6px;text-align:center;color:var(--muted)}
+.ctr.on{background:linear-gradient(135deg,rgba(201,168,106,.18),rgba(201,168,106,.04));border-color:var(--gold);color:var(--gold-bright);font-weight:500}
+.tag{display:inline-block;font-family:var(--sans);font-size:11.5px;border:1px solid var(--line);border-radius:3px;padding:3px 9px;margin:3px 4px 0 0;color:var(--muted)}
+.cta-final{text-align:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:46px 32px;margin-top:34px}
 .cta-final h3{font-size:22px;letter-spacing:.1em;margin-bottom:10px}
 .cta-final p{color:var(--muted);font-family:var(--sans);font-weight:300;font-size:14.5px;margin-bottom:26px}
 .cta-final .qz-note a{color:var(--gold-bright);text-decoration:none}
 .cta-final .qz-note a:hover{text-decoration:underline}
-.step-label{color:var(--gold-bright)!important;font-family:var(--sans);letter-spacing:.1em;font-size:14px;margin-bottom:14px}
-#b-qianzi{box-shadow:inset 3px 0 0 var(--cinnabar)}
+.step-label{color:var(--gold-bright)!important;font-family:var(--sans);letter-spacing:.18em;font-size:14px;margin-bottom:14px}
+#b-qianzi::before{background:linear-gradient(90deg,transparent,var(--crimson),transparent)}
 .qianzi-body{font-family:var(--serif);line-height:1.95;font-size:16px;color:var(--text)}
 .qianzi-body p{margin-bottom:1.3em}
 .qianzi-body .lead{font-size:17px;color:var(--gold-bright);letter-spacing:.04em}
-.qianzi-body h4{font-family:var(--sans);font-size:12.5px;letter-spacing:.1em;color:var(--gold);margin:20px 0 8px;font-weight:500}
+.qianzi-body h4{font-family:var(--sans);font-size:12.5px;letter-spacing:.25em;color:var(--gold);margin:20px 0 8px;font-weight:500}
 .qianzi-body .accent{color:var(--gold-bright)}
-.qz-note{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px}
+.qz-note{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:18px;border-top:1px dashed rgba(201,168,106,.25);padding-top:12px}
 .disclaimer{font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.8}
 .err{color:var(--crimson-bright);font-family:var(--sans);font-size:14px;text-align:center;margin-top:18px;display:none}
 .loading{display:none;text-align:center;color:var(--gold);font-family:var(--sans);letter-spacing:.2em;margin-top:24px}
@@ -104,22 +103,23 @@ td{color:var(--text);font-weight:300}
 .price-line .per{font-size:13px;color:var(--muted);margin-left:6px}
 .pay-points{font-family:var(--sans);font-weight:300;font-size:13.5px;color:var(--muted);line-height:2;margin:10px 0 22px}
 .pay-points b{color:var(--gold-bright);font-weight:500}
-.paybtn{display:inline-block;padding:16px 52px;border-radius:0;font-family:var(--serif);font-size:17px;letter-spacing:.2em;text-decoration:none;color:#f4efe4;background:var(--cinnabar);font-weight:600;border:none;cursor:pointer;transition:all .35s}
-.paybtn:hover{background:var(--cinnabar-deep)}
+.paybtn{display:inline-block;padding:16px 52px;border-radius:4px;font-family:var(--serif);font-size:17px;letter-spacing:.2em;text-decoration:none;color:#0a0e1a;background:linear-gradient(135deg,var(--gold-bright),var(--gold));font-weight:600;border:none;cursor:pointer;transition:all .35s}
+.paybtn:hover{box-shadow:0 0 40px rgba(201,168,106,.4)}
 .paybtn:disabled{opacity:.5;cursor:wait}
-.modal-mask{display:none;position:fixed;inset:0;z-index:50;background:rgba(11,10,9,.86);backdrop-filter:blur(4px);overflow-y:auto;padding:40px 18px}
-.modal{max-width:560px;margin:0 auto;border:0;border-radius:0;background:var(--ink-600);padding:34px 30px}
+.modal-mask{display:none;position:fixed;inset:0;z-index:50;background:rgba(4,7,14,.82);backdrop-filter:blur(4px);overflow-y:auto;padding:40px 18px}
+.modal{max-width:560px;margin:0 auto;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2));padding:34px 30px}
 .modal h3{font-size:20px;letter-spacing:.08em;margin-bottom:6px}
 .modal .msub{font-family:var(--sans);font-weight:300;font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.8}
-.modal textarea{width:100%;min-height:96px;padding:12px 14px;border-radius:0;border:1px solid var(--rule-strong);background:rgba(11,10,9,.55);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.7;outline:none;resize:vertical}
+.modal textarea{width:100%;min-height:96px;padding:12px 14px;border-radius:4px;border:1px solid rgba(201,168,106,.3);background:rgba(7,11,22,.7);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.7;outline:none;resize:vertical}
 .modal textarea:focus{border-color:var(--gold)}
 .modal select{margin-top:6px}
 .modal .mrow{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
-.modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);padding:14px 24px;border-radius:0;font-family:var(--sans);font-size:14px;cursor:pointer}
+.modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);padding:14px 24px;border-radius:4px;font-family:var(--sans);font-size:14px;cursor:pointer}
 .modal .cancel:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
+<canvas id="stars"></canvas>
 <main>
   <div class="topbar">
     <span class="brandmark" data-i18n="brand">浮生矩陣</span>
@@ -148,7 +148,7 @@ td{color:var(--text);font-weight:300}
       <div class="field"><label data-i18n="f_city">出生地</label><select id="city"></select></div>
       <div class="field" id="manualWrap" style="display:none"><label data-i18n="manual_label">經度 , 緯度 , 時區</label><input type="text" id="manual" placeholder="121.5,25.0,8"></div>
     </div>
-    <button class="runbtn" id="run" data-i18n="run_btn">開始排盤</button>
+    <button class="runbtn" id="run" data-i18n="run_btn">開始排盤 ✦</button>
     <p class="err" id="err"></p>
     <p class="loading" id="loading" data-i18n="loading">星盤推算中…</p>
   </div>
@@ -197,7 +197,7 @@ td{color:var(--text);font-weight:300}
         付款完成後由系統依你的命盤<b>自動生成</b>，約 5～10 分鐘<br>
         報告存進你的會員帳號，<b>隨時登入重看</b>
       </p>
-      <button class="paybtn" id="payBtn">付費解鎖 · NT$888</button>
+      <button class="paybtn" id="payBtn">付費解鎖 · NT$888 ✦</button>
       <p class="err" id="payErr" style="margin-top:14px"></p>
       <p class="qz-note" style="max-width:520px;margin:24px auto 0;border:none;line-height:1.9">
         <span style="color:var(--gold)">已經買過了？</span> <a href="login.html" style="color:var(--gold-bright)">登入看我的萬字 →</a><br>
@@ -237,6 +237,12 @@ td{color:var(--text);font-weight:300}
 
 <script>
 const IZ={"star":{"紫微":{"tw":"紫微","en":"emperor"},"天机":{"tw":"天機","en":"advisor"},"太阳":{"tw":"太陽","en":"sun"},"武曲":{"tw":"武曲","en":"general"},"天同":{"tw":"天同","en":"fortunate"},"廉贞":{"tw":"廉貞","en":"judge"},"天府":{"tw":"天府","en":"empress"},"太阴":{"tw":"太陰","en":"moon"},"贪狼":{"tw":"貪狼","en":"wolf"},"巨门":{"tw":"巨門","en":"advocator"},"天相":{"tw":"天相","en":"minister"},"天梁":{"tw":"天梁","en":"sage"},"七杀":{"tw":"七殺","en":"marshal"},"破军":{"tw":"破軍","en":"rebel"},"左辅":{"tw":"左輔","en":"officer"},"右弼":{"tw":"右弼","en":"helper"},"文昌":{"tw":"文昌","en":"scholar"},"文曲":{"tw":"文曲","en":"artist"},"禄存":{"tw":"祿存","en":"money"},"天马":{"tw":"天馬","en":"horse"},"擎羊":{"tw":"擎羊","en":"driven"},"陀罗":{"tw":"陀羅","en":"tangled"},"火星":{"tw":"火星","en":"impulsive"},"铃星":{"tw":"鈴星","en":"spark"},"天魁":{"tw":"天魁","en":"assistant"},"天钺":{"tw":"天鉞","en":"aide"},"地空":{"tw":"地空","en":"ideologue"},"地劫":{"tw":"地劫","en":"fickle"},"劫杀":{"tw":"劫殺","en":"murder"},"天空":{"tw":"天空","en":"utopian"},"天刑":{"tw":"天刑","en":"serious"},"天姚":{"tw":"天姚","en":"social"},"解神":{"tw":"解神","en":"considery"},"阴煞":{"tw":"陰煞","en":"gloomy"},"天喜":{"tw":"天喜","en":"cheerful"},"天官":{"tw":"天官","en":"solemn"},"天福":{"tw":"天福","en":"lucky"},"天哭":{"tw":"天哭","en":"upset"},"天虚":{"tw":"天虛","en":"frail"},"龙池":{"tw":"龍池","en":"talented"},"凤阁":{"tw":"鳳閣","en":"refined"},"红鸾":{"tw":"紅鸞","en":"attractive"},"孤辰":{"tw":"孤辰","en":"alone"},"寡宿":{"tw":"寡宿","en":"lonely"},"蜚廉":{"tw":"蜚廉","en":"instigated"},"破碎":{"tw":"破碎","en":"broken"},"台辅":{"tw":"台輔","en":"honorable"},"封诰":{"tw":"封誥","en":"awarded"},"天巫":{"tw":"天巫","en":"psychic"},"天月":{"tw":"天月","en":"sickly"},"三台":{"tw":"三台","en":"senior"},"八座":{"tw":"八座","en":"dignified"},"恩光":{"tw":"恩光","en":"grateful"},"天贵":{"tw":"天貴","en":"noble"},"天才":{"tw":"天才","en":"gifted"},"天寿":{"tw":"天壽","en":"ageless"},"截空":{"tw":"截空","en":"interrupted"},"旬中":{"tw":"旬中","en":"meditative"},"旬空":{"tw":"旬空","en":"fancied"},"空亡":{"tw":"空亡","en":"bottomless"},"截路":{"tw":"截路","en":"intercepted"},"月德":{"tw":"月德","en":"peaceful"},"天伤":{"tw":"天傷","en":"wounded"},"天使":{"tw":"天使","en":"heaven"},"天厨":{"tw":"天廚","en":"gourmet"},"长生":{"tw":"長生","en":"born"},"沐浴":{"tw":"沐浴","en":"infancy"},"冠带":{"tw":"冠帶","en":"adolescence"},"临官":{"tw":"臨官","en":"adulthood"},"帝旺":{"tw":"帝旺","en":"prime"},"衰":{"tw":"衰","en":"weak"},"病":{"tw":"病","en":"sick"},"死":{"tw":"死","en":"dead"},"墓":{"tw":"墓","en":"buried"},"绝":{"tw":"絕","en":"dissipated"},"胎":{"tw":"胎","en":"embryo"},"养":{"tw":"養","en":"molding"},"博士":{"tw":"博士","en":"doctor"},"力士":{"tw":"力士","en":"sumo"},"青龙":{"tw":"青龍","en":"dragon"},"小耗":{"tw":"小耗","en":"consumer"},"将军":{"tw":"將軍","en":"general"},"奏书":{"tw":"奏書","en":"book"},"飞廉":{"tw":"飛廉","en":"gossip"},"喜神":{"tw":"喜神","en":"happiness"},"病符":{"tw":"病符","en":"illness"},"大耗":{"tw":"大耗","en":"wastrel"},"岁破":{"tw":"歲破","en":"wastrel"},"伏兵":{"tw":"伏兵","en":"ambush"},"官府":{"tw":"官府","en":"government"},"岁建":{"tw":"歲建","en":"initial"},"晦气":{"tw":"晦氣","en":"unlucky"},"丧门":{"tw":"喪門","en":"downcast"},"贯索":{"tw":"貫索","en":"tied"},"官符":{"tw":"官符","en":"official"},"龙德":{"tw":"龍德","en":"virtuous"},"白虎":{"tw":"白虎","en":"sinister"},"天德":{"tw":"天德","en":"blessed"},"吊客":{"tw":"弔客","en":"sorrowing"},"将星":{"tw":"將星","en":"capable"},"攀鞍":{"tw":"攀鞍","en":"admired"},"岁驿":{"tw":"歲驛","en":"varied"},"息神":{"tw":"息神","en":"listless"},"华盖":{"tw":"華蓋","en":"religious"},"劫煞":{"tw":"劫煞","en":"robbed"},"灾煞":{"tw":"災煞","en":"disastery"},"天煞":{"tw":"天煞","en":"condemned"},"指背":{"tw":"指背","en":"insidious"},"咸池":{"tw":"咸池","en":"passionate"},"月煞":{"tw":"月煞","en":"hapless"},"亡神":{"tw":"亡神","en":"perished"},"运魁":{"tw":"運魁","en":"assistant(D)"},"运钺":{"tw":"運鉞","en":"aide(D)"},"运昌":{"tw":"運昌","en":"scholar(D)"},"运曲":{"tw":"運曲","en":"artist(D)"},"运鸾":{"tw":"運鸞","en":"attractive(D)"},"运喜":{"tw":"運喜","en":"cheerful(D)"},"运禄":{"tw":"運祿","en":"money(D)"},"运羊":{"tw":"運羊","en":"driven(D)"},"运陀":{"tw":"運陀","en":"tangled(D)"},"运马":{"tw":"運馬","en":"horse(D)"},"流魁":{"tw":"流魁","en":"assistant(Y)"},"流钺":{"tw":"流鉞","en":"aide(Y)"},"流昌":{"tw":"流昌","en":"scholar(Y)"},"流曲":{"tw":"流曲","en":"artist(Y)"},"流鸾":{"tw":"流鸞","en":"attractive(Y)"},"流喜":{"tw":"流喜","en":"cheerful(Y)"},"流禄":{"tw":"流祿","en":"money(Y)"},"流羊":{"tw":"流羊","en":"driven(Y)"},"流陀":{"tw":"流陀","en":"tangled(Y)"},"流马":{"tw":"流馬","en":"horse(Y)"},"年解":{"tw":"年解","en":"considery(Y)"},"月魁":{"tw":"月魁","en":"assistant(M)"},"月钺":{"tw":"月鉞","en":"aide(M)"},"月昌":{"tw":"月昌","en":"scholar(M)"},"月曲":{"tw":"月曲","en":"artist(M)"},"月鸾":{"tw":"月鸞","en":"attractive(M)"},"月喜":{"tw":"月喜","en":"cheerful(M)"},"月禄":{"tw":"月祿","en":"money(M)"},"月羊":{"tw":"月羊","en":"driven(M)"},"月陀":{"tw":"月陀","en":"tangled(M)"},"月马":{"tw":"月馬","en":"horse(M)"},"日魁":{"tw":"日魁","en":"assistant(d)"},"日钺":{"tw":"日鉞","en":"aide(d)"},"日昌":{"tw":"日昌","en":"scholar(d)"},"日曲":{"tw":"日曲","en":"artist(d)"},"日鸾":{"tw":"日鸞","en":"attractive(d)"},"日喜":{"tw":"日喜","en":"cheerful(d)"},"日禄":{"tw":"日祿","en":"money(d)"},"日羊":{"tw":"日羊","en":"driven(d)"},"日陀":{"tw":"日陀","en":"tangled(d)"},"日马":{"tw":"日馬","en":"horse(d)"},"时魁":{"tw":"時魁","en":"assistant(H)"},"时钺":{"tw":"時鉞","en":"aide(H)"},"时昌":{"tw":"時昌","en":"scholar(H)"},"时曲":{"tw":"時曲","en":"artist(H)"},"时鸾":{"tw":"時鸞","en":"attractive(H)"},"时喜":{"tw":"時喜","en":"cheerful(H)"},"时禄":{"tw":"時祿","en":"money(H)"},"时羊":{"tw":"時羊","en":"driven(H)"},"时陀":{"tw":"時陀","en":"tangled(H)"},"时马":{"tw":"時馬","en":"horse(H)"}},"palace":{"命宫":{"tw":"命宮","en":"soul"},"身宫":{"tw":"身宮","en":"body"},"兄弟":{"tw":"兄弟","en":"siblings"},"夫妻":{"tw":"夫妻","en":"spouse"},"子女":{"tw":"子女","en":"children"},"财帛":{"tw":"財帛","en":"wealth"},"疾厄":{"tw":"疾厄","en":"health"},"迁移":{"tw":"遷移","en":"surface"},"仆役":{"tw":"僕役","en":"friends"},"官禄":{"tw":"官祿","en":"career"},"田宅":{"tw":"田宅","en":"property"},"福德":{"tw":"福德","en":"spirit"},"父母":{"tw":"父母","en":"parents"},"来因":{"tw":"来因","en":"origin"}},"wuxingju":{"水二局":{"tw":"水二局","en":"water 2nd"},"木三局":{"tw":"木三局","en":"wood 3rd"},"金四局":{"tw":"金四局","en":"metal 4th"},"土五局":{"tw":"土五局","en":"earth 5th"},"火六局":{"tw":"火六局","en":"fire 6th"}},"mutagen":{"禄":{"tw":"祿","en":"A"},"权":{"tw":"權","en":"B"},"科":{"tw":"科","en":"C"},"忌":{"tw":"忌","en":"D"}},"stem":{"甲":{"tw":"甲","en":"jia"},"乙":{"tw":"乙","en":"yi"},"丙":{"tw":"丙","en":"bing"},"丁":{"tw":"丁","en":"ding"},"戊":{"tw":"戊","en":"wu"},"己":{"tw":"己","en":"ji"},"庚":{"tw":"庚","en":"geng"},"辛":{"tw":"辛","en":"xin"},"壬":{"tw":"壬","en":"ren"},"癸":{"tw":"癸","en":"gui"}},"branch":{"子":{"tw":"子","en":"zi"},"丑":{"tw":"丑","en":"chou"},"寅":{"tw":"寅","en":"yin"},"卯":{"tw":"卯","en":"mao"},"辰":{"tw":"辰","en":"chen"},"巳":{"tw":"巳","en":"si"},"午":{"tw":"午","en":"woo"},"未":{"tw":"未","en":"wei"},"申":{"tw":"申","en":"shen"},"酉":{"tw":"酉","en":"you"},"戌":{"tw":"戌","en":"xu"},"亥":{"tw":"亥","en":"hai"}},"brightness":{"庙":{"tw":"廟","en":"[+3]"},"旺":{"tw":"旺","en":"[+2]"},"得":{"tw":"得","en":"[+1]"},"利":{"tw":"利","en":"[0]"},"平":{"tw":"平","en":"[-1]"},"不":{"tw":"不","en":"[-2]"},"陷":{"tw":"陷","en":"[-3]"}}};
+/* ===== 星空 ===== */
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let stars=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;stars=Array.from({length:Math.min(180,innerWidth/7)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.2+.2,a:Math.random(),s:Math.random()*.008+.002}))}
+rs();addEventListener('resize',rs);
+(function d(){cx.clearRect(0,0,cv.width,cv.height);for(const s of stars){s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle=`rgba(232,207,154,${Math.abs(Math.sin(s.a*Math.PI))*.7+.1})`;cx.fill()}requestAnimationFrame(d)})();
+
 /* ===== i18n ===== */
 let LANG='tw';
 const s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
@@ -246,7 +252,7 @@ const izStar=c=>pick(IZ.star,c),izPal=c=>pick(IZ.palace,c),izCls=c=>pick(IZ.wuxi
 const izMut=c=>{const m={'禄':{tw:'祿',en:'A·Wealth'},'权':{tw:'權',en:'B·Power'},'科':{tw:'科',en:'C·Status'},'忌':{tw:'忌',en:'D·Obstacle'}};return pick(m,c)};
 
 const DICT={
- tw:{brand:'浮生矩陣',back:'← 回首頁',title:'免費排盤',hero_sub:'輸入出生資料，立即取得你的命盤總覽',hero_sys:'八字 · 紫微斗數 · 西洋占星 · 人類圖',f_name:'姓名 / 暱稱',f_gender:'性別',g_female:'女',g_male:'男',f_date:'出生日期（西元 國曆）',f_time:'出生時間',unknown_label:'我不確定出生時間',time_hint:'勾選後將以中午推算；時辰相關結果僅供參考',f_city:'出生地',manual_label:'經度 , 緯度 , 時區',run_btn:'開始排盤',loading:'星盤推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗數',t_astro:'西洋占星',t_hd:'人類圖',hd_gates_h:'13 啟動點（個性 / 設計）',hd_centers_h:'九大能量中心',hd_channels_h:'已定義通道',cta_h:'這只是你的命盤總覽',cta_p:'完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。',cta_btn:'預約完整講解 →',disc:'本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。',
+ tw:{brand:'浮生矩陣',back:'← 回首頁',title:'免費排盤',hero_sub:'輸入出生資料，立即取得你的命盤總覽',hero_sys:'八字 · 紫微斗數 · 西洋占星 · 人類圖',f_name:'姓名 / 暱稱',f_gender:'性別',g_female:'女',g_male:'男',f_date:'出生日期（西元 國曆）',f_time:'出生時間',unknown_label:'我不確定出生時間',time_hint:'勾選後將以中午推算；時辰相關結果僅供參考',f_city:'出生地',manual_label:'經度 , 緯度 , 時區',run_btn:'開始排盤 ✦',loading:'星盤推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗數',t_astro:'西洋占星',t_hd:'人類圖',hd_gates_h:'13 啟動點（個性 / 設計）',hd_centers_h:'九大能量中心',hd_channels_h:'已定義通道',cta_h:'這只是你的命盤總覽',cta_p:'完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。',cta_btn:'預約完整講解 →',disc:'本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。',
    warn:'⚠ 你未提供確切出生時間，本盤以中午 12:00 推算。八字時柱、紫微命宮、上升星座與人類圖類型都會隨時辰改變，以下時辰相關內容僅供參考。',
    lunar:'農曆',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'時柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'納音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大運',start_luck:'起運',age:'歲',taiyuan:'胎元',minggong:'命宮',shengong:'身宮',xunkong:'旬空',
    soulstar:'命宮主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宮',daxian:'大限',p12:'十二宮',mainstar:'主星',minorstar:'輔星',empty:'（空宮）',
@@ -254,7 +260,7 @@ const DICT={
    authority:'內在權威',profile:'人生角色',definition:'定義',cross:'輪迴交叉',strategy:'策略',notself:'非自己主題',signature:'人生印記',planet:'行星',personality:'個性',design:'設計',center:'中心',defined:'已定義',open:'開放',nochannel:'無完整通道（反映者特質）',
    cav_bazi:'時柱需要出生時辰，目前未計入',cav_ziwei:'紫微命宮會隨時辰整盤位移，此為中午暫定盤',cav_astro:'上升、天頂與月亮高度依賴時間，請以太陽星座為主',cav_hd:'人類圖類型與角色可能因時辰改變，此為中午推算',
    need_date:'請填寫出生日期',need_time:'請填寫出生時間，或勾選「我不確定出生時間」',need_manual:'手動格式：經度,緯度,時區，例 121.5,25.0,8',err_calc:'計算發生錯誤：'},
- cn:{brand:'浮生矩阵',back:'← 回首页',title:'免费排盘',hero_sub:'输入出生资料，立即取得你的命盘总览',hero_sys:'八字 · 紫微斗数 · 西洋占星 · 人类图',f_name:'姓名 / 昵称',f_gender:'性别',g_female:'女',g_male:'男',f_date:'出生日期（公历）',f_time:'出生时间',unknown_label:'我不确定出生时间',time_hint:'勾选后将以中午推算；时辰相关结果仅供参考',f_city:'出生地',manual_label:'经度 , 纬度 , 时区',run_btn:'开始排盘',loading:'星盘推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗数',t_astro:'西洋占星',t_hd:'人类图',hd_gates_h:'13 启动点（个性 / 设计）',hd_centers_h:'九大能量中心',hd_channels_h:'已定义通道',cta_h:'这只是你的命盘总览',cta_p:'完整的浮生矩阵报告约一万字，采预约制，由我一对一为你深入讲解。',cta_btn:'预约完整讲解 →',disc:'本页由开源天文／历法引擎于你的浏览器即时计算，资料不经服务器。命理内容仅供自我探索参考。',
+ cn:{brand:'浮生矩阵',back:'← 回首页',title:'免费排盘',hero_sub:'输入出生资料，立即取得你的命盘总览',hero_sys:'八字 · 紫微斗数 · 西洋占星 · 人类图',f_name:'姓名 / 昵称',f_gender:'性别',g_female:'女',g_male:'男',f_date:'出生日期（公历）',f_time:'出生时间',unknown_label:'我不确定出生时间',time_hint:'勾选后将以中午推算；时辰相关结果仅供参考',f_city:'出生地',manual_label:'经度 , 纬度 , 时区',run_btn:'开始排盘 ✦',loading:'星盘推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗数',t_astro:'西洋占星',t_hd:'人类图',hd_gates_h:'13 启动点（个性 / 设计）',hd_centers_h:'九大能量中心',hd_channels_h:'已定义通道',cta_h:'这只是你的命盘总览',cta_p:'完整的浮生矩阵报告约一万字，采预约制，由我一对一为你深入讲解。',cta_btn:'预约完整讲解 →',disc:'本页由开源天文／历法引擎于你的浏览器即时计算，资料不经服务器。命理内容仅供自我探索参考。',
    warn:'⚠ 你未提供确切出生时间，本盘以中午 12:00 推算。八字时柱、紫微命宫、上升星座与人类图类型都会随时辰改变，以下时辰相关内容仅供参考。',
    lunar:'农历',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'时柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'纳音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大运',start_luck:'起运',age:'岁',taiyuan:'胎元',minggong:'命宫',shengong:'身宫',xunkong:'旬空',
    soulstar:'命宫主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宫',daxian:'大限',p12:'十二宫',mainstar:'主星',minorstar:'辅星',empty:'（空宫）',
@@ -262,7 +268,7 @@ const DICT={
    authority:'内在权威',profile:'人生角色',definition:'定义',cross:'轮回交叉',strategy:'策略',notself:'非自己主题',signature:'人生印记',planet:'行星',personality:'个性',design:'设计',center:'中心',defined:'已定义',open:'开放',nochannel:'无完整通道（反映者特质）',
    cav_bazi:'时柱需要出生时辰，目前未计入',cav_ziwei:'紫微命宫会随时辰整盘位移，此为中午暂定盘',cav_astro:'上升、天顶与月亮高度依赖时间，请以太阳星座为主',cav_hd:'人类图类型与角色可能因时辰改变，此为中午推算',
    need_date:'请填写出生日期',need_time:'请填写出生时间，或勾选「我不确定出生时间」',need_manual:'手动格式：经度,纬度,时区，例 121.5,25.0,8',err_calc:'计算发生错误：'},
- en:{brand:'Fusheng Matrix',back:'← Home',title:'Free Chart',hero_sub:'Enter your birth data for an instant four-system overview',hero_sys:'BaZi · Zi Wei · Astrology · Human Design',f_name:'Name',f_gender:'Gender',g_female:'Female',g_male:'Male',f_date:'Birth date (Gregorian)',f_time:'Birth time',unknown_label:'I am not sure of my birth time',time_hint:'If checked, noon is used; time-sensitive results are indicative only',f_city:'Birthplace',manual_label:'Longitude , Latitude , Timezone',run_btn:'Generate Chart',loading:'Calculating…',t_bazi:'BaZi (Four Pillars)',t_ziwei:'Zi Wei Dou Shu',t_astro:'Western Astrology',t_hd:'Human Design',hd_gates_h:'13 Activations (Personality / Design)',hd_centers_h:'Nine Centers',hd_channels_h:'Defined Channels',cta_h:'This is only your chart overview',cta_p:'The full Fusheng Matrix report is ~10,000 words, by appointment, walked through one-on-one.',cta_btn:'Book the full reading →',disc:'Calculated live in your browser by open-source astronomy/calendar engines; no data leaves your device. For self-exploration only.',
+ en:{brand:'Fusheng Matrix',back:'← Home',title:'Free Chart',hero_sub:'Enter your birth data for an instant four-system overview',hero_sys:'BaZi · Zi Wei · Astrology · Human Design',f_name:'Name',f_gender:'Gender',g_female:'Female',g_male:'Male',f_date:'Birth date (Gregorian)',f_time:'Birth time',unknown_label:'I am not sure of my birth time',time_hint:'If checked, noon is used; time-sensitive results are indicative only',f_city:'Birthplace',manual_label:'Longitude , Latitude , Timezone',run_btn:'Generate Chart ✦',loading:'Calculating…',t_bazi:'BaZi (Four Pillars)',t_ziwei:'Zi Wei Dou Shu',t_astro:'Western Astrology',t_hd:'Human Design',hd_gates_h:'13 Activations (Personality / Design)',hd_centers_h:'Nine Centers',hd_channels_h:'Defined Channels',cta_h:'This is only your chart overview',cta_p:'The full Fusheng Matrix report is ~10,000 words, by appointment, walked through one-on-one.',cta_btn:'Book the full reading →',disc:'Calculated live in your browser by open-source astronomy/calendar engines; no data leaves your device. For self-exploration only.',
    warn:'⚠ No exact birth time given; noon 12:00 is assumed. The BaZi hour pillar, Zi Wei life palace, Ascendant and Human Design type all shift with time — treat time-sensitive items below as indicative.',
    lunar:'Lunar',daymaster:'Day Master',zodiac:'Zodiac',pillar_y:'Year',pillar_m:'Month',pillar_d:'Day',pillar_h:'Hour',r_god:'Ten God',r_stem:'Stem',r_branch:'Branch',r_hide:'Hidden',r_nayin:'NaYin',undetermined:'TBD',wuxing_h:'Five-Element Balance',luck_h:'Luck Pillars',start_luck:'Start',age:'y',taiyuan:'Conception',minggong:'Life Palace',shengong:'Body Palace',xunkong:'Void',
    soulstar:'Life Palace Stars',soulbody:'Life / Body Master',wuxingju:'Element Class',sihua:'Birth-year Transformations',bodypal:'Body Palace',daxian:'Decade',p12:'12 Palaces',mainstar:'Major Stars',minorstar:'Minor Stars',empty:'(empty)',
@@ -614,7 +620,7 @@ async function gateQianzi(){
     if(session) return; // 已登入 → 直接看千字
     document.getElementById('qianzi-content').innerHTML =
       '<div style="text-align:center;padding:28px 10px">'+
-      '<p class="lead" style="margin-bottom:10px">你的千字精華已經生成</p>'+
+      '<p class="lead" style="margin-bottom:10px">你的千字精華已經生成 ✦</p>'+
       '<p style="font-family:var(--sans);font-weight:300;font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.9">免費註冊會員（只需 Email），立即解鎖閱讀。<br>精華會永久保存在你的帳號，之後隨時回來看。</p>'+
       '<button class="paybtn" style="padding:13px 34px;font-size:15px" onclick="goRegisterQz()">輸入 Email 解鎖千字精華 →</button>'+
       '<p class="qz-note" style="border:none;margin-top:16px">已有帳號？<a href="javascript:goLoginQz()" style="color:var(--gold-bright)">直接登入 →</a></p></div>';
@@ -708,15 +714,5 @@ setTimeout(function resume(){
 /* init */
 buildCity();applyStatic();
 </script>
-
-<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
-<nav class="tabbar" aria-label="主導覽">
-  <div class="tabs">
-    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
-    <a class="active" href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
-    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
-    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
-  </div>
-</nav>
 </body>
 </html>
