@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
 <script src="supabase-config.js"></script>
+<script src="report-draft.js?v=chapter1"></script>
 </head>
 <body>
 <div class="wrap">
@@ -229,23 +230,26 @@ async function genAI(caseId,version){
     }
     const intensity=($('intensity-'+caseId)||{}).value||'犀利';
     const {data:{session}}=await sb.auth.getSession();
-    let full='', excerpt='';
-    let totalParts=(version==='script'||version==='breakthrough')?4:3;
-    for(let part=0;part<totalParts;part++){
-      m.textContent='正在撰寫第 '+(part+1)+'／'+totalParts+' 段；全部完成前不會替換原報告。';
-      const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||'',part,previous:full})});
-      const data=await resp.json().catch(()=>({}));
-      if(!resp.ok||data.error)throw new Error(genErrText(resp.status,data.error));
-      if(data.complete!==true||data.part!==part||!data.full||data.totalParts!==totalParts) throw new Error('該段未完整完成或版本不一致，原報告保留');
-      if(part===0)excerpt=data.excerpt||'';
-      full+=(full?'\n\n':'')+data.full;
-    }
+    if(!session)throw new Error('請先登入');
+    const {full,excerpt}=await ReportDraft.run({
+      userId:session.user.id,caseId,
+      payload:{summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||''},
+      progress:(step,total)=>{m.textContent=step===0?'正在生成摘要；每章完成會存入此瀏覽器草稿。':'已保存 '+step+' 段，正在生成第 '+step+' 章'+(total?'／'+(total-1):'')+'；可中斷續接，請勿清除網站資料。';},
+      request:async payload=>{
+        const {data:{session:fresh}}=await sb.auth.getSession();
+        if(!fresh)throw new Error('登入已過期；重新登入後可續接');
+        const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+fresh.access_token,'apikey':window.SB_KEY},body:JSON.stringify(payload)});
+        const data=await resp.json().catch(()=>({}));
+        if(!resp.ok||data.error)throw new Error(genErrText(resp.status,data.error));
+        return data;
+      }
+    });
     if($('ex-'+caseId))$('ex-'+caseId).value=excerpt;
     if($('fc-'+caseId))$('fc-'+caseId).value=full;
     if($('pb-'+caseId))$('pb-'+caseId).checked=false;
     if($('fu-'+caseId))$('fu-'+caseId).checked=false;
     m.className='msg ok'; m.textContent='✓ AI 已生成，請檢查內容後勾選發布／解鎖並儲存。';
-  }catch(e){ m.className='msg err'; m.textContent='AI 生成發生錯誤：'+e.message; }
+  }catch(e){ m.className='msg err'; m.textContent='已暫停：'+e.message+'。已完成章節保存在此瀏覽器，再按生成會續接；正式報告未更動。'; }
   finally{ if(btn)btn.disabled=false; }
 }
 

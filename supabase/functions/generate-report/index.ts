@@ -320,11 +320,11 @@ const PLANS: Record<string, Plan> = {
 /* ============================================================
    生成核心
 ============================================================ */
-async function callClaude(apiKey: string, system: string, prompt: string, maxTokens = 12000): Promise<string> {
+async function callClaude(apiKey: string, system: string, prompt: string, maxTokens = 12000, attempts = 3): Promise<string> {
   const messages = [{ role: "user", content: prompt }];
   let result = "";
   // Bounded continuation: an HTTP 200 is not proof of a completed response.
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
   const resp = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
@@ -566,7 +566,25 @@ Deno.serve(async (req: Request) => {
   const { summary, name, version, evidence, intensity, relation } = body as Record<string, string>;
   if (!summary) return json({ error: "缺少命盤摘要 summary" }, 400);
   try {
-    const { plan } = planOf(version || "script");
+    const { plan, isCouple } = planOf(version || "script");
+    if (body.protocol === "chapter-v1") {
+      const step = Number(body.step);
+      if (!Number.isInteger(step) || step < 0 || step > plan.chapters.length) return json({ error: "無效章節" }, 400);
+      const args = { summary, version, evidence, intensity, relation };
+      const marker = `===CHAPTER_${step}_COMPLETE===`;
+      const previous = typeof body.previous === "string" ? body.previous.slice(-2500) : "";
+      const task = step === 0
+        ? "只撰寫千字精華（約 500~700 字），不寫完整版章節。白話散文引子，不重複只看一頁章節。"
+        : `只寫這一章，不得寫其他章：\n${plan.chapters[step - 1]}\n一般章約1000~1300字，章節另有字數指示時遵守該指示。\n標題必須為 ## ${plan.chapters[step - 1].split("——")[0]}。`;
+      const prompt = `【命盤資料】\n${summary}${evidenceBlock(evidence || "", isCouple)}\n【任務】${plan.label}：${plan.goal}\n${task}\n【前文結尾，僅供銜接、不要重複】\n${previous}\n本章完整收尾才在末行輸出 ${marker}，不要程式碼圍欄。`;
+      // One model call per request. Never chain multiple long calls inside the Edge timeout.
+      const result = await callClaude(apiKey, systemOf(args, isCouple), prompt, step === 0 ? 2200 : 4000, 1);
+      if (!result.endsWith(marker)) throw new Error("本章尚未完整結束，已完成章節保留，請續接本章");
+      const text = result.slice(0, -marker.length).trim();
+      if (!text) throw new Error("本章內容為空");
+      if (step > 0) validateChapters(text, [plan.chapters[step - 1]]);
+      return json({ protocol: "chapter-v1", step, totalSteps: plan.chapters.length + 1, text, complete: true });
+    }
     const part = Number(body.part);
     if (!Number.isInteger(part) || part < 0 || part >= plan.splits.length) return json({ error: "請更新管理頁，使用分段完整生成流程" }, 400);
     const previous = typeof body.previous === "string" ? body.previous : "";
@@ -578,4 +596,3 @@ Deno.serve(async (req: Request) => {
     return json({ error: String(e) }, 500);
   }
 });
-
