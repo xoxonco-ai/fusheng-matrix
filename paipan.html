@@ -781,7 +781,11 @@ setTimeout(function resume(){
     $id('name').value=f.name;$id('gender').value=f.gender;$id('date').value=f.date;$id('time').value=f.time;$id('unknownTime').checked=f.unknown;
     $id('city').value=f.city;$id('manual').value=f.manual||'';
     document.getElementById('city').dispatchEvent(new Event('change'));
-    setTimeout(()=>{ $id('run').click(); setTimeout(async()=>{
+    setTimeout(async()=>{
+      if(!$id('lead-email').value.trim()){
+        try{const {data:{session}}=await sb.auth.getSession(); if(session&&session.user.email)$id('lead-email').value=session.user.email;}catch(_){}
+      }
+      $id('run').click(); setTimeout(async()=>{
       const {data:{session}}=await sb.auth.getSession();
       if(!session||!CUR_BIRTH)return;
       if(mode==='pay'){
