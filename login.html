@@ -10,10 +10,11 @@
 <link rel="stylesheet" href="members.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<link rel="stylesheet" href="warm.css">
 </head>
 <body>
 <div class="wrap" style="max-width:460px">
-  <div class="topbar" style="justify-content:center"><a class="brand" href="index.html">浮生矩陣</a></div>
+  <div class="topbar" style="justify-content:center"><a class="brand" href="index.html">浮生羅盤</a></div>
   <h1>會員登入</h1>
   <p class="sub" id="modesub">登入以查看你的報告</p>
 
@@ -24,8 +25,9 @@
     </div>
     <label>Email</label>
     <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
-    <label>密碼</label>
+    <label for-pass>密碼</label>
     <input type="password" id="password" placeholder="至少 6 碼" autocomplete="current-password">
+    <p id="forgotrow" style="margin:10px 0 0;text-align:right"><a href="#" id="forgot" class="muted" style="font-family:var(--sans);font-size:13px;text-decoration:none">忘記密碼？</a></p>
     <div style="margin-top:24px" class="center">
       <button class="btn" id="submit" style="width:100%">登入</button>
     </div>
@@ -41,8 +43,11 @@ const $=id=>document.getElementById(id);
 function setMode(m){mode=m;
   $('tab-in').classList.toggle('active',m==='in');
   $('tab-up').classList.toggle('active',m==='up');
-  $('submit').textContent = m==='in'?'登入':'註冊';
-  $('modesub').textContent = m==='in'?'登入以查看你的報告':'建立你的帳號';
+  $('submit').textContent = m==='in'?'登入':(m==='up'?'註冊':'寄送重設密碼信');
+  $('modesub').textContent = m==='in'?'登入以查看你的報告':(m==='up'?'建立你的帳號':'輸入 Email，我們會寄一封重設密碼的信給你');
+  $('password').parentNode && ($('password').style.display = m==='reset'?'none':'');
+  document.querySelector('label[for-pass]') && (document.querySelector('label[for-pass]').style.display = m==='reset'?'none':'');
+  $('forgotrow').style.display = m==='in'?'':'none';
   $('password').setAttribute('autocomplete', m==='in'?'current-password':'new-password');
   hideMsg();
 }
@@ -67,15 +72,21 @@ if(NEXT==='pay'||NEXT==='pay2'){ document.getElementById('modesub').textContent=
 if(NEXT==='qz'||NEXT==='qz2'){ document.getElementById('modesub').textContent='免費註冊（只需 Email），立即解鎖你的精華內容'; }
 
 $('submit').addEventListener('click', async ()=>{
+  if(typeof RECOVERY!=='undefined'&&RECOVERY) return;
   hideMsg();
   const email=$('email').value.trim(), password=$('password').value;
-  if(!email||!password){showMsg('請填寫 Email 與密碼',false);return}
+  if(!email||(mode!=='reset'&&!password)){showMsg(mode==='reset'?'請填寫 Email':'請填寫 Email 與密碼',false);return}
   $('submit').disabled=true;
   try{
     if(mode==='in'){
       const {error}=await sb.auth.signInWithPassword({email,password});
       if(error){showMsg('登入失敗：'+error.message,false);return}
       await routeByRole();
+    }else if(mode==='reset'){
+      const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+      if(error){showMsg('寄送失敗：'+error.message,false);return}
+      showMsg('重設信已寄出！請到信箱點擊連結，會回到本頁設定新密碼。',true);
+      return;
     }else{
       const {data,error}=await sb.auth.signUp({email,password,options:{data:{display_name:email}}});
       if(error){showMsg('註冊失敗：'+error.message,false);return}
@@ -85,12 +96,40 @@ $('submit').addEventListener('click', async ()=>{
   }catch(e){showMsg('發生錯誤：'+e.message,false)}
   finally{$('submit').disabled=false}
 });
+
+$('forgot').addEventListener('click',e=>{e.preventDefault();setMode('reset')});
+
+// 從重設信連結回來（Supabase recovery）：改用「設定新密碼」介面
+let RECOVERY=false;
+sb.auth.onAuthStateChange(async (event)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    RECOVERY=true;
+    $('tab-in').style.display='none';$('tab-up').style.display='none';
+    $('modesub').textContent='請設定你的新密碼';
+    document.querySelector('label[for-pass]').textContent='新密碼';
+    $('password').style.display='';$('password').placeholder='至少 6 碼';
+    $('forgotrow').style.display='none';
+    $('submit').textContent='更新密碼';
+  }
+});
+const _origSubmit=$('submit');
+_origSubmit.addEventListener('click', async ()=>{
+  if(!RECOVERY) return;
+  const password=$('password').value;
+  if(!password||password.length<6){showMsg('新密碼至少 6 碼',false);return}
+  const {error}=await sb.auth.updateUser({password});
+  if(error){showMsg('更新失敗：'+error.message,false);return}
+  showMsg('密碼已更新，正在帶你進入報告頁…',true);
+  RECOVERY=false;
+  setTimeout(()=>routeByRole(),800);
+},true);
+
 $('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('submit').click()});
 
 // ?mode=up → 預設切到註冊分頁
 if(QS.get('mode')==='up') setMode('up');
-// 已登入則直接導向
-routeByRole();
+// 已登入則直接導向（重設密碼流程除外）
+if(!location.hash.includes('type=recovery')) routeByRole();
 </script>
 
 <style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>

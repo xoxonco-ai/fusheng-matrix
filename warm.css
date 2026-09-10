@@ -1,0 +1,88 @@
+/* ==========================================================================
+   浮生羅盤 · 暖紙層（warm.css）
+   載在 ink.css / app.css / members.css（與頁內 <style>）之後，
+   把舊墨黑視覺整體翻成與新首頁一致的暖紙／木色。只重排色票，不動版式。
+   ========================================================================== */
+:root{
+  /* 墨 → 紙：原「深底」token 全部映射為紙色層次 */
+  --ink-900:#ece5d5;
+  --ink-800:#f4efe5;   /* 頁面主底 */
+  --ink-700:#faf6ec;   /* 抬高面 */
+  --ink-600:#faf6ec;   /* 卡片底 */
+  --ink-500:#e7dfcd;   /* 分隔 */
+
+  /* 紙・月白 → 墨字 */
+  --paper:#2c251c;
+  --paper-dim:#6b6254;
+  --paper-faint:#857b6a;
+
+  /* 硃砂／赭石：亮版改深，確保在紙上可讀 */
+  --cinnabar:#a8412f;
+  --cinnabar-light:#a8412f;
+  --cinnabar-deep:#8a3423;
+  --ochre:#9c7043;
+  --ochre-light:#7a5630;
+
+  --rule:rgba(66,54,38,.16);
+  --rule-strong:rgba(66,54,38,.28);
+
+  /* 頁內自訂 token（hepan / report 系列） */
+  --bg:#f4efe5;--bg2:#faf6ec;--bg3:#ffffff;
+  --text:#2c251c;--muted:#6b6254;
+  --gold:#9c7043;--gold-bright:#7a5630;
+  --crimson:#a8412f;--crimson-bright:#a8412f;
+  --line:rgba(66,54,38,.16);
+}
+body{background:var(--ink-800);color:var(--paper)}
+body::before,body::after{display:none}
+.app{background:var(--ink-800);box-shadow:none}
+
+/* 表單控件：白底墨字 */
+input,select,textarea{
+  background:#fff !important;color:var(--paper) !important;
+  border-color:var(--rule-strong) !important;
+}
+input::placeholder,textarea::placeholder{color:#a89d8a}
+input:focus,select:focus,textarea:focus{border-color:var(--cinnabar) !important;outline:none}
+label{color:var(--paper-dim)}
+.chk,.hint{color:var(--paper-dim)}
+
+/* 卡片與訊息 */
+.card{background:var(--ink-700);border:1px solid var(--rule)}
+.msg.err{color:var(--cinnabar);background:rgba(168,65,47,.08)}
+.msg.ok{color:var(--ochre-light);background:rgba(156,112,67,.10)}
+
+/* 主按鈕維持硃砂、文字米白 */
+.btn,.runbtn,.paybtn{color:#f7f2e7}
+.btn.ghost{color:var(--paper-dim);border-color:var(--rule-strong);background:transparent}
+.btn.ghost:hover{color:var(--paper)}
+.tabbtn{color:var(--paper-dim);background:var(--ink-500)}
+.tabbtn:hover{background:#ddd3bf;color:var(--paper)}
+.tabbtn.active{background:var(--cinnabar);color:#f7f2e7}
+
+/* 頂欄／底部導覽：跟排盤、報告頁一致的暖色 */
+.appbar,.topbar{background:transparent;border-color:var(--rule)}
+.appbar .brand,.topbar .brand,.brandmark{color:var(--paper)}
+.tabbar{z-index:100;background:rgba(244,239,229,.97);border-top:1px solid var(--rule)}
+.tabbar a{color:var(--paper-dim)}
+.tabbar a:hover{color:var(--paper)}
+.tabbar a.active{color:var(--cinnabar)}
+.tabbar a.active .g{color:var(--cinnabar)}
+
+/* 標題紅筆刷線與各級文字 */
+h1,h2,h3{color:var(--paper)}
+.sub,.muted{color:var(--paper-dim)}
+a{color:inherit}
+
+/* faq/about/privacy 內容元件 */
+.steps4 div,.entry a{background:var(--ink-700);border:1px solid var(--rule)}
+details,summary{color:var(--paper)}
+.finebar{border-top-color:var(--rule);color:var(--paper-faint)}
+
+/* 列印維持白紙黑字 */
+@media print{body{background:#fff;color:#000}}
+
+/* hepan 專屬：深色半透明面改為紙色 */
+.pcard{background:var(--ink-700) !important}
+.modal-mask{background:rgba(44,37,28,.45) !important}
+.modal{background:var(--bg3) !important;border:1px solid var(--rule) !important}
