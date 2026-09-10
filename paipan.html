@@ -480,7 +480,7 @@ function genQianzi(d){
   h+=`<p>這份千字讓你看見<span class="accent">主線</span>。但你為什麼總在同樣的地方卡住、被同樣的人吸引，那些四套系統互相矛盾、藏在更深處的盲區與破局之道，是<span class="accent">萬字報告</span>才拆得開的部分。</p>`;
   h+=`<p class="qz-note">本千字由四套系統實算結果自動生成，為結構性導讀；完整、深入、針對你個人矛盾的解讀，請見萬字報告。</p>`;
   document.getElementById('qianzi-content').innerHTML=h;
-  gateQianzi(); // 未登入 → 顯示 Email 解鎖卡
+  // 千字精華免費直接顯示（排盤前已收 Email，不再要求註冊）
 }
 
 function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
