@@ -118,6 +118,79 @@ td{color:var(--text);font-weight:300}
 .modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);padding:14px 24px;border-radius:0;font-family:var(--sans);font-size:14px;cursor:pointer}
 .modal .cancel:hover{border-color:var(--gold);color:var(--gold)}
 </style>
+<style>
+/* Local visual preview; calculation scripts remain unchanged. */
+:root{--bg:#f0ebe1;--bg2:#e7dece;--bg3:#e1d5c3;--text:#382a20;--muted:#6e5e50;--gold:#785337;--gold-bright:#805238;--paper:#382a20;--paper-dim:#655346;--ink-600:#e8dfcf;--ochre-light:#785337;--rule:#cbbfac;--rule-strong:#ad9a84;--line:#cbbfac;--cinnabar:#814a32;--cinnabar-deep:#633925;--cinnabar-light:#814a32;--crimson-bright:#943d2c}
+body{background:var(--bg);color:var(--text)}
+body::before,body::after{display:none}
+main{max-width:880px;padding:24px 32px 64px;display:block}
+.topbar{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:32px}
+.brandmark{font-size:24px;font-weight:500}
+.topbar a{font-size:14px;letter-spacing:0}
+.hero{padding:0 0 26px;display:grid;grid-template-columns:1fr 1.2fr;column-gap:32px;align-items:center}
+.hero h1{grid-row:1/3}
+.hero p{grid-column:2}
+.hero h1{font-size:clamp(36px,4vw,52px);font-weight:500;letter-spacing:0;line-height:1.5}
+.hero h1::after{display:none}
+.hero p{font-size:17px;line-height:1.9;letter-spacing:0;font-weight:400}
+.hero .sysline{font-size:14px;margin-top:8px}
+.card{margin:0;padding:28px 0 0;background:transparent;border-top:1px solid var(--line)}
+.grid2{grid-template-columns:1fr 1fr;gap:20px 28px}
+.field{min-width:0}
+.time-guidance,#manualWrap,.field:has(#city){grid-column:1/-1}
+.time-guidance{display:flex;gap:20px;align-items:center;margin-top:-8px}
+.time-guidance .hint{margin:0;flex:1}
+.time-guidance .chk{flex:none}
+label{font-size:14px;color:var(--text);letter-spacing:0}
+input,select,.modal textarea{background:#f8f4ec;color:var(--text);font-size:16px;min-height:48px;border:1px solid #af9d86}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #814a32;outline-offset:4px}
+.chk{min-height:44px;margin-top:4px;align-items:center}.chk input{min-height:0;width:18px;height:18px;flex:none}
+.hint,.caveat,.disclaimer,.qz-note{font-size:13px;line-height:1.8;font-weight:400}
+.runbtn{margin-top:24px;letter-spacing:.04em;padding:14px;max-width:100%;font-size:17px}
+#results{grid-column:1/-1;scroll-margin-top:24px}
+.results-intro{padding:32px 0 24px;border-top:1px solid var(--rule-strong)}
+.results-intro h2{font:500 clamp(28px,4vw,38px)/1.5 var(--serif);margin:12px 0}
+.results-intro p{font:15px/1.9 var(--sans);color:var(--muted);max-width:40em}
+.results-intro p:first-child{font-size:13px;letter-spacing:.08em}
+.reading-guide{margin:18px 0 0;padding-left:1.4em;font:15px/2 var(--sans);color:var(--text)}
+.reading-guide li{padding-left:4px}
+.results-nav{display:flex;gap:8px 28px;flex-wrap:wrap;padding-bottom:20px}
+.results-nav button{background:none;border:0;border-bottom:1px solid var(--rule-strong);padding:10px 0;color:var(--text);font:15px var(--sans);min-height:44px;cursor:pointer}
+.results-nav button:hover{color:var(--cinnabar);border-color:var(--cinnabar)}
+#results .sys-block{scroll-margin-top:24px;overflow:visible;margin-bottom:20px}
+#results .sys-head{gap:14px;margin-bottom:26px}
+#results .sys-head h2{font-size:28px}
+#results .sys-head .en{margin-left:auto;letter-spacing:.06em}
+#results .kv{font-size:16px;gap:12px 28px;margin-bottom:22px}
+#results .kv dd{min-width:0;overflow-wrap:anywhere}
+#results table{font-size:14px;font-variant-numeric:tabular-nums}
+#results th,#results td{padding:12px 8px;border-left:0;border-right:0}
+#results th{background:#e7dece;color:var(--text)}
+#results .subhead{font-size:14px;letter-spacing:.04em;margin-top:26px}
+#results .planet-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+#results .planet-row .pl{border:0;border-bottom:1px solid var(--line);padding:13px 0;font-size:15px}
+#results .planet-row .pl .h{float:none;display:block;font-size:13px;margin-top:4px}
+#results .hd-type{text-align:left;padding:0 0 18px;margin-bottom:8px}
+#results .hd-type .big{font-size:32px;font-weight:500}
+#results .hd-type .sub{letter-spacing:.04em}
+#results .tag{font-size:13px;padding:6px 8px}
+.chart-details{margin:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.chart-details summary{cursor:pointer;padding:15px 0;font:15px/1.8 var(--sans);color:var(--gold)}
+.chart-details>div{overflow-x:auto}
+#ziwei-table th:first-child,#ziwei-table td:first-child,#ziwei-table th:last-child,#ziwei-table td:last-child{white-space:nowrap}
+.chart-details summary:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
+@media(max-width:600px){#results .kv{grid-template-columns:auto minmax(0,1fr);gap:10px 16px;font-size:15px}#results .sys-head h2{font-size:25px}#results .sys-head .en{font-size:10px}#results th,#results td{padding:10px 4px;font-size:13px}#results .bazi-table td.gz{font-size:21px}#results .planet-row{gap:0 16px}.results-nav{gap:8px 20px}.results-intro{padding-top:24px}}
+.sys-block,#b-qianzi{box-shadow:none;border-top:1px solid var(--line);background:transparent;padding:32px 0}
+.sys-head h2{font-weight:500;letter-spacing:0}
+.kv dd,td{font-weight:400}
+.tabbar{background:#e8dfcf!important;border-top:1px solid var(--line)}
+.tabbar a{color:var(--muted)!important}
+.tabbar a.active{color:#814a32!important}
+.preview-notice{font:12px/1.8 var(--sans);color:var(--muted);margin-top:28px;border-top:1px dashed var(--line);padding-top:12px}
+@media(min-width:761px){body{padding-bottom:0!important}.tabbar{position:static!important;background:transparent!important;max-width:816px;margin:0 auto;border-top:1px solid var(--line);box-shadow:none!important}.tabbar .tabs{display:flex;justify-content:flex-end;gap:28px;padding:12px 0}.tabbar .tabs a{flex:none;padding:8px 0;font:15px var(--sans)}.tabbar .g{display:none!important}.tabbar .active{text-decoration:underline;text-underline-offset:8px}}
+@media(max-width:760px){main{padding:16px 20px 36px}.topbar{margin-bottom:22px;gap:8px;padding-bottom:12px}.brandmark{font-size:22px}.topbar .langbar{gap:0}.langbar button{min-height:44px;padding:6px 9px;border:0}.topbar>a{width:100%;font-size:12px}.hero{display:block;padding:0 0 20px}.hero h1{font-size:34px;padding:0}.hero p{font-size:15px;margin-top:8px}.hero .sysline{font-size:13px;margin:6px 0 0}.card{padding:20px 0 0}.grid2{gap:16px}.time-guidance{display:block;margin-top:-4px}.time-guidance .hint{margin-top:0}.sys-block{padding:26px 0}.kv{gap:9px 12px}.preview-notice{margin-top:24px}}
+@media(max-width:420px){.grid2{grid-template-columns:1fr}.field:has(#name),.field:has(#gender){grid-column:auto}.card .grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.field:has(#date),.field:has(#time),.field:has(#city){grid-column:1/-1}}
+</style>
 </head>
 <body>
 <main>
@@ -132,57 +205,63 @@ td{color:var(--text);font-weight:300}
   </div>
 
   <div class="hero">
-    <h1 data-i18n="title">免費排盤</h1>
+    <h1 data-i18n="title">妳的人生羅盤</h1>
     <p data-i18n="hero_sub">輸入出生資料，立即取得你的命盤總覽</p>
     <p class="sysline" data-i18n="hero_sys">八字 · 紫微斗數 · 西洋占星 · 人類圖</p>
   </div>
 
   <div class="card">
     <div class="grid2">
-      <div class="field"><label data-i18n="f_name">姓名 / 暱稱</label><input type="text" id="name"></div>
-      <div class="field"><label data-i18n="f_gender">性別</label><select id="gender"><option value="女" data-i18n="g_female">女</option><option value="男" data-i18n="g_male">男</option></select></div>
-      <div class="field"><label>Email（必填）</label><input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+      <div class="field"><label for="name" data-i18n="f_name">姓名 / 暱稱</label><input type="text" id="name"></div>
+      <div class="field"><label for="gender" data-i18n="f_gender">性別</label><select id="gender"><option value="女" data-i18n="g_female">女</option><option value="男" data-i18n="g_male">男</option></select></div>
+      <div class="field"><label for="lead-email">Email（必填）</label><input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
         <p class="hint">用來保存你的排盤結果與千字精華，不會外流、不濫發信。</p></div>
-      <div class="field"><label data-i18n="f_date">出生日期（西元 國曆）</label><input type="date" id="date" value="1990-05-20" min="1900-01-01" max="2099-12-31"></div>
-      <div class="field"><label data-i18n="f_time">出生時間</label><input type="time" id="time" value="14:30">
-        <label class="chk"><input type="checkbox" id="unknownTime"> <span data-i18n="unknown_label">我不確定出生時間</span></label>
-        <p class="hint" data-i18n="time_hint">勾選後將以中午推算；時辰相關結果僅供參考</p></div>
-      <div class="field"><label data-i18n="f_city">出生地</label><select id="city"></select></div>
-      <div class="field" id="manualWrap" style="display:none"><label data-i18n="manual_label">經度 , 緯度 , 時區</label><input type="text" id="manual" placeholder="121.5,25.0,8"></div>
+      <div class="field"><label for="date" data-i18n="f_date">出生日期（西元 國曆）</label><input type="date" id="date" value="1990-05-20" min="1900-01-01" max="2099-12-31"></div>
+      <div class="field"><label for="time" data-i18n="f_time">出生時間</label><input type="time" id="time" value="14:30" aria-describedby="time-hint"></div>
+      <div class="time-guidance"><label class="chk"><input type="checkbox" id="unknownTime" aria-describedby="time-hint"> <span data-i18n="unknown_label">我不確定出生時間</span></label><p class="hint" id="time-hint" data-i18n="time_hint">勾選後將以中午推算；時辰相關結果僅供參考</p></div>
+      <div class="field"><label for="city" data-i18n="f_city">出生地</label><select id="city"></select></div>
+      <div class="field" id="manualWrap" style="display:none"><label for="manual" data-i18n="manual_label">經度 , 緯度 , 時區</label><input type="text" id="manual" placeholder="121.5,25.0,8"></div>
     </div>
     <button class="runbtn" id="run" data-i18n="run_btn">開始排盤</button>
     <p class="err" id="err"></p>
     <p class="loading" id="loading" data-i18n="loading">星盤推算中…</p>
   </div>
-
   <div id="results">
+    <header class="results-intro"><p>人生羅盤 ／ 四系統總覽</p><h2>這份底圖，怎麼讀？</h2><p>先讀每一區的核心資料，不需要一次弄懂所有術語。想知道細節時，再展開完整資料；這裡呈現的是排盤結果，不是妳的人生定論。</p><ol class="reading-guide"><li>先看日主、命宮主星、日月升與類型／權威。</li><li>遇到不熟悉的名稱，先記下來，不急著貼標籤。</li><li>帶著想了解的問題，再決定是否深入閱讀報告。</li></ol></header>
+    <nav class="results-nav" aria-label="四系統閱讀目錄">
+      <button type="button" onclick="document.getElementById('result-bazi').scrollIntoView({block:'start'})">八字</button>
+      <button type="button" onclick="document.getElementById('result-ziwei').scrollIntoView({block:'start'})">紫微斗數</button>
+      <button type="button" onclick="document.getElementById('result-astro').scrollIntoView({block:'start'})">西洋占星</button>
+      <button type="button" onclick="document.getElementById('result-hd').scrollIntoView({block:'start'})">人類圖</button>
+    </nav>
     <div class="warn" id="timewarn"></div>
 
-    <div class="sys-block">
+    <div class="sys-block" id="result-bazi">
       <div class="sys-head"><span class="num">壹</span><h2 data-i18n="t_bazi">八字命理</h2><span class="en">BAZI</span></div>
       <div id="bazi-main"></div>
     </div>
-    <div class="sys-block">
+    <div class="sys-block" id="result-ziwei">
       <div class="sys-head"><span class="num">貳</span><h2 data-i18n="t_ziwei">紫微斗數</h2><span class="en">ZIWEI</span></div>
       <dl class="kv" id="ziwei-kv" style="margin-bottom:14px"></dl>
-      <div id="ziwei-table"></div>
+      <details class="chart-details"><summary>查看十二宮完整資料</summary><div id="ziwei-table"></div></details>
     </div>
-    <div class="sys-block">
+    <div class="sys-block" id="result-astro">
       <div class="sys-head"><span class="num">參</span><h2 data-i18n="t_astro">西洋占星</h2><span class="en">ASTROLOGY</span></div>
       <dl class="kv" id="astro-kv" style="margin-bottom:14px"></dl>
-      <div class="planet-row" id="astro-planets"></div>
-      <div id="astro-extra"></div>
+      <details class="chart-details"><summary>查看行星、相位與分布</summary><div class="planet-row" id="astro-planets"></div>
+      <div id="astro-extra"></div></details>
     </div>
-    <div class="sys-block">
+    <div class="sys-block" id="result-hd">
       <div class="sys-head"><span class="num">肆</span><h2 data-i18n="t_hd">人類圖</h2><span class="en">HUMAN DESIGN</span></div>
       <div class="hd-type" id="hd-type"></div>
       <dl class="kv" id="hd-kv" style="margin-bottom:14px"></dl>
-      <p class="subhead" data-i18n="hd_gates_h">13 啟動點（個性 / 設計）</p>
+      <details class="chart-details"><summary data-i18n="hd_gates_h">13 啟動點（個性 / 設計）</summary>
       <div id="hd-gates" style="margin-bottom:18px"></div>
-      <p class="subhead" data-i18n="hd_centers_h">九大能量中心</p>
+      </details>
+      <details class="chart-details"><summary>查看能量中心與通道</summary><p class="subhead" data-i18n="hd_centers_h">九大能量中心</p>
       <div class="centers" id="hd-centers"></div>
       <p class="subhead" data-i18n="hd_channels_h">已定義通道</p>
-      <div id="hd-channels"></div>
+      <div id="hd-channels"></div></details>
     </div>
 
     <div class="sys-block" id="b-qianzi">
@@ -248,7 +327,7 @@ const izStar=c=>pick(IZ.star,c),izPal=c=>pick(IZ.palace,c),izCls=c=>pick(IZ.wuxi
 const izMut=c=>{const m={'禄':{tw:'祿',en:'A·Wealth'},'权':{tw:'權',en:'B·Power'},'科':{tw:'科',en:'C·Status'},'忌':{tw:'忌',en:'D·Obstacle'}};return pick(m,c)};
 
 const DICT={
- tw:{brand:'浮生矩陣',back:'← 回首頁',title:'免費排盤',hero_sub:'輸入出生資料，立即取得你的命盤總覽',hero_sys:'八字 · 紫微斗數 · 西洋占星 · 人類圖',f_name:'姓名 / 暱稱',f_gender:'性別',g_female:'女',g_male:'男',f_date:'出生日期（西元 國曆）',f_time:'出生時間',unknown_label:'我不確定出生時間',time_hint:'勾選後將以中午推算；時辰相關結果僅供參考',f_city:'出生地',manual_label:'經度 , 緯度 , 時區',run_btn:'開始排盤',loading:'星盤推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗數',t_astro:'西洋占星',t_hd:'人類圖',hd_gates_h:'13 啟動點（個性 / 設計）',hd_centers_h:'九大能量中心',hd_channels_h:'已定義通道',cta_h:'這只是你的命盤總覽',cta_p:'完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。',cta_btn:'預約完整講解 →',disc:'本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。',
+ tw:{brand:'浮生矩陣',back:'← 回首頁',title:'妳的人生羅盤',hero_sub:'輸入出生資料，免費看四盤總覽',hero_sys:'八字 · 紫微斗數 · 西洋占星 · 人類圖',f_name:'姓名 / 暱稱',f_gender:'性別',g_female:'女',g_male:'男',f_date:'出生日期（西元 國曆）',f_time:'出生時間',unknown_label:'我不確定出生時間',time_hint:'勾選後將以中午推算；時辰相關結果僅供參考',f_city:'出生地',manual_label:'經度 , 緯度 , 時區',run_btn:'開始排盤',loading:'星盤推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗數',t_astro:'西洋占星',t_hd:'人類圖',hd_gates_h:'13 啟動點（個性 / 設計）',hd_centers_h:'九大能量中心',hd_channels_h:'已定義通道',cta_h:'這只是你的命盤總覽',cta_p:'完整的浮生矩陣報告約一萬字，採預約制，由我一對一為你深入講解。',cta_btn:'預約完整講解 →',disc:'本頁由開源天文／曆法引擎於你的瀏覽器即時計算，資料不經伺服器。命理內容僅供自我探索參考。',
    warn:'⚠ 你未提供確切出生時間，本盤以中午 12:00 推算。八字時柱、紫微命宮、上升星座與人類圖類型都會隨時辰改變，以下時辰相關內容僅供參考。',
    lunar:'農曆',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'時柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'納音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大運',start_luck:'起運',age:'歲',taiyuan:'胎元',minggong:'命宮',shengong:'身宮',xunkong:'旬空',
    soulstar:'命宮主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宮',daxian:'大限',p12:'十二宮',mainstar:'主星',minorstar:'輔星',empty:'（空宮）',
@@ -256,7 +335,7 @@ const DICT={
    authority:'內在權威',profile:'人生角色',definition:'定義',cross:'輪迴交叉',strategy:'策略',notself:'非自己主題',signature:'人生印記',planet:'行星',personality:'個性',design:'設計',center:'中心',defined:'已定義',open:'開放',nochannel:'無完整通道（反映者特質）',
    cav_bazi:'時柱需要出生時辰，目前未計入',cav_ziwei:'紫微命宮會隨時辰整盤位移，此為中午暫定盤',cav_astro:'上升、天頂與月亮高度依賴時間，請以太陽星座為主',cav_hd:'人類圖類型與角色可能因時辰改變，此為中午推算',
    need_date:'請填寫出生日期',need_time:'請填寫出生時間，或勾選「我不確定出生時間」',need_manual:'手動格式：經度,緯度,時區，例 121.5,25.0,8',err_calc:'計算發生錯誤：'},
- cn:{brand:'浮生矩阵',back:'← 回首页',title:'免费排盘',hero_sub:'输入出生资料，立即取得你的命盘总览',hero_sys:'八字 · 紫微斗数 · 西洋占星 · 人类图',f_name:'姓名 / 昵称',f_gender:'性别',g_female:'女',g_male:'男',f_date:'出生日期（公历）',f_time:'出生时间',unknown_label:'我不确定出生时间',time_hint:'勾选后将以中午推算；时辰相关结果仅供参考',f_city:'出生地',manual_label:'经度 , 纬度 , 时区',run_btn:'开始排盘',loading:'星盘推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗数',t_astro:'西洋占星',t_hd:'人类图',hd_gates_h:'13 启动点（个性 / 设计）',hd_centers_h:'九大能量中心',hd_channels_h:'已定义通道',cta_h:'这只是你的命盘总览',cta_p:'完整的浮生矩阵报告约一万字，采预约制，由我一对一为你深入讲解。',cta_btn:'预约完整讲解 →',disc:'本页由开源天文／历法引擎于你的浏览器即时计算，资料不经服务器。命理内容仅供自我探索参考。',
+ cn:{brand:'浮生矩阵',back:'← 回首页',title:'你的人生罗盘',hero_sub:'输入出生资料，免费看四盘总览',hero_sys:'八字 · 紫微斗数 · 西洋占星 · 人类图',f_name:'姓名 / 昵称',f_gender:'性别',g_female:'女',g_male:'男',f_date:'出生日期（公历）',f_time:'出生时间',unknown_label:'我不确定出生时间',time_hint:'勾选后将以中午推算；时辰相关结果仅供参考',f_city:'出生地',manual_label:'经度 , 纬度 , 时区',run_btn:'开始排盘',loading:'星盘推算中…',t_bazi:'八字命理',t_ziwei:'紫微斗数',t_astro:'西洋占星',t_hd:'人类图',hd_gates_h:'13 启动点（个性 / 设计）',hd_centers_h:'九大能量中心',hd_channels_h:'已定义通道',cta_h:'这只是你的命盘总览',cta_p:'完整的浮生矩阵报告约一万字，采预约制，由我一对一为你深入讲解。',cta_btn:'预约完整讲解 →',disc:'本页由开源天文／历法引擎于你的浏览器即时计算，资料不经服务器。命理内容仅供自我探索参考。',
    warn:'⚠ 你未提供确切出生时间，本盘以中午 12:00 推算。八字时柱、紫微命宫、上升星座与人类图类型都会随时辰改变，以下时辰相关内容仅供参考。',
    lunar:'农历',daymaster:'日主',zodiac:'生肖',pillar_y:'年柱',pillar_m:'月柱',pillar_d:'日柱',pillar_h:'时柱',r_god:'十神',r_stem:'天干',r_branch:'地支',r_hide:'藏干',r_nayin:'纳音',undetermined:'待定',wuxing_h:'五行分布',luck_h:'大运',start_luck:'起运',age:'岁',taiyuan:'胎元',minggong:'命宫',shengong:'身宫',xunkong:'旬空',
    soulstar:'命宫主星',soulbody:'命主 / 身主',wuxingju:'五行局',sihua:'生年四化',bodypal:'身宫',daxian:'大限',p12:'十二宫',mainstar:'主星',minorstar:'辅星',empty:'（空宫）',
@@ -264,7 +343,7 @@ const DICT={
    authority:'内在权威',profile:'人生角色',definition:'定义',cross:'轮回交叉',strategy:'策略',notself:'非自己主题',signature:'人生印记',planet:'行星',personality:'个性',design:'设计',center:'中心',defined:'已定义',open:'开放',nochannel:'无完整通道（反映者特质）',
    cav_bazi:'时柱需要出生时辰，目前未计入',cav_ziwei:'紫微命宫会随时辰整盘位移，此为中午暂定盘',cav_astro:'上升、天顶与月亮高度依赖时间，请以太阳星座为主',cav_hd:'人类图类型与角色可能因时辰改变，此为中午推算',
    need_date:'请填写出生日期',need_time:'请填写出生时间，或勾选「我不确定出生时间」',need_manual:'手动格式：经度,纬度,时区，例 121.5,25.0,8',err_calc:'计算发生错误：'},
- en:{brand:'Fusheng Matrix',back:'← Home',title:'Free Chart',hero_sub:'Enter your birth data for an instant four-system overview',hero_sys:'BaZi · Zi Wei · Astrology · Human Design',f_name:'Name',f_gender:'Gender',g_female:'Female',g_male:'Male',f_date:'Birth date (Gregorian)',f_time:'Birth time',unknown_label:'I am not sure of my birth time',time_hint:'If checked, noon is used; time-sensitive results are indicative only',f_city:'Birthplace',manual_label:'Longitude , Latitude , Timezone',run_btn:'Generate Chart',loading:'Calculating…',t_bazi:'BaZi (Four Pillars)',t_ziwei:'Zi Wei Dou Shu',t_astro:'Western Astrology',t_hd:'Human Design',hd_gates_h:'13 Activations (Personality / Design)',hd_centers_h:'Nine Centers',hd_channels_h:'Defined Channels',cta_h:'This is only your chart overview',cta_p:'The full Fusheng Matrix report is ~10,000 words, by appointment, walked through one-on-one.',cta_btn:'Book the full reading →',disc:'Calculated live in your browser by open-source astronomy/calendar engines; no data leaves your device. For self-exploration only.',
+ en:{brand:'Fusheng Matrix',back:'← Home',title:'Your Life Compass',hero_sub:'Enter your birth data for a free four-system overview',hero_sys:'BaZi · Zi Wei · Astrology · Human Design',f_name:'Name',f_gender:'Gender',g_female:'Female',g_male:'Male',f_date:'Birth date (Gregorian)',f_time:'Birth time',unknown_label:'I am not sure of my birth time',time_hint:'If checked, noon is used; time-sensitive results are indicative only',f_city:'Birthplace',manual_label:'Longitude , Latitude , Timezone',run_btn:'Generate Chart',loading:'Calculating…',t_bazi:'BaZi (Four Pillars)',t_ziwei:'Zi Wei Dou Shu',t_astro:'Western Astrology',t_hd:'Human Design',hd_gates_h:'13 Activations (Personality / Design)',hd_centers_h:'Nine Centers',hd_channels_h:'Defined Channels',cta_h:'This is only your chart overview',cta_p:'The full Fusheng Matrix report is ~10,000 words, by appointment, walked through one-on-one.',cta_btn:'Book the full reading →',disc:'Calculated live in your browser by open-source astronomy/calendar engines; no data leaves your device. For self-exploration only.',
    warn:'⚠ No exact birth time given; noon 12:00 is assumed. The BaZi hour pillar, Zi Wei life palace, Ascendant and Human Design type all shift with time — treat time-sensitive items below as indicative.',
    lunar:'Lunar',daymaster:'Day Master',zodiac:'Zodiac',pillar_y:'Year',pillar_m:'Month',pillar_d:'Day',pillar_h:'Hour',r_god:'Ten God',r_stem:'Stem',r_branch:'Branch',r_hide:'Hidden',r_nayin:'NaYin',undetermined:'TBD',wuxing_h:'Five-Element Balance',luck_h:'Luck Pillars',start_luck:'Start',age:'y',taiyuan:'Conception',minggong:'Life Palace',shengong:'Body Palace',xunkong:'Void',
    soulstar:'Life Palace Stars',soulbody:'Life / Body Master',wuxingju:'Element Class',sihua:'Birth-year Transformations',bodypal:'Body Palace',daxian:'Decade',p12:'12 Palaces',mainstar:'Major Stars',minorstar:'Minor Stars',empty:'(empty)',
@@ -358,7 +437,7 @@ document.getElementById('run').addEventListener('click',()=>{
     const name=document.getElementById('name').value.trim();
     const gender=document.getElementById('gender').value;
     const leadEmail=document.getElementById('lead-email').value.trim();
-    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(leadEmail))throw new Error('請輸入有效的 Email，才能開始排盤');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail))throw new Error('請輸入有效的 Email，才能開始排盤');
     try{localStorage.setItem('fs_lead_email',leadEmail)}catch(_){}
     const dv=document.getElementById('date').value,tv=document.getElementById('time').value;
     const unknown=document.getElementById('unknownTime').checked;
@@ -436,10 +515,10 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   const dmStr=LANG==='en'?`${STEM_EN[dg]} (${dg})`:`${dg}（${elName(dmEl)}）`;
   document.getElementById('bazi-main').innerHTML=
     `<dl class="kv" style="margin-bottom:14px"><dt>${T('daymaster')}</dt><dd>${dmStr}</dd><dt>${T('lunar')}</dt><dd>${zh(lunarObj.toString())}</dd><dt>${T('zodiac')}</dt><dd>${zodiacName(lunarObj.getYearShengXiao())}</dd></dl>`+
-    `<table class="bazi-table">${hr}</table>`+cav(T('cav_bazi'))+
+    `<details class="chart-details"><summary>${LANG==='en'?'View pillars, elements and cycles':LANG==='cn'?'查看四柱、五行与大运':'查看四柱、五行與大運'}</summary><div><table class="bazi-table">${hr}</table>`+cav(T('cav_bazi'))+
     `<p class="subhead">${T('wuxing_h')}</p>${bal}`+
     `<p class="subhead">${T('luck_h')}（${T('start_luck')} ${yun.getStartYear()}${T('age')}）</p><div>${luckRows}</div>`+
-    `<dl class="kv" style="margin-top:14px"><dt>${T('taiyuan')}</dt><dd>${ec.getTaiYuan()}</dd><dt>${T('minggong')}</dt><dd>${ec.getMingGong()}</dd><dt>${T('shengong')}</dt><dd>${ec.getShenGong()}</dd><dt>${T('xunkong')}</dt><dd>${ec.getDayXunKong()}</dd></dl>`;
+    `<dl class="kv" style="margin-top:14px"><dt>${T('taiyuan')}</dt><dd>${ec.getTaiYuan()}</dd><dt>${T('minggong')}</dt><dd>${ec.getMingGong()}</dd><dt>${T('shengong')}</dt><dd>${ec.getShenGong()}</dd><dt>${T('xunkong')}</dt><dd>${ec.getDayXunKong()}</dd></dl></div></details>`;
 
   /* ---------- 紫微 ---------- */
   const ti=(h===23)?12:Math.floor((h+1)/2);

@@ -9,7 +9,11 @@
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="members.css">
 <style>
-:root{--bg:#1d1a16;--bg2:#26211b;--bg3:#2c261f;--text:#e9e0d2;--muted:#b4a997;--gold:#c0a078;--gold-bright:#d8bb94;--line:#514638}
+:root{--bg:#f4efe5;--bg2:#faf6ec;--bg3:#ffffff;--text:#2c251c;--muted:#807664;--gold:#9c7043;--gold-bright:#7a5630;--line:#ddd4c2;--crimson-bright:#a8412f}
+body{background:var(--bg);color:var(--text)}
+.topbar .brand{color:var(--text)}
+.wrap .sub{color:var(--muted)}
+h1{font-weight:600}
 body::before{display:none}
 .wrap{max-width:860px;padding-bottom:140px}
 h1{background:none;color:var(--text);letter-spacing:.04em}
@@ -22,10 +26,40 @@ h1{background:none;color:var(--text);letter-spacing:.04em}
 .report-body ul,.report-body ol{padding-left:1.5em;margin:0 0 1.3em}
 .report-body li{margin-bottom:.5em}
 .report-body strong,.excerpt-body strong{font-weight:600;color:var(--text)}
+.report-body,.excerpt-body,.report-body p,.report-body li{color:var(--text)}
 .case-index{position:static;background:var(--bg2);border-radius:0}
 .case-name{margin-top:32px}.vhead{font-size:24px}.vhead span{font-size:14px}
 @media(max-width:600px){.wrap{padding-inline:20px}.report-body,.excerpt-body{font-size:17px}.case-name span{display:block;margin-left:0}.vcol{padding-top:24px}}
 @media print{.topbar,.case-index{display:none}body{background:white;color:black}.report-body,.excerpt-body{color:black}.wrap{max-width:none;padding:0}}
+
+/* ---- 閱讀介面：版本分頁 + 章節目錄（接手自 report-preview） ---- */
+.vtabs{display:flex;gap:10px;margin:26px 0 6px;flex-wrap:wrap}
+.vtabs button{font-family:var(--sans);text-align:left;cursor:pointer;background:var(--bg2);border:1px solid var(--line);color:var(--muted);padding:12px 18px;min-width:150px;transition:all .15s}
+.vtabs button span{display:block;font-size:12px;letter-spacing:.04em;margin-top:4px}
+.vtabs button.on{background:var(--text);border-color:var(--text);color:var(--bg2)}
+.vtabs button.on span{color:var(--bg)}
+.vtabs button:not(.on):hover{border-color:var(--gold);color:var(--gold-bright)}
+.parallel .vcol{display:none}
+.parallel .vcol.show{display:block}
+.reading-grid{display:grid;grid-template-columns:190px minmax(0,1fr);gap:36px;align-items:start}
+.toc{position:sticky;top:24px;font-family:var(--sans);font-size:13px;border-left:2px solid var(--line);padding-left:14px}
+.toc p{letter-spacing:.14em;color:var(--muted);font-size:11.5px;margin-bottom:10px}
+.toc a{display:block;color:var(--muted);text-decoration:none;padding:4px 0;line-height:1.6}
+.toc a:hover,.toc a.now{color:var(--gold-bright)}
+@media(max-width:760px){.reading-grid{display:block}.toc{position:static;border-left:0;padding:14px 16px;background:var(--bg2);margin-bottom:18px}}
+.report-body h3,.excerpt-body h3{color:var(--gold-bright);scroll-margin-top:20px}
+.vhead,.vhead span,.case-name,.case-name span{color:var(--text)}
+.case-name span{color:var(--muted)}
+.vsub{color:var(--muted)}
+.locked{border:1px dashed var(--line);padding:34px;text-align:center;color:var(--muted);font-family:var(--sans)}
+.card{background:var(--bg2);border:1px solid var(--line)}
+hr{border:0;border-top:1px solid var(--line)}
+
+/* 底部導覽配合暖紙色＋確保蓋住內文 */
+.tabbar{z-index:100;background:rgba(244,239,229,.97);border-top:1px solid var(--line)}
+.tabbar a{color:var(--muted)}
+.tabbar a:hover{color:var(--text)}
+.tabbar a.active{color:var(--crimson-bright)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -111,6 +145,33 @@ async function orderBanner(userId){
   return {html:'', generating:false};
 }
 
+
+/* 閱讀介面：版本分頁切換＋自動章節目錄（網址 hash 記住版本） */
+function initReading(root){
+  root.querySelectorAll('.case-block').forEach((blk,bi)=>{
+    const tabs=[...blk.querySelectorAll('.vtabs button')];
+    const cols=[...blk.querySelectorAll('.parallel > .vcol')];
+    if(!tabs.length) return;
+    // 章節目錄
+    cols.forEach(colEl=>{
+      const body=colEl.querySelector('.report-body'); const toc=colEl.querySelector('[data-toc]');
+      if(!body||!toc) return;
+      const hs=[...body.querySelectorAll('h3')];
+      if(hs.length<2) return;
+      hs.forEach((h,n)=>{ h.id=`c${bi}-${colEl.dataset.v}-h${n}`;
+        const a=document.createElement('a'); a.href='#'+h.id; a.textContent=h.textContent; toc.appendChild(a); });
+      toc.hidden=false;
+    });
+    const show=v=>{
+      cols.forEach(c=>c.classList.toggle('show',c.dataset.v===v));
+      tabs.forEach(t=>{const on=t.dataset.v===v;t.classList.toggle('on',on);t.setAttribute('aria-selected',on)});
+      try{history.replaceState(null,'','#case-'+bi+'-'+v)}catch(_){}
+    };
+    tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.v)));
+    const m=location.hash.match(new RegExp('^#case-'+bi+'-(\\w+)'));
+    show(m&&cols.some(c=>c.dataset.v===m[1])?m[1]:cols[0].dataset.v);
+  });
+}
 (async ()=>{
   const {data:{session}} = await sb.auth.getSession();
   if(!session){ location.href='login.html'; return; }
@@ -149,14 +210,16 @@ async function orderBanner(userId){
   const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本',sync:'你們怎麼吸引彼此',clash:'你們怎麼互相消耗'};
   const col=(g,ver)=>{
     const r=g.v[ver];
-    if(!r) return `<div class="vcol"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
+    if(!r) return `<div class="vcol" data-v="${ver}"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
     const full = r.full_content
       ? `<div class="report-body">${renderReport(r.full_content)}</div>`
       : `<div class="locked"><div class="lock-ic">🔒</div><p>完整萬字報告尚未解鎖</p><p class="muted">付費解鎖後即可查看</p></div>`;
-    return `<div class="vcol">
+    return `<div class="vcol" data-v="${ver}">
+      <div class="reading-grid"><nav class="toc" data-toc hidden><p>本篇目錄</p></nav><div class="vmain">
       <div class="vhead ${ver}">${VL[ver]}<span>${VS[ver]}</span></div>
       ${r.excerpt?`<p class="vsub">千字精華</p><div class="excerpt-body">${renderReport(r.excerpt)}</div>`:''}
       <hr><p class="vsub">完整報告</p>${full}
+      </div></div>
     </div>`;
   };
   const groups=Object.values(byCase);
@@ -168,9 +231,11 @@ async function orderBanner(userId){
     const pair = (g.v.sync||g.v.clash) ? ['sync','clash'] : ['script','breakthrough'];
     return `<div class="case-block" id="case-${i}">
       <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>
+      <div class="vtabs" role="tablist">${pair.map(v=>`<button role="tab" data-v="${v}">${VL[v]}<span>${VS[v]}</span></button>`).join('')}</div>
       <div class="parallel">${col(g,pair[0])}${col(g,pair[1])}</div>
     </div>`;
   }).join('');
+  initReading(box);
 })();
 </script>
 
