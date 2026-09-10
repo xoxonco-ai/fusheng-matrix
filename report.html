@@ -8,7 +8,25 @@
 <link rel="stylesheet" href="ink.css">
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="members.css">
-<style>.wrap{max-width:1180px}</style>
+<style>
+:root{--bg:#1d1a16;--bg2:#26211b;--bg3:#2c261f;--text:#e9e0d2;--muted:#b4a997;--gold:#c0a078;--gold-bright:#d8bb94;--line:#514638}
+body::before{display:none}
+.wrap{max-width:860px;padding-bottom:140px}
+h1{background:none;color:var(--text);letter-spacing:.04em}
+.parallel{display:block}
+.vcol,.vcol:has(.vhead.breakthrough),.vcol:has(.vhead.clash){background:none;border:0;border-radius:0;padding:32px 0 48px;box-shadow:none}
+.vcol+.vcol{border-top:1px solid var(--line)}
+.report-body,.excerpt-body{white-space:normal;font-size:18px;font-weight:400;line-height:1.95;overflow-wrap:anywhere;max-width:38em;margin-inline:auto}
+.report-body p,.excerpt-body p{margin:0 0 1.3em}
+.report-body h3,.excerpt-body h3{font-family:var(--serif);font-size:1.3em;line-height:1.5;margin:2.4em 0 1em;color:var(--gold-bright)}
+.report-body ul,.report-body ol{padding-left:1.5em;margin:0 0 1.3em}
+.report-body li{margin-bottom:.5em}
+.report-body strong,.excerpt-body strong{font-weight:600;color:var(--text)}
+.case-index{position:static;background:var(--bg2);border-radius:0}
+.case-name{margin-top:32px}.vhead{font-size:24px}.vhead span{font-size:14px}
+@media(max-width:600px){.wrap{padding-inline:20px}.report-body,.excerpt-body{font-size:17px}.case-name span{display:block;margin-left:0}.vcol{padding-top:24px}}
+@media print{.topbar,.case-index{display:none}body{background:white;color:black}.report-body,.excerpt-body{color:black}.wrap{max-width:none;padding:0}}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 </head>
@@ -32,6 +50,24 @@ const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
 const $=id=>document.getElementById(id);
 const VLABEL={script:'劇本版 · 看見人生主線', breakthrough:'破局版 · 找出困住你的劇本'};
 const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+// Deliberately small Markdown subset: escape all HTML before rendering.
+// No executable HTML, embedded media, or generated links are accepted.
+function renderReport(text){
+  const inline=s=>esc(s).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  const lines=String(text||'').replace(/\r\n?/g,'\n').split('\n');
+  let html='', paragraph=[], list='';
+  const flush=()=>{if(paragraph.length){html+='<p>'+inline(paragraph.join('\n')).replace(/\n/g,'<br>')+'</p>';paragraph=[];}if(list){html+='</'+list+'>';list='';}};
+  for(const line of lines){
+    const heading=line.match(/^#{1,6}\s+(.+)$/);
+    const item=line.match(/^\s*(?:([-*])|\d+[.)])\s+(.+)$/);
+    if(!line.trim()){flush();continue;}
+    if(heading){flush();html+='<h3>'+inline(heading[1])+'</h3>';continue;}
+    if(item){const type=item[1]?'ul':'ol';if(paragraph.length||list&&list!==type)flush();if(!list){list=type;html+='<'+type+'>';}html+='<li>'+inline(item[2])+'</li>';continue;}
+    if(list)flush();paragraph.push(line);
+  }
+  flush();return html;
+}
 
 $('signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.href='login.html'; });
 
@@ -115,11 +151,11 @@ async function orderBanner(userId){
     const r=g.v[ver];
     if(!r) return `<div class="vcol"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
     const full = r.full_content
-      ? `<div class="report-body">${esc(r.full_content)}</div>`
+      ? `<div class="report-body">${renderReport(r.full_content)}</div>`
       : `<div class="locked"><div class="lock-ic">🔒</div><p>完整萬字報告尚未解鎖</p><p class="muted">付費解鎖後即可查看</p></div>`;
     return `<div class="vcol">
       <div class="vhead ${ver}">${VL[ver]}<span>${VS[ver]}</span></div>
-      ${r.excerpt?`<p class="vsub">千字精華</p><div class="excerpt-body">${esc(r.excerpt)}</div>`:''}
+      ${r.excerpt?`<p class="vsub">千字精華</p><div class="excerpt-body">${renderReport(r.excerpt)}</div>`:''}
       <hr><p class="vsub">完整報告</p>${full}
     </div>`;
   };

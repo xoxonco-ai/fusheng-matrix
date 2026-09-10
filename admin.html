@@ -211,7 +211,7 @@ function genErrText(status, err){
 
 async function genAI(caseId,version){
   const c=CASES.find(x=>x.id===caseId);
-  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 生成中…（後台精簡版約 1,800 字，單次生成約 1～2 分鐘，請勿重複按、勿關閉）';
+  const m=$('rmsg-'+caseId); m.className='msg ok'; m.textContent='⏳ AI 分段生成中…（全部完成前保留原報告，請勿重複按、勿關閉）';
   const btn=$('ai-'+caseId); if(btn)btn.disabled=true;
   try{
     // 合盤個案：組合兩人命盤摘要＋關係階段；單人個案：原邏輯
@@ -229,11 +229,21 @@ async function genAI(caseId,version){
     }
     const intensity=($('intensity-'+caseId)||{}).value||'犀利';
     const {data:{session}}=await sb.auth.getSession();
-    const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||''})});
-    const data=await resp.json();
-    if(!resp.ok||data.error){ m.className='msg err'; m.textContent='AI 生成失敗：'+genErrText(resp.status,data.error); return; }
-    if($('ex-'+caseId))$('ex-'+caseId).value=data.excerpt||'';
-    if($('fc-'+caseId))$('fc-'+caseId).value=data.full||'';
+    let full='', excerpt='';
+    let totalParts=(version==='script'||version==='breakthrough')?4:3;
+    for(let part=0;part<totalParts;part++){
+      m.textContent='正在撰寫第 '+(part+1)+'／'+totalParts+' 段；全部完成前不會替換原報告。';
+      const resp=await fetch(EDGE_URL,{method:'POST',headers:{'content-type':'application/json','authorization':'Bearer '+(session?session.access_token:window.SB_KEY),'apikey':window.SB_KEY},body:JSON.stringify({summary,name:c.name,version,intensity,relation,evidence:(c.chart&&c.chart.evidence)||'',part,previous:full})});
+      const data=await resp.json().catch(()=>({}));
+      if(!resp.ok||data.error)throw new Error(genErrText(resp.status,data.error));
+      if(data.complete!==true||data.part!==part||!data.full||data.totalParts!==totalParts) throw new Error('該段未完整完成或版本不一致，原報告保留');
+      if(part===0)excerpt=data.excerpt||'';
+      full+=(full?'\n\n':'')+data.full;
+    }
+    if($('ex-'+caseId))$('ex-'+caseId).value=excerpt;
+    if($('fc-'+caseId))$('fc-'+caseId).value=full;
+    if($('pb-'+caseId))$('pb-'+caseId).checked=false;
+    if($('fu-'+caseId))$('fu-'+caseId).checked=false;
     m.className='msg ok'; m.textContent='✓ AI 已生成，請檢查內容後勾選發布／解鎖並儲存。';
   }catch(e){ m.className='msg err'; m.textContent='AI 生成發生錯誤：'+e.message; }
   finally{ if(btn)btn.disabled=false; }
@@ -340,6 +350,13 @@ window.updateCase=async function(caseId){
 
 window.saveReport=async function(caseId,version,reportId){
   const payload={case_id:caseId,version,excerpt:$('ex-'+caseId).value,full_content:$('fc-'+caseId).value,published:$('pb-'+caseId).checked,full_unlocked:$('fu-'+caseId).checked};
+  if(payload.published||payload.full_unlocked){
+    const headings=[...payload.full_content.matchAll(/^#{1,6}\s+(.+)$/gm)].map(x=>x[1].replace(/\*\*/g,'').trim());
+    const required=['〇','一','二','三','四','五','六','七','八','九'].slice(0,version==='script'?10:version==='breakthrough'?9:8);
+    if(required.some(n=>!headings.some(h=>h.startsWith(n+'、')))||!headings.includes('附錄、矩陣證據')){
+      const m=$('rmsg-'+caseId);m.className='msg err';m.textContent='章節不完整，不能發布或解鎖。請先取消兩個勾選以存草稿，再補齊各章與矩陣證據附錄。';return;
+    }
+  }
   let res;
   if(reportId){ res=await sb.from('reports').update(payload).eq('id',reportId); }
   else { res=await sb.from('reports').insert(payload); }

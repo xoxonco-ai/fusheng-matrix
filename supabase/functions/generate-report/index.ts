@@ -25,9 +25,6 @@ const json = (o: unknown, status = 200) =>
   new Response(JSON.stringify(o), { status, headers: { ...CORS, "content-type": "application/json" } });
 
 const MODEL = "claude-sonnet-4-6";
-// 後台單次生成的輸出上限。見模式 B 的註解：這個值是為了避開 Edge Function
-// 的資源上限（HTTP 546），不是為了省錢。調高之前請先改成接力式。
-const ADMIN_MAX_TOKENS = 4000;
 
 /* ============================================================
    語氣與規則（v4：浮生矩陣核心生命閱讀引擎）
@@ -255,7 +252,7 @@ const PLANS: Record<string, Plan> = {
       "如果你想把這份看見用回自己現在卡住的地方，歡迎私訊 Instagram 或 Facebook「@floating_matrix 浮生矩陣」，預約一對一的「浮生導航」",
       EVIDENCE_APPENDIX,
     ],
-    splits: [[0, 2], [3, 6], [7, 10]],
+    splits: [[0, 2], [3, 5], [6, 8], [9, 10]],
   },
   breakthrough: {
     label: "破局版",
@@ -276,7 +273,7 @@ const PLANS: Record<string, Plan> = {
       "如果你想有人陪你把這些矛盾拆進現在的處境裡，歡迎私訊 Instagram 或 Facebook「@floating_matrix 浮生矩陣」，預約一對一的「浮生導航」",
       EVIDENCE_APPENDIX,
     ],
-    splits: [[0, 2], [3, 5], [6, 9]],
+    splits: [[0, 2], [3, 5], [6, 7], [8, 9]],
   },
   sync: {
     label: "合盤・同頻版",
@@ -323,16 +320,28 @@ const PLANS: Record<string, Plan> = {
 /* ============================================================
    生成核心
 ============================================================ */
-async function callClaude(apiKey: string, system: string, prompt: string, maxTokens = 9000): Promise<string> {
+async function callClaude(apiKey: string, system: string, prompt: string, maxTokens = 12000): Promise<string> {
+  const messages = [{ role: "user", content: prompt }];
+  let result = "";
+  // Bounded continuation: an HTTP 200 is not proof of a completed response.
+  for (let attempt = 0; attempt < 3; attempt++) {
   const resp = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: prompt }] }),
+    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages }),
+    signal: AbortSignal.timeout(120000),
   });
   const data = await resp.json();
   if (!resp.ok) throw new Error(data?.error?.message || "AI 服務回應錯誤");
-  const text = (data?.content?.[0]?.text ?? "").trim();
-  return text.replace(/^```[a-zA-Z]*\n?/, "").replace(/\n?```$/, "").trim();
+  const text = (data.content || []).filter((b: { type: string }) => b.type === "text")
+    .map((b: { text: string }) => b.text).join("");
+  if (!text.trim()) throw new Error("模型回覆為空，未儲存報告");
+  result += text;
+  if (data.stop_reason === "end_turn") return result.replace(/^```[a-zA-Z]*\n?/, "").replace(/\n?```$/, "").trim();
+  if (data.stop_reason !== "max_tokens") throw new Error(`模型未正常完成：${data.stop_reason || "unknown"}`);
+  messages.push({ role: "assistant", content: text }, { role: "user", content: "上一則因輸出上限中斷。請從最後一個字無縫續寫，不重複前文、不另加開場或說明，完成原指定章節與結束標記。" });
+  }
+  throw new Error("續寫仍未完成，已停止，未發布報告");
 }
 
 function evidenceBlock(evidence: string, isCouple = false): string {
@@ -360,6 +369,12 @@ function systemOf(args: GenArgs, isCouple: boolean) {
 const chapterList = (plan: Plan, s: [number, number]) =>
   plan.chapters.slice(s[0], s[1] + 1).map((c) => "・" + c).join("\n");
 
+function validateChapters(text: string, chapters: string[]) {
+  const headings = [...text.matchAll(/^#{1,6}\s+(.+)$/gm)].map((m) => m[1].replace(/\*\*/g, "").trim());
+  const missing = chapters.map((c) => c.split("——")[0]).filter((title) => !headings.includes(title));
+  if (missing.length) throw new Error(`缺少指定章節：${missing.join("、")}；未發布`);
+}
+
 // 生成單一段（part 0/1/2）。part 0 同時產出千字精華。
 async function generatePart(apiKey: string, args: GenArgs, part: number, prevText: string): Promise<{ excerpt: string; text: string }> {
   const { plan, isCouple } = planOf(args.version);
@@ -370,7 +385,7 @@ async function generatePart(apiKey: string, args: GenArgs, part: number, prevTex
 
   if (part === 0) {
     prompt +=
-      `【任務】撰寫「${plan.label}」報告（完整版約一萬字，分三次寫，這是第一次）。\n${plan.goal}\n\n` +
+      `【任務】撰寫「${plan.label}」報告（完整版約一萬字，分 ${plan.splits.length} 次寫，這是第一次）。\n${plan.goal}\n\n` +
       `這一次只寫以下章節（每章約 1000~1300 字，用 markdown 小標題；章節說明中另有字數指示者，以該指示為準）：\n${chapterList(plan, plan.splits[0])}\n\n` +
       `請嚴格依下列格式輸出（不要 JSON、不要程式碼圍欄、不要多餘說明）：\n\n` +
       `===千字精華===\n（約 500~700 字：開場一句最準的總綱＋四套系統各一小段＋一段綜合。` +
@@ -379,7 +394,7 @@ async function generatePart(apiKey: string, args: GenArgs, part: number, prevTex
   } else {
     const tail = prevText.length > 3000 ? prevText.slice(-3000) : prevText;
     prompt +=
-      `【任務】你正在撰寫「${plan.label}」報告（約一萬字，分三次寫，這是第 ${part + 1} 次）。\n` +
+      `【任務】你正在撰寫「${plan.label}」報告（約一萬字，分 ${plan.splits.length} 次寫，這是第 ${part + 1} 次）。\n` +
       `以下是前文的結尾（供銜接語氣與避免重複，不要重寫這些內容）：\n…${tail}\n\n` +
       `請無縫接著寫以下章節（每章約 1000~1300 字，markdown 小標題；章節說明中另有字數指示者以該指示為準；開頭不要再放總標題或開場白）：\n${chapterList(plan, plan.splits[part])}\n` +
       (isLast
@@ -387,7 +402,11 @@ async function generatePart(apiKey: string, args: GenArgs, part: number, prevTex
         : `\n寫完指定章節就停，不要提前寫後面的章節。`);
   }
 
-  const text = await callClaude(apiKey, system, prompt);
+  const marker = `===PART_${part}_COMPLETE===`;
+  prompt += `\n章節標題必須使用 ## 加上上述「——」前的完整原標題（包含編號），不得改名或合併。所有指定章節完整收尾後，最後獨立一行輸出 ${marker}；未寫完不得輸出此標記。`;
+  const response = await callClaude(apiKey, system, prompt);
+  if (!response.endsWith(marker)) throw new Error(`第 ${part + 1} 段缺少完成標記，未儲存`);
+  const text = response.slice(0, -marker.length).trim();
   let excerpt = "";
   let body = text;
   if (part === 0) {
@@ -398,10 +417,10 @@ async function generatePart(apiKey: string, args: GenArgs, part: number, prevTex
       const iE = text.indexOf(TAG_E);
       excerpt = text.slice(iE >= 0 ? iE + TAG_E.length : 0, iF).trim();
       body = text.slice(iF + TAG_F.length).trim();
-    } else {
-      body = text.replace(TAG_E, "").trim();
-    }
+    } else throw new Error("缺少摘要／正文分隔標記，未儲存");
   }
+  if (!body.trim() || (part === 0 && !excerpt)) throw new Error("報告正文或摘要為空");
+  validateChapters(body, plan.chapters.slice(plan.splits[part][0], plan.splits[part][1] + 1));
   return { excerpt, text: body };
 }
 
@@ -458,19 +477,24 @@ Deno.serve(async (req: Request) => {
     if (req.headers.get("x-internal-key") !== SERVICE_KEY) return json({ error: "未授權" }, 401);
     const version = ["script", "breakthrough", "sync", "clash"].includes(String(body.version))
       ? String(body.version) : "script";
-    const part = Math.max(0, Math.min(2, Number(body.part) || 0));
+    const { plan } = planOf(version);
+    const part = Number(body.part ?? 0);
+    if (!Number.isInteger(part) || part < 0 || part >= plan.splits.length) return json({ error: "無效段號" }, 400);
 
     const { data: order } = await admin.from("orders").select("*").eq("id", body.order_id).maybeSingle();
     if (!order) return json({ error: "找不到訂單" }, 404);
     if (!order.case_id) return json({ error: "訂單尚未建立個案" }, 400);
-    const { plan } = planOf(version);
     const isLast = part === plan.splits.length - 1;
 
     try {
       // 讀取現有草稿（part>0 需要前文）
-      const { data: existing } = await admin.from("reports").select("id,excerpt,full_content")
+      const { data: existing, error: readError } = await admin.from("reports").select("id,excerpt,full_content,published")
         .eq("case_id", order.case_id).eq("version", version).maybeSingle();
+      if (readError) throw readError;
+      if (existing?.published) return json({ ok: true, skip: true, reason: "已發布報告不自動覆寫" });
       const prevText = (part > 0 && existing?.full_content) ? existing.full_content : "";
+      if (part > 0 && !prevText) throw new Error("缺少前段草稿，禁止直接發布後段");
+      if (part > 0) validateChapters(prevText, plan.chapters.slice(0, plan.splits[part][0]));
 
       const args: GenArgs = {
         summary: order.summary, version,
@@ -481,21 +505,24 @@ Deno.serve(async (req: Request) => {
       const { excerpt, text } = await generatePart(apiKey, args, part, prevText);
 
       const newFull = part === 0 ? text : (prevText + "\n\n" + text);
+      if (isLast) validateChapters(newFull, plan.chapters);
       const payload: Record<string, unknown> = {
         case_id: order.case_id, version,
         full_content: newFull,
         published: isLast, full_unlocked: isLast,
       };
       if (part === 0) payload.excerpt = excerpt;
-      if (existing) await admin.from("reports").update(payload).eq("id", existing.id);
-      else await admin.from("reports").insert(payload);
+      const saved = existing ? await admin.from("reports").update(payload).eq("id", existing.id)
+        : await admin.from("reports").insert(payload);
+      if (saved.error) throw saved.error;
 
       const relay = async (nextVersion: string, nextPart: number) => {
         const p = fetch(`${SUPABASE_URL}/functions/v1/generate-report`, {
           method: "POST",
           headers: { "content-type": "application/json", "x-internal-key": SERVICE_KEY },
           body: JSON.stringify({ order_id: order.id, version: nextVersion, part: nextPart }),
-        }).catch((e) => console.error("接力觸發失敗", nextVersion, nextPart, e));
+        }).then((response) => { if (!response.ok) console.error("接力回應失敗", nextVersion, nextPart, response.status); })
+          .catch((e) => console.error("接力觸發失敗", nextVersion, nextPart, e));
         // deno-lint-ignore no-explicit-any
         (globalThis as any).EdgeRuntime?.waitUntil?.(p);
         // 留一小段時間確保請求已送出，避免函式結束時請求被凍結
@@ -528,7 +555,7 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  /* ---------- 模式 B：管理後台手動生成（單次精簡版） ---------- */
+  /* ---------- 模式 B：管理後台分段生成；前端收齊三段才更新編輯框 ---------- */
   const token = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!token) return json({ error: "請先登入" }, 401);
   const { data: userData } = await admin.auth.getUser(token);
@@ -539,29 +566,16 @@ Deno.serve(async (req: Request) => {
   const { summary, name, version, evidence, intensity, relation } = body as Record<string, string>;
   if (!summary) return json({ error: "缺少命盤摘要 summary" }, 400);
   try {
-    const { plan, isCouple } = planOf(version || "script");
-    const system = systemOf({ summary, version: version || "script", intensity, relation }, isCouple);
-    const evb = evidenceBlock(evidence || "", isCouple);
-    const prompt =
-      `【此人命盤資料】\n${summary}${evb}\n\n【任務】撰寫「${plan.label}」報告（後台精簡版）。\n${plan.goal}\n\n` +
-      `章節（每章精煉 140~200 字，markdown 小標題；「只看一頁」與「矩陣證據附錄」各約 180 字，總計約 1800 字）：\n${plan.chapters.map((c) => "・" + c).join("\n")}\n\n` +
-      `請嚴格依下列格式輸出（不要 JSON、不要圍欄）：\n\n===千字精華===\n（約 400~550 字）\n\n===完整報告===\n` +
-      `（依上述章節，**務必把最後一章完整寫完才結束**）`;
-    // ADMIN_MAX_TOKENS 刻意壓低：Supabase Edge Function 單一請求有 CPU／記憶體／
-    // wall-clock 上限，超過會被直接終止並回傳 HTTP 546（不會進到下面的 catch）。
-    // 模式 A 用接力分段避開這件事；模式 B 是單次請求，只能靠縮小單次產出。
-    // 若之後要恢復萬字規模，必須讓模式 B 也改成接力（回 202 + 前端輪詢）。
-    const text = await callClaude(apiKey, system, prompt, ADMIN_MAX_TOKENS);
-    const TAG_E = "===千字精華===", TAG_F = "===完整報告===";
-    let excerpt = "", full = text;
-    const iF = text.indexOf(TAG_F);
-    if (iF >= 0) {
-      const iE = text.indexOf(TAG_E);
-      excerpt = text.slice(iE >= 0 ? iE + TAG_E.length : 0, iF).trim();
-      full = text.slice(iF + TAG_F.length).trim();
-    }
-    return json({ excerpt, full, name, version });
+    const { plan } = planOf(version || "script");
+    const part = Number(body.part);
+    if (!Number.isInteger(part) || part < 0 || part >= plan.splits.length) return json({ error: "請更新管理頁，使用分段完整生成流程" }, 400);
+    const previous = typeof body.previous === "string" ? body.previous : "";
+    if (part > 0 && !previous.trim()) return json({ error: "缺少前段內容" }, 400);
+    if (part > 0) validateChapters(previous, plan.chapters.slice(0, plan.splits[part][0]));
+    const generated = await generatePart(apiKey, { summary, version: version || "script", evidence, intensity, relation }, part, previous);
+    return json({ excerpt: generated.excerpt, full: generated.text, part, totalParts: plan.splits.length, complete: true, name, version });
   } catch (e) {
     return json({ error: String(e) }, 500);
   }
 });
+
