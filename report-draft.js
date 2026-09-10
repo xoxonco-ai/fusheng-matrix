@@ -26,13 +26,17 @@ window.ReportDraft = (() => {
       if (!lock) throw new Error('另一個分頁正在生成同一份報告，請勿重複執行');
       const draft = await storage(key) || {parts:[],total:null};
       await storage(key,draft); // Check write access before incurring model costs.
+      let chunksThisRun=0;
       while (draft.total === null || draft.parts.length < draft.total) {
+        if(draft.validationError)throw new Error(draft.validationError+'；半成品已保存，請勿重複生成');
+        if(chunksThisRun++>=40)throw new Error('本輪已達安全請求上限，草稿已保存，可稍後續接');
         const step = draft.parts.length;
         progress(step,draft.total);
-        const data = await request({...payload,protocol:'chapter-v1',step,previous:draft.parts.slice(1).join('\n\n').slice(-2500)});
-        if(data.protocol!=='chapter-v1'||data.complete!==true||data.step!==step||!data.text||!Number.isInteger(data.totalSteps)||data.totalSteps<2||data.totalSteps>20||draft.total!==null&&data.totalSteps!==draft.total) throw new Error('章節回覆不完整，先前草稿已保留');
+        const data = await request({...payload,protocol:'chapter-v2',step,partial:draft.partial||'',previous:draft.parts.slice(1).join('\n\n').slice(-2500)});
+        if(data.protocol!=='chapter-v2'||typeof data.complete!=='boolean'||data.step!==step||!data.text||!Number.isInteger(data.totalSteps)||data.totalSteps<2||data.totalSteps>20||draft.total!==null&&data.totalSteps!==draft.total) throw new Error('章節回覆不完整，先前草稿已保留');
         draft.total=data.totalSteps;
-        draft.parts.push(data.text);
+        if(data.complete){draft.parts.push(data.text);draft.partial='';}
+        else {draft.partial=data.text;draft.validationError=data.validationError||'';}
         await storage(key,draft); // Must persist before requesting the next chapter.
       }
       return {excerpt:draft.parts[0],full:draft.parts.slice(1).join('\n\n')};

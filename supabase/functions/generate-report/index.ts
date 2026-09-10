@@ -567,7 +567,7 @@ Deno.serve(async (req: Request) => {
   if (!summary) return json({ error: "缺少命盤摘要 summary" }, 400);
   try {
     const { plan, isCouple } = planOf(version || "script");
-    if (body.protocol === "chapter-v1") {
+    if (body.protocol === "chapter-v2") {
       const step = Number(body.step);
       if (!Number.isInteger(step) || step < 0 || step > plan.chapters.length) return json({ error: "無效章節" }, 400);
       const args = { summary, version, evidence, intensity, relation };
@@ -577,13 +577,26 @@ Deno.serve(async (req: Request) => {
         ? "只撰寫千字精華（約 500~700 字），不寫完整版章節。白話散文引子，不重複只看一頁章節。"
         : `只寫這一章，不得寫其他章：\n${plan.chapters[step - 1]}\n一般章約1000~1300字，章節另有字數指示時遵守該指示。\n標題必須為 ## ${plan.chapters[step - 1].split("——")[0]}。`;
       const prompt = `【命盤資料】\n${summary}${evidenceBlock(evidence || "", isCouple)}\n【任務】${plan.label}：${plan.goal}\n${task}\n【前文結尾，僅供銜接、不要重複】\n${previous}\n本章完整收尾才在末行輸出 ${marker}，不要程式碼圍欄。`;
-      // One model call per request. Never chain multiple long calls inside the Edge timeout.
-      const result = await callClaude(apiKey, systemOf(args, isCouple), prompt, step === 0 ? 2200 : 4000, 1);
-      if (!result.endsWith(marker)) throw new Error("本章尚未完整結束，已完成章節保留，請續接本章");
-      const text = result.slice(0, -marker.length).trim();
+      const partial = typeof body.partial === "string" ? body.partial : "";
+      if (partial.length > 24000) return json({error:"本章過長，草稿保留，請人工檢查"},400);
+      const messages = [{role:"user",content:prompt}];
+      if (partial) messages.push({role:"assistant",content:partial},{role:"user",content:"從上一則最後一字繼續，不重複、不重新開頭。只完成本章並輸出完成標記。"});
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",headers:{"content-type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01"},
+        body:JSON.stringify({model:MODEL,max_tokens:1800,system:systemOf(args,isCouple),messages}),signal:AbortSignal.timeout(120000)
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data?.error?.message || "AI 服務錯誤");
+      const chunk = (data.content || []).filter((b:{type:string})=>b.type==="text").map((b:{text:string})=>b.text).join("");
+      if (!chunk.trim()) throw new Error("本次回覆為空，先前草稿保留");
+      if (!["end_turn","max_tokens"].includes(data.stop_reason)) throw new Error(`模型停止：${data.stop_reason}，先前草稿保留`);
+      const result = partial + chunk;
+      const complete = data.stop_reason === "end_turn" && result.trimEnd().endsWith(marker);
+      const text = complete ? result.trimEnd().slice(0,-marker.length).trim() : result;
       if (!text) throw new Error("本章內容為空");
-      if (step > 0) validateChapters(text, [plan.chapters[step - 1]]);
-      return json({ protocol: "chapter-v1", step, totalSteps: plan.chapters.length + 1, text, complete: true });
+      let validationError = "";
+      if (complete && step > 0) { try { validateChapters(text, [plan.chapters[step - 1]]); } catch(e) { validationError=String(e); } }
+      return json({ protocol: "chapter-v2", step, totalSteps: plan.chapters.length + 1, text, complete:complete && !validationError, validationError });
     }
     const part = Number(body.part);
     if (!Number.isInteger(part) || part < 0 || part >= plan.splits.length) return json({ error: "請更新管理頁，使用分段完整生成流程" }, 400);
