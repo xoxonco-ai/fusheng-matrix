@@ -1,0 +1,38 @@
+:root{color:#382a20;background:#e9dfcb;font-family:"Noto Sans TC",sans-serif}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-underline-offset:6px}a:focus-visible{outline:2px solid #9c4c2e;outline-offset:6px}header{max-width:1120px;margin:auto;padding:32px 24px;display:flex;justify-content:space-between;border-bottom:1px solid #c6b99f}header>a{font:24px "Noto Serif TC",serif;text-decoration:none}header span{font-size:14px}main{max-width:760px;padding:56px 28px 40px;margin:auto}.byline{color:#735d49;font-size:14px}h1{font:500 clamp(32px,5vw,52px)/1.55 "Noto Serif TC",serif;letter-spacing:-.025em;margin:20px 0 48px;text-wrap:balance}.prose{max-width:36em}.prose p{font-size:19px;line-height:2.05;margin:0 0 1.25em}.prose p:first-child{font-family:"Noto Serif TC",serif;font-size:24px}nav{display:flex;gap:24px;flex-wrap:wrap;margin-top:48px;padding-top:24px;border-top:1px solid #c6b99f}.preview-note{font-size:13px;line-height:1.9;color:#735d49;margin-top:32px}@media(max-width:600px){main{padding:28px 24px}.prose p{font-size:17px}h1{margin-bottom:32px}}
+.wood-story{background:#f0ebe1;color:#382a20}
+.wood-story main{max-width:800px;padding-top:40px}
+.wood-story h1{max-width:none;font-size:clamp(28px,4vw,46px);margin-bottom:28px;text-wrap:initial}
+.wood-story h1>span{display:block}
+.wood-story .keep-word{white-space:nowrap}
+.wood-story .story-art{margin:0 0 32px}
+.wood-story .story-art img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:center 65%}
+.wood-story .story-art figcaption{font-size:13px;color:#735d49;margin-top:12px}
+.wood-story .prose{max-width:none;margin:0}
+.wood-story .prose p{margin-bottom:1.1em;text-wrap:pretty}
+.wood-story .prose .wood-ending{font-family:"Noto Serif TC",serif;font-size:25px;margin-top:32px}
+.wood-story nav a{display:inline-flex;align-items:center;min-height:44px}
+.wood-story a:hover{color:#93492e}
+@media(max-width:600px){.wood-story main{padding-top:28px}.wood-story .story-art{margin-bottom:28px}.wood-story .story-art img{aspect-ratio:1/1}.wood-story .prose .wood-ending{font-size:22px}}
+.roles-story{background:#f0ebe1;color:#382a20}
+.roles-story h1{max-width:none;font-size:clamp(30px,4vw,46px);margin-bottom:32px;text-wrap:initial}
+.roles-story h1>span{display:block}
+.roles-story .prose p{text-wrap:pretty;margin-bottom:1em}
+.roles-story .role-lines{margin:20px 0 28px;color:#735d49}
+.roles-story .role-lines p{font:400 20px/1.9 "Noto Serif TC",serif;margin:0}
+.roles-story .prose .observation-turn{margin-top:36px}
+.roles-story .story-pause{margin-top:32px;padding:0;border:0}
+.roles-story .story-pause p{font:400 19px/1.9 "Noto Sans TC",sans-serif;margin-bottom:8px}
+.roles-story .story-pause p:last-child{font:500 25px/1.8 "Noto Serif TC",serif}
+.roles-story nav a{display:inline-flex;align-items:center;min-height:44px}
+.roles-story a:hover{color:#93492e}
+@media(max-width:600px){.roles-story .role-lines p{font-size:18px}.roles-story .story-pause p{font-size:17px}.roles-story .story-pause p:last-child{font-size:22px}}
+.home-story{background:#f0ebe1;color:#382a20}
+.home-story h1{font-size:clamp(30px,4vw,46px);margin-bottom:32px;text-wrap:initial}
+.home-story h1>span{display:block}
+.home-story .keep-word{white-space:nowrap}
+.home-story .prose p{text-wrap:pretty;margin-bottom:1em}
+.home-story .prose .home-turn{margin-top:36px}
+.home-story .prose .home-arrival{font:500 25px/1.9 "Noto Serif TC",serif;margin:32px 0 24px}
+.home-story nav a{display:inline-flex;align-items:center;min-height:44px}
+.home-story a:hover{color:#93492e}
+@media(max-width:600px){.home-story .prose .home-arrival{font-size:22px}}

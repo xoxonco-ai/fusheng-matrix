@@ -141,6 +141,8 @@ td{color:var(--text);font-weight:300}
     <div class="grid2">
       <div class="field"><label data-i18n="f_name">姓名 / 暱稱</label><input type="text" id="name"></div>
       <div class="field"><label data-i18n="f_gender">性別</label><select id="gender"><option value="女" data-i18n="g_female">女</option><option value="男" data-i18n="g_male">男</option></select></div>
+      <div class="field"><label>Email（必填）</label><input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+        <p class="hint">用來保存你的排盤結果與千字精華，不會外流、不濫發信。</p></div>
       <div class="field"><label data-i18n="f_date">出生日期（西元 國曆）</label><input type="date" id="date" value="1990-05-20" min="1900-01-01" max="2099-12-31"></div>
       <div class="field"><label data-i18n="f_time">出生時間</label><input type="time" id="time" value="14:30">
         <label class="chk"><input type="checkbox" id="unknownTime"> <span data-i18n="unknown_label">我不確定出生時間</span></label>
@@ -355,6 +357,9 @@ document.getElementById('run').addEventListener('click',()=>{
   try{
     const name=document.getElementById('name').value.trim();
     const gender=document.getElementById('gender').value;
+    const leadEmail=document.getElementById('lead-email').value.trim();
+    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(leadEmail))throw new Error('請輸入有效的 Email，才能開始排盤');
+    try{localStorage.setItem('fs_lead_email',leadEmail)}catch(_){}
     const dv=document.getElementById('date').value,tv=document.getElementById('time').value;
     const unknown=document.getElementById('unknownTime').checked;
     if(!dv)throw new Error(T('need_date'));
@@ -363,7 +368,7 @@ document.getElementById('run').addEventListener('click',()=>{
     let lon,lat,tz;const c=CITIES[document.getElementById('city').value];
     if(c[1]==='manual'){const p=document.getElementById('manual').value.split(',').map(s=>parseFloat(s.trim()));if(p.length<3||p.some(isNaN))throw new Error(T('need_manual'));[lon,lat,tz]=p}else{lon=c[1];lat=c[2];tz=c[3]}
     btn.disabled=true;load.style.display='block';
-    setTimeout(()=>{try{last=[name,gender,Y,M,D,h,mi,lon,lat,tz,unknown];compute(...last);CUR_BIRTH={name:name||'我的命盤',gender,birth_date:dv,birth_time:unknown?null:tv,birth_place:(c[1]==='manual'?'手動輸入':c[0]),lon,lat,tz,unknown_time:unknown};load.style.display='none';btn.disabled=false;document.getElementById('results').style.display='block';document.getElementById('results').scrollIntoView({behavior:'smooth'})}catch(e){load.style.display='none';btn.disabled=false;err.textContent=T('err_calc')+e.message;err.style.display='block';console.error(e)}},60);
+    setTimeout(()=>{try{last=[name,gender,Y,M,D,h,mi,lon,lat,tz,unknown];compute(...last);CUR_BIRTH={name:name||'我的命盤',gender,birth_date:dv,birth_time:unknown?null:tv,birth_place:(c[1]==='manual'?'手動輸入':c[0]),lon,lat,tz,unknown_time:unknown};load.style.display='none';btn.disabled=false;saveLead(leadEmail,{name:name||null,birth_date:dv},'paipan');document.getElementById('results').style.display='block';document.getElementById('results').scrollIntoView({behavior:'smooth'})}catch(e){load.style.display='none';btn.disabled=false;err.textContent=T('err_calc')+e.message;err.style.display='block';console.error(e)}},60);
   }catch(e){err.textContent=e.message;err.style.display='block'}
 });
 
@@ -599,6 +604,12 @@ function chartSummary(c){
    付費解鎖流程：登入 → 選填佐證 → 綠界付款 → 自動生成
 ============================================================ */
 const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+/* ===== 名單漏斗：排盤前收 Email，寫入 leads 表（失敗不擋排盤） ===== */
+async function saveLead(email,meta,source){
+  try{ await sb.from('leads').insert({email,name:(meta&&meta.name)||null,source,birth:meta||null}); }
+  catch(e){ console.warn('lead save failed',e); }
+}
+try{const le=localStorage.getItem('fs_lead_email');if(le&&document.getElementById('lead-email'))document.getElementById('lead-email').value=le;}catch(_){}
 let CUR_BIRTH=null;
 const $id=x=>document.getElementById(x);
 function savePending(){

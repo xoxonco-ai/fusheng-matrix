@@ -121,6 +121,7 @@ td.h{color:var(--muted);font-size:12px;letter-spacing:.1em;white-space:nowrap}
       <option value="穩定婚姻">穩定關係・夫妻</option>
       <option value="修復期">修復期・想把關係修回來</option>
     </select>
+    <div class="field" style="margin-top:18px"><label style="display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.1em;color:var(--gold);margin:0 0 8px">Email（必填）</label><input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" inputmode="email"><p class="hint" style="font-family:var(--sans);font-weight:300;font-size:11.5px;color:var(--muted);margin-top:6px">用來保存你們的合盤結果與速讀，不會外流、不濫發信。</p></div>
     <button class="runbtn" id="run">開始合盤</button>
     <p class="err" id="err"></p>
     <p class="loading" id="loading">兩張星盤推算中…</p>
@@ -320,6 +321,10 @@ $id('run').addEventListener('click',()=>{
   const btn=$id('run'),load=$id('loading');
   try{
     const c1=readPerson('a'), c2=readPerson('b');
+    const leadEmail=$id('lead-email').value.trim();
+    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(leadEmail))throw new Error('請輸入有效的 Email，才能開始合盤');
+    try{localStorage.setItem('fs_lead_email',leadEmail)}catch(_){}
+    saveLead(leadEmail,{name:(c1.name||'')+' × '+(c2.name||'')},'hepan');
     btn.disabled=true;load.style.display='block';
     setTimeout(()=>{try{
       const r1=calcPerson(c1), r2=calcPerson(c2);
@@ -349,6 +354,11 @@ $id('run').addEventListener('click',()=>{
 
 /* ===== 解鎖流程（引流模式：訪客私訊、管理員直接生成；金流保留備用） ===== */
 const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
+async function saveLead(email,meta,source){
+  try{ await sb.from('leads').insert({email,name:(meta&&meta.name)||null,source,birth:meta||null}); }
+  catch(e){ console.warn('lead save failed',e); }
+}
+try{const le=localStorage.getItem('fs_lead_email');if(le&&document.getElementById('lead-email'))document.getElementById('lead-email').value=le;}catch(_){}
 function savePending(){
   const f={};['a-name','a-gender','a-date','a-time','b-name','b-gender','b-date','b-time','relation'].forEach(k=>f[k]=$id(k).value);
   f['a-unknown']=$id('a-unknown').checked; f['b-unknown']=$id('b-unknown').checked;

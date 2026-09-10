@@ -1,0 +1,355 @@
+/* Final composition pass; scoped to the literary wood edition. */
+:root{--paper:#f1ece2;--muted:#6d5c4f;--line:#c4b7a4}
+.founder-letter .notes-body{display:grid;grid-template-columns:1fr 1fr;column-gap:9%;align-items:center}
+.founder-letter.notes#notes h2{grid-column:1/-1;font-size:clamp(39px,4.5vw,65px);margin-bottom:12px}
+.founder-letter .material-detail{grid-column:2;grid-row:2;margin-left:7%}
+.material-detail>div{height:460px}
+.material-detail img{transform:scale(1.75);transform-origin:81% 62%}
+.founder-letter .essay{grid-column:1;grid-row:2;max-width:29em;margin:0;font-size:20px;line-height:2}
+.founder-letter .essay p:first-child{font-size:34px;line-height:1.75;margin-bottom:24px;text-wrap:balance}
+.entry-heading{display:block;margin-bottom:22px}
+.entry-heading h2{font-size:37px;margin-bottom:15px}
+.entry-heading>p{font-size:18px}
+.entry-heading .entry-map-note{font-size:17px;max-width:none;margin-top:12px}
+.entry-heading .entry-map-note br{display:none}
+.entry-options{display:flex;flex-wrap:wrap;gap:22px 38px}
+.entry-options button{display:block;width:auto;flex:0 0 auto;border:0;border-bottom:1px solid var(--line);padding:10px 0;font-size:22px;min-height:55px}
+.entry-options button>span:first-child{display:none}
+.entry-options button:after{display:none}
+.entry-options button[aria-pressed=true]{border-bottom:2px solid var(--rust);font-weight:600}
+.entry-response{width:100%;flex-basis:100%;max-width:52em;margin-top:0}
+.entry-response a{border:0}
+.reading-index .journal-list>a:first-child h3{font-size:39px}
+.practice-closing .reading{display:block}
+.practice-closing .reading p{font-size:27px;max-width:32em}
+.practice-closing .reading button{margin-top:18px;min-width:145px}
+.interlude{background:transparent;color:var(--ink);padding-top:24px;padding-bottom:50px}
+.interlude h2{font-size:clamp(36px,4vw,57px);line-height:1.5;margin-bottom:22px}
+.interlude h2 br{display:block}
+.interlude-copy{display:block}
+.interlude-copy p{font-size:18px}
+.interlude-copy .action{background:var(--ink);color:var(--paper);margin-top:25px;display:inline-flex;min-width:315px}
+.interlude-copy .action:hover{background:var(--rust);color:#fff}
+.interlude-copy .preview-button{color:var(--ink);display:inline-block;margin-left:28px;border-color:var(--ink)}
+@media(max-width:900px){.founder-letter .notes-body{grid-template-columns:1fr;gap:24px}.founder-letter.notes#notes h2{margin-bottom:0}.founder-letter .material-detail{grid-column:1;grid-row:3;margin:0;max-width:520px;width:100%;justify-self:start}.founder-letter .essay{grid-column:1;grid-row:2;font-size:18px;max-width:38em}.founder-letter .essay p:first-child{font-size:28px}.material-detail>div{height:390px}.entry-heading h2{font-size:30px}.entry-options{gap:12px 22px}.entry-options button{font-size:19px}.reading-index .journal-list>a:first-child h3{font-size:29px}.practice-closing .reading p{font-size:24px}.interlude-copy .action{min-width:0;display:flex}.interlude-copy .preview-button{margin:18px 0 0}}
+
+.founder-letter.notes#notes h2{color:var(--ink)}
+.wood-word{color:var(--rust)}
+.material-detail img{transform:scale(2.55);transform-origin:82% 62%}
+.compass.comparison-spread .editions{background:#fffaf0}
+.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:34px;line-height:1.7}
+.comparison-spread #shift-panel .report-extract dd:nth-of-type(2){font-size:23px}
+.comparison-spread .report-extract dt{font-size:16px}
+.cover .action{font-size:17px;min-width:315px;min-height:56px}
+.cover-art figcaption{font-size:14px;line-height:1.8}
+.cover-art figcaption span:first-child{font-size:16px}
+.matrix-path.practice-closing{border:0;padding-top:8px;padding-bottom:24px}
+.practice-closing h2{font-family:var(--sans);font-size:17px;color:var(--muted);margin-bottom:14px}
+.interlude{padding-top:32px}
+.interlude h2{font-size:clamp(38px,5vw,72px);letter-spacing:-.035em}
+.practice-closing .future-outline summary{font-size:16px}
+@media(max-width:900px){.cover .action{min-width:0}.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:29px}.comparison-spread #shift-panel .report-extract dd:nth-of-type(2){font-size:22px}.interlude h2{font-size:40px}.cover-art figcaption span:first-child{font-size:14px}}
+
+/* Two photographic appearances bookend the reading, instead of repeating at the start. */
+.founder-letter.notes#notes{padding-top:45px;padding-bottom:25px}
+.founder-letter .notes-body{display:block;max-width:860px;margin:0 auto}
+.founder-letter .letter-byline{max-width:860px;margin:0 auto 20px}
+.founder-letter.notes#notes h2{font-size:48px;margin:0 0 24px}
+.founder-letter .essay{max-width:none;margin:0;font-size:20px;line-height:2}
+.founder-letter .essay p:first-child{font-size:27px;margin-bottom:16px}
+section.life-entry{max-width:900px;margin:0 auto;padding:42px 30px 48px;text-align:center}
+.entry-heading h2{font-size:35px}
+.entry-heading .entry-map-note{font-size:17px;line-height:1.9}
+.entry-options{justify-content:center;gap:16px 28px}
+.entry-response{max-width:720px;margin:6px auto 0;text-align:left}
+.entry-response a{display:inline-block;margin-top:10px}
+.compass.comparison-spread{padding-top:42px;padding-bottom:32px}
+.compass.comparison-spread .editions{background:none;gap:0;color:#f0e2ca}
+.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{color:#f0e2ca;padding:16px 40px 20px 0}
+.compass.comparison-spread .editions article+article{padding-left:48px;border-color:#806b54}
+.comparison-spread .editions h3{font-size:34px;color:#f0e2ca}
+.comparison-spread .editions .edition-lead{color:#d9c8b1;font-size:20px}
+.compass.comparison-spread .editions .sample{color:#f0e2ca}
+.comparison-spread .report-extract dt{color:#cbb69a;font-size:16px}
+.comparison-spread .report-extract dd,.comparison-spread .report-extract dd:first-of-type{color:#f8eddb}
+.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:35px}
+.compass .method .method-note{font-size:15px;color:#d9c8b1;max-width:70em}
+.interlude{display:grid;grid-template-columns:1fr 1fr;gap:20px 9%;align-items:center;padding-top:40px;padding-bottom:45px}
+.interlude h2{grid-column:1;grid-row:1;align-self:end;font-size:56px;margin:0}
+.interlude .interlude-copy{grid-column:1;grid-row:2;align-self:start}
+.interlude .material-detail{grid-column:2;grid-row:1/3;width:100%;max-width:none;margin:0}
+.interlude .material-detail>div{height:430px}
+.interlude .material-detail img{transform:scale(2);transform-origin:82% 62%}
+.interlude .material-detail figcaption{color:var(--muted)}
+.interlude-copy .preview-button{display:block;margin:18px 0 0;max-width:max-content}
+@media(max-width:900px){.founder-letter.notes#notes{padding:30px 0 20px}.founder-letter.notes#notes h2{font-size:35px}.founder-letter .essay{font-size:18px}.founder-letter .essay p:first-child{font-size:25px}section.life-entry{margin:0 5%;padding:30px 0 36px}.entry-heading h2{font-size:29px}.entry-response{text-align:left}.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{padding:24px 0}.compass.comparison-spread .editions article+article{border-left:0;border-top:1px solid #806b54}.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:30px}.interlude{grid-template-columns:1fr;gap:22px;padding-top:20px}.interlude h2{grid-column:1;grid-row:1;font-size:39px}.interlude .interlude-copy{grid-column:1;grid-row:3}.interlude .material-detail{grid-column:1;grid-row:2;max-width:520px}.interlude .material-detail>div{height:350px}}
+
+.cover h1{font-size:clamp(54px,5.1vw,74px);letter-spacing:-.035em;line-height:1.5;margin:15px 0 12px}
+.cover h1 .home-line{margin-top:0}
+.brand-promise{font:18px/1.8 var(--serif);margin:0 0 22px;color:var(--muted)}
+.cover-copy{justify-content:center}
+.cover .intro>p:first-child{font-size:23px;line-height:1.85}
+.cover .small{font-size:17px;max-width:24em;line-height:1.9}
+.entry-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px;align-items:stretch}
+.entry-options button{width:100%;font-size:20px;padding:16px 8px;min-height:90px;text-align:center}
+.entry-options button:after{display:block;content:'';font:14px/1.6 var(--sans);min-height:22px;margin-top:7px;color:var(--rust)}
+.entry-options button[aria-pressed=true]:after{content:'已選擇'}
+.entry-response{grid-column:1/-1;padding-top:22px}
+.compass.comparison-spread{padding-top:30px;padding-bottom:26px}
+.compass .compass-head{margin-bottom:8px}
+.shared-scenario{margin-top:16px}
+.compass.comparison-spread .editions{margin-top:16px}
+.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{padding-top:14px;padding-bottom:12px}
+.interlude .future-outline{margin-top:26px}
+.interlude .future-outline summary{font:15px/1.8 var(--sans);color:var(--muted)}
+.interlude .future-outline summary>span{display:block;margin:4px 0 0}
+.interlude .future-outline p{font:16px/1.9 var(--sans);color:var(--ink)}
+.interlude .material-detail img{transform:scale(2.7);transform-origin:83% 62%}
+@media(max-width:900px){.cover h1{font-size:50px;line-height:1.5}.brand-promise{font-size:17px;margin-bottom:18px}.cover .intro>p:first-child{font-size:20px}.entry-options{grid-template-columns:1fr;gap:0}.entry-options button{min-height:55px;text-align:left;padding:12px 0;font-size:19px;display:flex;justify-content:space-between;align-items:center}.entry-options button:after{margin:0;min-height:0}.entry-options button:not([aria-pressed=true]):after{display:none}}
+
+.origin-strip{margin:0 7%;padding:20px 0 22px;border-bottom:1px solid var(--line)}
+.origin-strip summary{display:flex;align-items:center;gap:28px;list-style:none;cursor:pointer}
+.origin-strip summary::-webkit-details-marker{display:none}
+.origin-strip summary>span{font-size:15px;color:var(--muted)}
+.origin-strip summary strong{font:500 28px/1.6 var(--serif);flex:1}
+.origin-strip summary .origin-open{font-size:16px;color:var(--ink);text-decoration:underline;text-underline-offset:6px}
+.origin-strip .essay{max-width:760px;font-size:19px;line-height:2;margin:25px auto 12px}
+.origin-strip .essay p:first-child{font:26px/1.8 var(--serif)}
+.origin-strip .essay a{display:inline-block;margin-top:18px;text-decoration:underline;text-underline-offset:6px}
+section.life-entry{padding-top:30px;padding-bottom:32px}
+.entry-heading{margin-bottom:15px}
+.entry-heading>p:not(.entry-map-note){display:none}
+.entry-response{padding-top:15px}
+.compass.comparison-spread{display:grid;grid-template-columns:1.3fr 1fr;gap:16px 7%;align-items:center;padding-top:34px}
+.comparison-spread .compass-head{grid-column:1;grid-row:1;display:block}
+.comparison-spread .compass-head>p{font-size:18px;margin-top:16px;max-width:29em}
+.comparison-spread .material-detail{grid-column:2;grid-row:1/3;margin:0;min-width:0}
+.comparison-spread .material-detail>div{height:250px}
+.comparison-spread .material-detail img{transform:scale(2.25);transform-origin:83% 61%;filter:saturate(.75)}
+.comparison-spread .material-detail figcaption{color:#d9c8b1;font-size:14px}
+.comparison-spread .shared-scenario{grid-column:1;grid-row:2;margin:0;align-self:start;font-size:18px}
+.compass.comparison-spread .editions{grid-column:1/-1;grid-row:3;margin-top:10px}
+.comparison-spread .method{grid-column:1/-1;grid-row:4;margin-top:0}
+.interlude{display:block;text-align:center;padding-top:26px;padding-bottom:36px}
+.interlude h2{font-size:54px;max-width:900px;margin:0 auto 20px}
+.interlude h2 br{display:none}
+.interlude .interlude-copy{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 28px}
+.interlude-copy p{font-size:18px;margin:0}
+.interlude-copy .action{margin:5px 0}
+.interlude-copy .preview-button{margin:5px 0}
+.future-footer{padding:15px 7%;border-top:1px solid var(--line)}
+.future-footer .future-outline{margin:0}
+.future-footer summary{font-size:15px}
+.future-footer summary>span{display:inline;margin-left:16px}
+.future-footer p{font-size:16px;line-height:1.9}
+.cover-art img{filter:saturate(.85)}
+button,a{transition:color .2s cubic-bezier(.22,1,.36,1),background-color .2s cubic-bezier(.22,1,.36,1),transform .2s cubic-bezier(.22,1,.36,1)}
+button:active,.action:active{transform:translateY(1px)}
+@media(prefers-reduced-motion:reduce){button,a{transition:none}button:active,.action:active{transform:none}}
+@media(max-width:900px){.origin-strip{margin:0 5%;padding:22px 0}.origin-strip summary{display:block}.origin-strip summary strong{display:block;font-size:25px;margin:8px 0}.origin-strip .essay{font-size:18px}.compass.comparison-spread{display:block}.comparison-spread .compass-head>p{font-size:17px}.comparison-spread .material-detail{margin:20px 0}.comparison-spread .material-detail>div{height:240px}.comparison-spread .shared-scenario{margin-top:20px}.interlude h2{font-size:38px}.interlude h2 br{display:block}.interlude .interlude-copy{display:block}.interlude-copy .action{margin:20px 0 14px}.future-footer{padding:15px 5%}.future-footer summary>span{display:block;margin:5px 0 0}}
+
+.cover-art figcaption{display:block;padding-top:20px}
+.photo-story summary{cursor:pointer;font:500 24px/1.7 var(--serif);color:var(--ink)}
+.photo-story .essay{font:18px/1.9 var(--sans);max-width:none;margin:16px 0}
+.photo-story .essay p{font:inherit}
+.photo-story .essay a{display:inline-block;text-decoration:underline;text-underline-offset:5px;margin-top:18px}
+.photo-author{font:15px/1.7 var(--sans);margin-top:16px}
+.cover-art figcaption .photo-credit{display:block;font:14px/1.8 var(--sans);margin-top:12px}
+summary:focus-visible{outline:2px solid var(--rust);outline-offset:6px}
+section.life-entry{text-align:left;max-width:960px;padding-top:35px}
+.entry-heading h2{font-size:34px}
+.entry-options{display:block}
+.entry-options button{display:flex;justify-content:flex-start;align-items:baseline;text-align:left;width:100%;min-height:0;font:500 24px/1.7 var(--serif);padding:18px 0;border:0;border-top:1px solid var(--line);gap:18px}
+.entry-options button>span:first-child{display:inline;font:15px var(--sans);color:var(--muted);margin:0}
+.entry-options button:after{display:none!important}
+.entry-options button[aria-pressed=true]{border-bottom:0;color:var(--rust)}
+.entry-response{max-width:750px;padding:0 0 22px 40px;margin:0;font-size:18px}
+.entry-response a{margin-top:10px}
+footer{align-items:end;padding-top:32px;padding-bottom:35px}
+footer .brand{font-size:clamp(42px,5vw,72px);letter-spacing:.055em}
+footer .brand span{font-size:14px;letter-spacing:.06em;margin-top:16px}
+footer>div{font-size:15px;padding-bottom:6px}
+footer small{font-size:13px;padding-bottom:6px}
+@media(max-width:900px){.photo-story summary{font-size:21px}.entry-heading h2{font-size:29px}.entry-options button{font-size:20px;gap:12px}.entry-response{padding-left:29px;font-size:17px}.entry-response p{font-size:17px}footer .brand{font-size:43px}footer .brand span{font-size:12px}}
+
+/* Round 33: give the wood detail and the two readings a deliberate scale. */
+.cover .eyebrow{display:none}
+.cover .brand-promise{margin-bottom:26px}
+.cover .intro{margin-bottom:8px}
+.cover .cover-trust{max-width:24em;margin-top:12px}
+.photo-story summary{list-style:none;display:flex;justify-content:space-between;gap:20px}
+.photo-story summary::-webkit-details-marker{display:none}
+.photo-story summary::after{content:'＋';font:20px/1.9 var(--sans)}
+.photo-story[open] summary::after{content:'−'}
+.compass.comparison-spread{grid-template-columns:1fr 1fr;gap:28px 6%;padding-top:58px;padding-bottom:36px}
+.comparison-spread .compass-head h2{font-size:40px;line-height:1.5}
+.comparison-spread .compass-head>p{max-width:25em;line-height:1.9}
+.comparison-spread .material-detail>div{height:340px}
+.comparison-spread .material-detail img{transform:scale(3.6);transform-origin:91% 61%}
+.comparison-spread .material-detail figcaption{margin-top:12px;font-size:16px}
+.comparison-spread .shared-scenario{font:22px/1.9 var(--serif);max-width:23em}
+.comparison-spread .shared-scenario span{font:14px/1.8 var(--sans);margin-top:12px}
+.compass.comparison-spread .editions{margin-top:12px}
+.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{padding-top:28px;padding-bottom:24px}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:clamp(38px,3.9vw,56px);line-height:1.6;letter-spacing:-.035em}
+.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:clamp(30px,2.8vw,40px);line-height:1.7;letter-spacing:-.035em;text-wrap:balance}
+.comparison-spread .report-extract dt{margin-top:30px;font-size:16px}
+.compass .method .method-note{max-width:64em;font-size:15px;line-height:1.9}
+.matrix-path.practice-closing{border-top:1px solid var(--line);padding:30px 0 36px;margin-top:12px}
+.practice-closing .reading{display:flex;align-items:center;justify-content:space-between;gap:32px}
+.practice-closing .reading p{font-size:29px;max-width:29em}
+.practice-closing .reading button{flex-shrink:0;margin:0}
+.interlude{padding-top:50px;padding-bottom:50px}
+footer .brand{font-size:35px}
+.future-footer{border-top:0;padding-top:0;padding-bottom:18px}
+footer{padding-top:24px;padding-bottom:28px;border-top:1px solid var(--line)}
+@media(max-width:900px){
+ .compass.comparison-spread{padding-top:34px;padding-bottom:28px}
+ .comparison-spread .compass-head h2{font-size:30px}
+ .comparison-spread .material-detail>div{height:280px}
+ .comparison-spread .shared-scenario{font-size:20px}
+ .compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:35px}
+ .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:28px;line-height:1.8}
+ .practice-closing .reading{display:block}
+ .practice-closing .reading p{font-size:24px}
+ .practice-closing .reading button{margin-top:20px}
+ .interlude{padding:28px 0 34px}
+ section.interlude h2{font-size:clamp(27px,7.2vw,38px);line-height:1.7;letter-spacing:-.04em}
+ footer .brand{font-size:32px}
+}
+.skip:not(:focus){clip-path:inset(50%);width:1px;height:1px;overflow:hidden;padding:0}
+
+/* Round 34: an artwork plate alongside a single reading column. */
+.photo-story summary{justify-content:flex-start;gap:16px}
+.compass.comparison-spread{grid-template-columns:43% 1fr;gap:22px 7%;position:relative;padding-top:54px;padding-bottom:36px}
+.comparison-spread .material-detail{grid-column:1;grid-row:1/4;align-self:stretch;margin-left:-16.3%;margin-top:-54px;margin-bottom:0;display:flex;flex-direction:column}
+.comparison-spread .material-detail>div{height:auto;flex:1;min-height:640px;position:relative;overflow:hidden}
+.comparison-spread .material-detail img{height:100%;width:100%;position:absolute;object-fit:cover;transform:scale(2.35);transform-origin:89% 64%;filter:saturate(.65)}
+.comparison-spread .material-detail figcaption{padding:0 0 0 14%;font-size:15px;line-height:1.8}
+.comparison-spread .compass-head{grid-column:2;grid-row:1}
+.comparison-spread .compass-head h2{font-size:32px}
+.comparison-spread .compass-head>p{font-size:18px;margin-top:12px}
+.comparison-spread .shared-scenario{grid-column:2;grid-row:2;font-size:20px;margin-top:4px}
+.compass.comparison-spread .editions{grid-column:2;grid-row:3;display:block;margin:0}
+.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{border:0;padding:0;margin:0}
+.compass.comparison-spread .editions article+article{padding-top:28px;margin-top:26px;border-top:1px solid #796554}
+.compass.comparison-spread .editions h3{font-size:23px;margin:0 0 8px}
+.compass.comparison-spread .edition-lead{font-size:17px}
+.compass.comparison-spread .report-extract dt:first-child{display:block}
+.compass.comparison-spread .report-extract{margin:18px 0 0}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:clamp(38px,4.3vw,62px);line-height:1.6;margin-top:0}
+.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:29px;line-height:1.8;margin-top:0}
+.compass.comparison-spread .report-extract dt{font-size:15px;margin-top:16px}
+.compass.comparison-spread .report-extract dd:nth-of-type(2){font-size:22px;line-height:1.8}
+.comparison-spread .method{margin-top:12px}
+.reading-index .journal-list>a:first-child h3{font-size:32px}
+.interlude{display:grid;grid-template-columns:1.15fr 1fr;gap:9%;text-align:left;padding-top:38px;padding-bottom:44px}
+.interlude h2{font-size:38px;margin:0;max-width:15em;line-height:1.7}
+.interlude h2 br{display:block}
+.interlude .interlude-copy{display:block;padding:0;grid-column:2;grid-row:1;align-self:center}
+.interlude-copy .action{margin-top:20px;min-width:290px}
+.interlude-copy .preview-button{display:block;margin:16px 0 0}
+.future-footer{font-size:16px}
+@media(max-width:900px){
+ .compass.comparison-spread{display:block;padding-top:32px}
+ .comparison-spread .material-detail{display:block;margin:22px 0}
+ .comparison-spread .material-detail>div{height:350px;min-height:0}
+ .comparison-spread .material-detail img{transform:scale(3.1)}
+ .comparison-spread .material-detail figcaption{padding:0}
+ .comparison-spread .compass-head h2{font-size:29px}
+ .compass.comparison-spread .editions{margin-top:28px}
+ .compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:36px}
+ .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:27px}
+ .reading-index .journal-list>a:first-child h3{font-size:27px}
+ .interlude{display:block;padding:28px 0 34px}
+ section.interlude h2{font-size:28px;margin-bottom:20px}
+ .interlude-copy .action{min-width:0}
+}
+
+/* Round 35: compress the reading plate, keep the detail edge intentional. */
+.cover-copy{justify-content:flex-start;padding-top:42px}
+.cover h1{font-size:clamp(60px,6vw,86px);line-height:1.3;margin-top:0;margin-bottom:24px}
+.cover .brand-promise{margin-bottom:24px}
+.photo-story summary{justify-content:space-between;width:100%}
+.compass.comparison-spread{gap:18px 7%;padding-top:38px;padding-bottom:24px}
+.comparison-spread .material-detail{margin-left:-7vw;margin-top:-38px}
+.comparison-spread .material-detail>div{min-height:500px}
+.comparison-spread .material-detail img{transform:scale(3.5);transform-origin:91% 60%}
+.comparison-spread .compass-head>p{font-size:18px;line-height:1.8}
+.comparison-spread .shared-scenario{font-size:19px;line-height:1.85;margin-top:0}
+.comparison-spread .shared-scenario span{margin-top:8px}
+.compass.comparison-spread .editions h3{font-size:22px;margin-bottom:3px}
+.compass.comparison-spread .report-extract{margin-top:12px}
+.compass.comparison-spread .report-extract dt{display:none}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:clamp(38px,3.8vw,54px);line-height:1.5}
+.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:27px;line-height:1.65}
+.compass.comparison-spread .report-extract dd:nth-of-type(2){font-size:19px;margin-top:12px;line-height:1.8;color:#e3d3bd}
+.compass.comparison-spread .editions article+article{margin-top:20px;padding-top:20px}
+.entry-response{padding-bottom:16px;max-width:680px}
+.entry-response p{line-height:1.8}
+.entry-response a{margin-top:4px}
+.cover-trust,.cover-art figcaption .photo-credit{color:#5d4b3f;font-size:16px}
+.interlude{align-items:center;padding-top:28px;padding-bottom:36px;border-top:1px solid var(--line)}
+.interlude h2{align-self:center;font-size:34px;line-height:1.7}
+.interlude .interlude-copy{align-self:center}
+@media(max-width:900px){
+ .cover-copy{padding-top:0}
+ .cover h1{font-size:50px}
+ .comparison-spread .material-detail{margin:22px 0}
+ .comparison-spread .material-detail>div{min-height:0;height:300px}
+ .compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:35px}
+ .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:27px}
+ section.interlude h2{font-size:28px}
+ .cover-art figcaption .photo-credit{font-size:14px}
+}
+
+/* Round 36: paired readings on warm paper, with a bounded detail plate. */
+.compass.comparison-spread{background:#e5dac8;color:var(--ink);grid-template-columns:1fr 1.1fr;gap:20px 8%;padding:42px 7% 30px}
+.comparison-spread .compass-head{grid-column:1;grid-row:1}
+.comparison-spread .compass-head h2{color:var(--ink);font-size:36px}
+.comparison-spread .compass-head>p{color:#5b493d}
+.comparison-spread .shared-scenario{grid-column:1;grid-row:2;color:var(--ink);font-size:20px}
+.comparison-spread .shared-scenario span{color:#5b493d;font-size:15px}
+.comparison-spread .material-detail{grid-column:2;grid-row:1/3;display:block;margin:-42px -7vw 0 0;align-self:stretch}
+.comparison-spread .material-detail>div{height:320px;min-height:0}
+.comparison-spread .material-detail img{transform:scale(3.7);transform-origin:89% 58%}
+.comparison-spread .material-detail figcaption{padding:0;color:#5b493d;font-size:16px;margin-top:12px}
+.compass.comparison-spread .editions{grid-column:1/-1;grid-row:3;margin-top:18px;display:block}
+.compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{display:grid;grid-template-columns:24% 1fr;gap:0 5%;border:0;border-top:1px solid #ad9982;padding:28px 0;margin:0}
+.compass.comparison-spread .editions h3{grid-column:1;grid-row:1;font-size:25px;color:var(--ink);margin:0;align-self:end}
+.compass.comparison-spread .edition-lead{grid-column:1;grid-row:2;color:#5b493d;max-width:11em;margin-top:8px}
+.compass.comparison-spread .sample,.compass.comparison-spread .sample.report-leaf{grid-column:2;grid-row:1/3;margin:0!important;padding:0!important}
+.compass.comparison-spread .report-extract{margin:0}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type,.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{color:var(--ink);font-size:clamp(30px,3.3vw,46px);line-height:1.6;letter-spacing:-.035em;text-wrap:balance}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type br{display:none}
+.compass.comparison-spread .report-extract dd:nth-of-type(2){color:#5b493d;font-size:19px;margin-top:10px}
+.compass.comparison-spread #shift-panel .report-extract dd:nth-of-type(2) br{display:block}
+.compass .method .method-note{color:#5b493d;font-size:16px;margin:0}
+.comparison-spread .method{padding-top:0;margin-top:0}
+.reading-index .journal-list{grid-template-columns:1.5fr 1fr;gap:0 9%}
+.reading-index .journal-list>a:first-child h3{font-size:36px;max-width:17em;text-wrap:pretty}
+.reading-index .journal-list h3 .keep-word{white-space:nowrap;font:inherit;color:inherit;letter-spacing:inherit}
+.reading-index .journal-list>a:first-child h3 br{display:block}
+.practice-closing .reading button{border:0;text-decoration:none;min-width:0;gap:12px;display:flex;min-height:44px;align-items:center}
+.practice-closing .reading button:hover{color:var(--rust)}
+footer{flex-wrap:wrap}
+footer .future-footer{flex-basis:100%;padding:0;border:0}
+footer .future-footer summary{font-size:14px}
+footer .future-footer p{max-width:42em;font-size:15px}
+/* Report excerpts: distinguish observations from supporting details. */
+.compass.comparison-spread .report-extract dt{display:block;color:#665446;font-size:14px;line-height:1.7;letter-spacing:.04em;margin:0 0 8px}
+.compass.comparison-spread .report-extract dt:not(:first-child){margin-top:20px}
+.compass.comparison-spread #script-panel .report-extract dd:first-of-type,.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:clamp(26px,2.5vw,34px);line-height:1.65;letter-spacing:-.02em;text-wrap:pretty}
+.compass.comparison-spread .report-extract dd:nth-of-type(2){margin-top:0;font-size:18px;line-height:1.85}
+.compass.comparison-spread .editions h3{align-self:start}
+@media(max-width:900px){
+ .compass.comparison-spread{display:block;padding:30px 5%}
+ .comparison-spread .compass-head h2{font-size:29px}
+ .comparison-spread .material-detail{margin:22px 0}
+ .comparison-spread .material-detail>div{height:260px}
+ .compass.comparison-spread .editions article:first-child,.compass.comparison-spread .editions article+article{display:block;padding:24px 0}
+ .compass.comparison-spread .edition-lead{max-width:none}
+ .compass.comparison-spread .sample,.compass.comparison-spread .sample.report-leaf{margin-top:24px!important}
+ .compass.comparison-spread #script-panel .report-extract dd:first-of-type,.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:26px}
+ .reading-index .journal-list>a:first-child h3{font-size:28px}
+}
