@@ -353,3 +353,403 @@ footer .future-footer p{max-width:42em;font-size:15px}
  .compass.comparison-spread #script-panel .report-extract dd:first-of-type,.compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:26px}
  .reading-index .journal-list>a:first-child h3{font-size:28px}
 }
+
+/* ===== crit-r2：排印與明暗層次修正 ===== */
+/* 中文標點擠壓（halt）：大標與大字引文 */
+h1,h2,h3,.editions .edition-lead,.report-extract dd,.interlude h2,.closing h2,.sample h4{font-feature-settings:"halt" 1}
+/* 首屏：字級升級、次要資訊降噪 */
+.cover h1{font-size:clamp(58px,6.8vw,106px);line-height:1.22;letter-spacing:-.012em}
+.brand-promise{color:var(--muted)}
+.cover-trust{font-size:12px;opacity:.8}
+/* 敢暗下來：interlude 深木色滿版 */
+.interlude{background:#241a11;color:#efe3cc;margin-top:70px;padding-top:60px;padding-bottom:66px}
+.interlude .interlude-label{color:#c39d7f}
+.interlude h2{color:#f5ead4}
+.interlude-copy p{color:#d9c8ab}
+.interlude-copy .action{background:var(--rust);color:#fff}
+.interlude-copy .action:hover{background:#b25a3a;color:#fff}
+.interlude-copy .preview-button{color:#e7ceb2;border-color:#8a6a52}
+.interlude .material-detail figcaption{color:#a98f74}
+/* 劇本／破局：破局版切入深色，讓版面表演「兩種讀法」 */
+@media(min-width:901px){
+  .editions{align-items:stretch}
+  .editions article.shift-edition{background:#2c1d13;color:#eddfc6;padding:34px 40px 30px;margin-top:26px}
+  .shift-edition .edition-meta{color:#c39d7f;border-color:#4a3423}
+  .shift-edition h3,.shift-edition .edition-lead{color:#f5ead4}
+  .shift-edition>p{color:#d9c8ab}
+  .shift-edition .sample{background:#241a11;border:0;box-shadow:none;border-top:1px solid #4a3423}
+  .shift-edition .sample .sample-running-head,.shift-edition .sample>span{color:#c39d7f}
+  .shift-edition .sample h4{color:#f5ead4}
+  .shift-edition .report-extract dt{color:#c39d7f}
+  .shift-edition .report-extract dd{color:#eddfc6}
+}
+/* 手機：首屏照片滿幅出血、標題加大 */
+@media(max-width:600px){
+  .cover h1{font-size:62px;line-height:1.2;grid-column:1/-1}
+  .intro{grid-column:1/-1;grid-row:auto}
+  .cover-art{margin-inline:calc(50% - 50vw)}
+  .cover-art figcaption{padding-inline:5%}
+}
+
+/* ===== crit-r2b：修正首屏斷行與破局版深色面板可讀性 ===== */
+.cover h1{font-size:min(5.9vw,86px)}
+.cover h1 .opening-line,.cover h1 .home-line{display:block;white-space:nowrap}
+@media(max-width:600px){.cover h1{font-size:min(13.5vw,58px)}}
+@media(min-width:901px){
+  #shift-panel{background:#2c1d13}
+  #shift-panel h3,#shift-panel h4,#shift-panel p,#shift-panel blockquote,#shift-panel .edition-lead{color:#eddfc6}
+  #shift-panel .edition-meta,#shift-panel .edition-meta span,#shift-panel .sample-running-head,#shift-panel .sample-running-head span,#shift-panel .sample>span{color:#c39d7f}
+  #shift-panel .report-extract dt{color:#c39d7f}
+  #shift-panel .report-extract dd,#shift-panel .report-extract dd:first-of-type,#shift-panel .report-extract dd:nth-of-type(2){color:#f8eddb}
+  #shift-panel .sample{background:#241a11;border:0;border-top:1px solid #4a3423;box-shadow:none}
+}
+
+/* crit-r2c：破局版深色面板文字強制可讀 */
+@media(min-width:901px){
+  article#shift-panel .report-extract dd{color:#f8eddb !important}
+  article#shift-panel .report-extract dt{color:#c39d7f !important}
+  article#shift-panel h4,article#shift-panel .edition-lead,article#shift-panel>p{color:#eddfc6 !important}
+}
+
+/* crit-r2d：破局版面板左欄與內距 */
+@media(min-width:901px){
+  article#shift-panel{padding:36px 44px 34px !important;margin-top:30px}
+  article#shift-panel h3{color:#f5ead4 !important}
+  article#shift-panel .edition-lead{color:#d9c8ab !important}
+  article#shift-panel .edition-meta,article#shift-panel .edition-meta span{color:#c39d7f !important}
+  article#shift-panel .sample-running-head,article#shift-panel .sample-running-head span{color:#c39d7f !important}
+}
+
+/* ===== crit-r3：影像出血、懸掛標點、行氣與節奏 ===== */
+/* 懸掛標點：行尾全形標點掛出文字邊界 */
+.cover h1 .hang{display:inline-block;width:0;overflow:visible;white-space:nowrap}
+/* 內文行氣：抒情長句 1.95 行高、收窄行長 */
+.cover .intro p,.compass-head>p,.entry-heading>p,.entry-map-note,.editions>article>p:not(.edition-lead),.journal-list .article-deck{line-height:1.95}
+.editions>article>p:not(.edition-lead){max-width:30em}
+/* 首屏照片出血到右緣 */
+@media(min-width:901px){
+  .cover{padding-right:0}
+  .cover-art{max-width:none;justify-self:stretch}
+  .cover-art figcaption{padding-right:4.4%}
+}
+/* 紋理特寫：滿版出血、圖說浮在紋理上 */
+@media(min-width:901px){
+  .compass.comparison-spread .material-detail{grid-column:1/-1;width:100vw;margin-left:calc(50% - 50vw);max-width:none;position:relative;margin-top:34px}
+  .compass.comparison-spread .material-detail>div{height:72vh}
+  .compass.comparison-spread .material-detail img{transform:scale(1.35);transform-origin:75% 62%}
+  .compass.comparison-spread .material-detail figcaption{position:absolute;left:7%;bottom:28px;margin:0;color:#f4e8d1;font-size:14px;letter-spacing:.1em;text-shadow:0 1px 14px rgba(20,10,4,.65)}
+}
+/* 垂直節奏：深色重音前後給足喘息 */
+@media(min-width:901px){
+  article#shift-panel{margin-top:110px}
+  .compass.comparison-spread .method{margin-top:70px}
+  .journal.reading-index{padding-top:90px}
+  .interlude{margin-top:110px}
+}
+/* 破局版面板內部：拉開明度層次 */
+@media(min-width:901px){
+  article#shift-panel .sample{background:transparent !important;border:1px solid #4a3423 !important;border-width:1px 0 !important;padding:26px 0 !important}
+  article#shift-panel .report-extract dt{color:#d0a87e !important}
+}
+/* 紅色語義收斂：CTA 一律墨色，紅只留文字強調與選中態 */
+.interlude-copy .action{background:#efe3cc;color:#241a11}
+.interlude-copy .action:hover{background:#fff;color:#241a11}
+/* 砍掉呢喃小字 */
+.cover-trust{display:none}
+.method .method-note{display:none}
+
+/* crit-r3b：滿版圖後恢復 compass 標題與情境文案的流式排版 */
+@media(min-width:901px){
+  .compass.comparison-spread{display:block}
+  .compass.comparison-spread .compass-head{max-width:56em;margin-bottom:8px}
+  .compass.comparison-spread .material-detail{margin-top:44px;margin-bottom:56px}
+  .compass.comparison-spread .shared-scenario{max-width:40em;margin:0 0 26px}
+}
+
+/* ===== crit-r4：海報化首屏、核心句放大、破局版滿版、標籤統一 ===== */
+/* A. 首屏：滿版影像，文字反白鑲進暗部 */
+@media(min-width:901px){
+  .cover{display:block;position:relative;padding:0;max-width:none;margin:0}
+  .cover-art{margin:0}
+  .cover .photo-plane{height:92vh;box-shadow:none}
+  .cover .photo-plane img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:62% 40%}
+  .cover .photo-plane::after{content:"";position:absolute;inset:0;background:linear-gradient(75deg,rgba(18,10,5,.62) 0%,rgba(18,10,5,.28) 42%,rgba(18,10,5,0) 68%)}
+  .cover-copy{position:absolute;left:4.4%;bottom:9%;z-index:2;max-width:660px;padding:0}
+  .cover .eyebrow{color:#cfae87}
+  .cover h1{color:#f5ead4;font-size:min(6.4vw,96px)}
+  .cover h1 .home-line{color:#e07a52}
+  .brand-promise{color:#d9c8ab}
+  .cover .intro>p:first-child{color:#efe3cc}
+  .cover .small{color:#bda98c}
+  .cover .action{background:#efe3cc;color:#241a11;margin-top:30px}
+  .cover .action:hover{background:#fff;color:#241a11}
+  .cover-art figcaption{padding:14px 4.4% 0}
+}
+/* B. 核心句：全頁的心臟，字級放大 */
+@media(min-width:901px){
+  #script-panel{padding-top:120px;padding-bottom:70px}
+  .compass.comparison-spread #script-panel .report-extract dd:first-of-type{font-size:clamp(38px,4.2vw,58px);line-height:1.6;letter-spacing:-.02em}
+}
+/* C. 滿版紋理圖說加重，成為圖的一部分 */
+@media(min-width:901px){
+  .compass.comparison-spread .material-detail figcaption{font-family:var(--serif);font-size:18px;letter-spacing:.14em;bottom:36px}
+}
+/* D. 破局版滿版切黑：進入另一個空間 */
+@media(min-width:901px){
+  article#shift-panel{width:100vw;margin-left:calc(50% - 50vw);padding:110px 7% 100px !important;margin-top:130px;margin-bottom:0}
+  .compass.comparison-spread .method{margin-top:80px}
+}
+/* E. 標籤小字統一制服（caption 系統） */
+.photo-credit,.sample-running-head,.report-extract dt,.edition-meta span,.interlude-label,.journal-list>a>span,.entry-heading .section-label,.compass .section-label{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:.16em;line-height:1.6}
+/* F. 節奏：段落間距拉開差距 */
+@media(min-width:901px){
+  section.life-entry{padding-top:110px;padding-bottom:90px}
+  .compass.comparison-spread{padding-top:110px}
+}
+/* G. 手機：重新導演——直式滿版影像、每屏一件事 */
+@media(max-width:600px){
+  .cover{display:block;position:relative;padding:0}
+  .cover-art{margin:0}
+  .cover .photo-plane{height:78vh}
+  .cover .photo-plane img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:60% 35%}
+  .cover .photo-plane::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,10,5,0) 30%,rgba(18,10,5,.66) 88%)}
+  .cover-copy{display:block;position:absolute;left:6%;right:6%;bottom:26px;z-index:2}
+  .cover .eyebrow{color:#cfae87}
+  .cover h1{color:#f5ead4;margin:10px 0 8px}
+  .cover h1 .home-line{color:#e07a52}
+  .brand-promise{color:#d9c8ab;margin-bottom:10px}
+  .cover .intro>p:first-child{color:#efe3cc;font-size:16px}
+  .cover .small{display:none}
+  .cover .action{background:#efe3cc;color:#241a11;margin-top:14px}
+  .cover-art figcaption{padding:12px 6% 0}
+  .entry-map-note{display:none}
+}
+
+/* crit-r4b：首屏可讀性與聚焦 */
+@media(min-width:901px){
+  .cover .photo-plane::after{background:linear-gradient(88deg,rgba(14,8,4,.82) 0%,rgba(14,8,4,.52) 38%,rgba(14,8,4,.08) 62%,rgba(14,8,4,0) 72%)}
+  .cover-copy{top:50%;transform:translateY(-50%);bottom:auto}
+  .cover h1{font-size:min(7vw,104px);text-shadow:0 2px 28px rgba(10,5,2,.45)}
+  .brand-promise{display:none}
+  .cover .small{display:none}
+  .cover .intro>p:first-child{font-size:22px;text-shadow:0 1px 16px rgba(10,5,2,.5)}
+}
+
+/* crit-r4c：首行顏色被舊層蓋掉，補上 */
+@media(min-width:901px){.cover h1 .opening-line{color:#f5ead4}}
+@media(max-width:600px){.cover h1 .opening-line{color:#f5ead4}}
+
+/* ===== crit-r5：色彩語義獨佔、影像分鏡、細節統一 ===== */
+/* 橘紅只留給「再談改變」與主 CTA hover：導覽回墨色 */
+.masthead nav a{color:var(--ink)}
+.masthead nav a:hover{color:var(--rust)}
+/* 中段滿版圖：換鏡頭——刀痕 200% 特寫，抽象化 */
+@media(min-width:901px){
+  .compass.comparison-spread .material-detail>div{height:64vh}
+  .compass.comparison-spread .material-detail img{transform:scale(2.6);transform-origin:71% 56%}
+  .compass.comparison-spread .material-detail figcaption{font-size:20px;letter-spacing:.18em;bottom:40px;text-shadow:0 2px 18px rgba(10,5,2,.75)}
+}
+/* 髮絲線統一灰階 */
+.reading,.rankrow,.journal-list>a,.entry-options button,.editions,.finebar{border-color:rgba(56,39,30,.18)}
+/* 手機：hero 底部加深、CTA 區呼吸 */
+@media(max-width:600px){
+  .cover .photo-plane::after{background:linear-gradient(180deg,rgba(18,10,5,.05) 20%,rgba(18,10,5,.42) 55%,rgba(18,10,5,.82) 92%)}
+  .interlude{padding-top:44px;padding-bottom:52px}
+  .interlude-copy .action{margin-top:22px}
+  .interlude-copy p{margin-top:8px}
+}
+
+/* ===== crit-r6：戲劇高潮與行動端指揮 ===== */
+/* 紅色推亮一級：宣言就要像宣言 */
+@media(min-width:901px){.cover h1 .home-line{color:#f0703f}}
+@media(max-width:600px){.cover h1 .home-line{color:#f0703f}}
+/* 破局版引文獨佔近整屏：前後留白爆增、字級跳兩級 */
+@media(min-width:901px){
+  article#shift-panel{padding:150px 7% 130px !important;margin-top:170px}
+  .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{font-size:clamp(42px,4.6vw,64px);line-height:1.55}
+  .compass.comparison-spread #shift-panel .report-extract dt{margin-bottom:20px}
+  article#shift-panel .sample{padding:40px 0 !important}
+  .compass.comparison-spread .method{margin-top:110px}
+}
+/* 刀痕文案：大級數襯線直接壓在木紋上 */
+@media(min-width:901px){
+  .compass.comparison-spread .material-detail figcaption{font-size:clamp(24px,2.2vw,32px);letter-spacing:.2em;bottom:auto;top:50%;transform:translateY(-50%);left:7%;max-width:14em;line-height:2;text-shadow:0 2px 26px rgba(10,5,2,.85)}
+}
+/* 01 編號親密性：回覆貼近自己的標題 */
+.entry-response{padding-top:6px}
+.entry-response p{line-height:1.8}
+/* 手機：大標佔掉視高、一屏一念頭 */
+@media(max-width:600px){
+  .cover .photo-plane{height:88vh}
+  .cover h1{font-size:min(15.5vw,66px);line-height:1.18}
+  .cover .intro>p:first-child{font-size:17px}
+  .brand-promise{display:none}
+  .compass.comparison-spread #shift-panel{padding:64px 6% 56px}
+}
+
+/* crit-r6b：收尾快修——標題再放大、引號懸掛、圖說移到負空間 */
+@media(min-width:901px){
+  .cover h1{font-size:min(8vw,124px);line-height:1.16}
+  .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{text-indent:-.5em}
+  .compass.comparison-spread .material-detail figcaption{top:auto;transform:none;bottom:44px;font-size:24px;max-width:16em}
+  .compass.comparison-spread .material-detail::after{content:"";position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(180deg,rgba(14,8,4,0),rgba(14,8,4,.62));pointer-events:none}
+  .compass.comparison-spread .material-detail figcaption{z-index:2}
+}
+@media(max-width:600px){
+  .compass.comparison-spread #shift-panel .report-extract dd:first-of-type{text-indent:-.5em}
+}
+
+/* ===== crit-r7：新攝影素材分鏡 ===== */
+/* 中段紋理帶：蓮葉徑向刀痕，聚焦葉脈中心 */
+@media(min-width:901px){
+  .compass.comparison-spread .material-detail img{transform:scale(1.9);transform-origin:50% 40%}
+}
+/* 破局版：披風人形融進深色空間 */
+@media(min-width:1100px){
+  article#shift-panel{position:relative;overflow:hidden}
+  article#shift-panel::before{content:"";position:absolute;top:0;right:0;bottom:0;width:44%;
+    background:url('assets/wood/lotus-turn.jpg') no-repeat 65% 30%/cover;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 45%);mask-image:linear-gradient(90deg,transparent 0%,#000 45%);
+    opacity:.5;pointer-events:none}
+  article#shift-panel>*{position:relative;z-index:1}
+}
+/* 三篇文章：各配一塊裁切講究的局部 */
+.journal-list .jthumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:50% 34%;margin-bottom:14px;filter:saturate(.94)}
+.journal-list>a:first-child .jthumb{aspect-ratio:4/3}
+@media(max-width:600px){.journal-list .jthumb{aspect-ratio:16/9}}
+
+/* crit-r7b：文章縮圖在 flex 欄內取滿寬 */
+.reading-index .journal-list>a{overflow:hidden}
+.journal-list .jthumb{align-self:stretch;width:100%;max-width:100%;height:auto}
+.reading-index .journal-list>a:first-child .jthumb{aspect-ratio:4/3}
+.reading-index .journal-list>a:nth-child(n+2) .jthumb{aspect-ratio:21/9}
+
+/* crit-r7c：結尾 CTA 配大型立件 */
+@media(min-width:1100px){
+  .interlude{position:relative;overflow:hidden}
+  .interlude::after{content:"";position:absolute;top:0;right:0;bottom:0;width:40%;
+    background:url('assets/wood/lotus-hall.jpg') no-repeat 50% 32%/cover;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 50%);mask-image:linear-gradient(90deg,transparent 0%,#000 50%);
+    opacity:.55;pointer-events:none}
+  .interlude>*{position:relative;z-index:1}
+}
+
+/* ===== crit-r8：像素級收刀 ===== */
+/* 破局版：雕塑退到更右更暗，文字保證落在純暗場；底座不再被硬切 */
+@media(min-width:1100px){
+  article#shift-panel::before{width:36%;background-position:50% 18%;opacity:.38;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 78%,transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 78%,transparent 100%);
+    mask-composite:intersect}
+}
+/* 全頁左軸統一：提問區回到與其他區同一條 7% 軸線 */
+@media(min-width:901px){
+  section.life-entry{margin-left:7%;margin-right:7%}
+  section.life-entry .entry-heading,section.life-entry .entry-options{margin-left:0}
+}
+/* 劇本版：收掉尷尬的半屏空，留白變成刻意的 */
+@media(min-width:901px){
+  #script-panel{padding-top:84px;padding-bottom:64px}
+}
+/* 小連結制服：一律無底線、hover 才出現 */
+.journal-list small,.preview-button,.entry-response a{text-decoration:none;border-bottom:0}
+.journal-list>a:hover small,.preview-button:hover,.entry-response a:hover{text-decoration:underline;text-underline-offset:5px}
+/* 橘色從攝影取色：往蜜金赭紅靠 */
+@media(min-width:901px){.cover h1 .home-line{color:#e2833f}}
+@media(max-width:600px){.cover h1 .home-line{color:#e2833f}}
+
+/* ===== crit-r9：呼吸斷句（直排實驗因字型垂直度量問題撤回） ===== */
+@media(min-width:901px){
+  article#shift-panel{margin-top:38vh}
+}
+
+/* ===== crit-r10：終局一致性 ===== */
+/* 喘息收短：張力不是漏氣 */
+@media(min-width:901px){article#shift-panel{margin-top:16vh}}
+/* 標題徹底單色：強調靠字重與位置，不靠外來色 */
+@media(min-width:901px){.cover h1 .home-line{color:#f5ead4;font-weight:600}}
+@media(max-width:600px){.cover h1 .home-line{color:#f5ead4;font-weight:600}}
+/* 中文標點擠壓：瀏覽器原生 trim（Chromium 123+，其餘優雅降級） */
+h1,h2,h3,.report-extract dd,.editions .edition-lead,.sample h4{text-spacing-trim:trim-start}
+/* 可點連結統一可供性：細底線；純標籤永不加線 */
+.journal-list small,.entry-response a,.preview-button,.editions a{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px;text-decoration-color:rgba(56,39,30,.4)}
+.journal-list small:hover,.entry-response a:hover,.preview-button:hover{text-decoration-color:var(--rust)}
+/* 劇本版區塊高度貼合內容 */
+@media(min-width:901px){#script-panel{padding-top:72px;padding-bottom:56px}}
+
+/* ===== crit-r11：去藥丸化、攝影紀律、清單排印 ===== */
+/* 首屏 CTA：從按鈕改為與明朝體同語言的文字連結＋細線 */
+@media(min-width:901px){
+  .cover .action{background:transparent;color:#f5ead4;padding:14px 2px;min-width:0;gap:18px;
+    border-bottom:1px solid rgba(245,234,212,.55);font-size:15px;letter-spacing:.12em}
+  .cover .action:hover{background:transparent;color:#fff;border-bottom-color:#fff}
+  .cover .action span{font-size:18px}
+}
+@media(max-width:600px){
+  .cover .action{background:transparent;color:#f5ead4;border-bottom:1px solid rgba(245,234,212,.55);padding:12px 2px;width:auto}
+}
+/* 破局版雕塑：底部完全融入暗場，不再露出被切的底座 */
+@media(min-width:1100px){
+  article#shift-panel::before{background-position:50% 8%;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%);
+    mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%)}
+}
+/* 文章縮圖：一套裁切規範——全部聚焦徑向中心、同飽和 */
+.journal-list .jthumb{object-position:50% 42%;filter:saturate(.92) contrast(1.02)}
+.reading-index .journal-list>a:nth-child(2) .jthumb{object-position:44% 46%}
+.reading-index .journal-list>a:nth-child(3) .jthumb{object-position:52% 55%}
+/* 01/02/03 清單：基線與親密性 */
+.entry-options button{line-height:1.6}
+.entry-options button span{line-height:inherit}
+.entry-response{padding-top:2px;padding-bottom:18px}
+.entry-response p{line-height:1.85;margin:0}
+.entry-response a{display:inline-block;margin-top:8px}
+/* 手機 hero：人像重心上移一點，別只剩頭頂 */
+@media(max-width:600px){.cover .photo-plane img{object-position:58% 28%}}
+
+/* ===== crit-r12：正負片機制＋靜默屏 ===== */
+/* 劇本版：同一尊雕塑的「正片」——淡淡浮在紙上，與破局版深色負片成對 */
+@media(min-width:1100px){
+  #script-panel{position:relative;overflow:hidden}
+  #script-panel::before{content:"";position:absolute;top:0;right:0;bottom:0;width:36%;
+    background:url('assets/wood/lotus-turn.jpg') no-repeat 50% 8%/cover;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%);
+    mask-image:linear-gradient(90deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%);
+    opacity:.14;filter:grayscale(.2) contrast(1.05);transform:scaleX(-1);pointer-events:none}
+  #script-panel>*{position:relative;z-index:1}
+}
+/* 靜默屏：同一個生活片段，一句話獨佔一屏 */
+@media(min-width:901px){
+  .compass.comparison-spread .shared-scenario{
+    max-width:none;margin:0;padding:26vh 0 24vh;text-align:center;
+    font-family:var(--serif);font-size:clamp(22px,2.2vw,30px);letter-spacing:.06em;line-height:2;color:var(--ink)}
+  .compass.comparison-spread .shared-scenario span{display:block;font-family:var(--sans);font-size:12.5px;letter-spacing:.16em;color:var(--muted);margin-top:26px}
+}
+
+/* ===== crit-r13：色帶事故與浮水印意圖化 ===== */
+/* 深色段前後不再殘留第三種底色：compass 區回歸紙底，節奏交給影像與黑段 */
+@media(min-width:901px){
+  .compass.comparison-spread{background:transparent}
+  .compass.comparison-spread .method{margin-top:56px;padding-bottom:8px}
+  .journal.reading-index{padding-top:110px}
+}
+/* 劇本版浮水印：用 multiply 融進紙面，讀起來像印上去的，不像沒載入 */
+@media(min-width:1100px){
+  #script-panel::before{opacity:.3;filter:none;mix-blend-mode:multiply}
+}
+
+/* ===== crit-r14：雙聯屏嚴格鏡像——劇本版影像移到左側，與破局版右側成對倒 ===== */
+@media(min-width:1100px){
+  #script-panel::before{right:auto;left:0;transform:none;
+    -webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%);
+    mask-image:linear-gradient(270deg,transparent 0%,#000 55%),linear-gradient(180deg,#000 55%,transparent 92%)}
+}
+
+/* crit-r14b：劇本版浮水印改放射暈開，無硬邊、避開標籤 */
+@media(min-width:1100px){
+  #script-panel::before{width:44%;opacity:.2;
+    -webkit-mask-image:radial-gradient(115% 95% at 12% 42%,#000 34%,transparent 70%);
+    mask-image:radial-gradient(115% 95% at 12% 42%,#000 34%,transparent 70%)}
+  #script-panel h3,#script-panel .edition-lead{text-shadow:0 0 14px rgba(233,223,205,.9)}
+}
