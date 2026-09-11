@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浮生｜坐下來說說話</title>
+<meta name="description" content="浮生——一個會好好聽妳說話的陪伴者。不算命、不說教，只是接住。">
+<link rel="icon" href="assets/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<script src="supabase-config.js"></script>
+<style>
+:root{
+  --paper:#f4efe5;--paper-hi:#faf6ec;--ink:#2c251c;--ink-dim:#6b6254;--ink-faint:#8a8172;
+  --cinnabar:#a8412f;--ochre:#7a5630;--rule:rgba(66,54,38,.16);--rule-strong:rgba(66,54,38,.30);
+  --serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;
+  display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+header{display:flex;justify-content:space-between;align-items:center;max-width:820px;width:100%;
+  margin:0 auto;padding:20px 22px;border-bottom:1px solid var(--rule)}
+header .brand{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.14em;
+  color:var(--ink);text-decoration:none}
+header span{font-size:12.5px;letter-spacing:.2em;color:var(--ink-faint)}
+main{flex:1;display:flex;flex-direction:column;max-width:820px;width:100%;margin:0 auto;min-height:0}
+#log{flex:1;overflow-y:auto;padding:34px 22px 18px;display:flex;flex-direction:column;gap:18px}
+.msg{max-width:76%;line-height:1.9;letter-spacing:.02em;padding:13px 17px;white-space:pre-wrap;
+  word-break:break-word}
+.msg.me{align-self:flex-end;background:#e9e0cc;border:1px solid var(--rule)}
+.msg.fs{align-self:flex-start;background:var(--paper-hi);border:1px solid var(--rule)}
+.msg.fs::before{content:"浮生";display:block;font-size:11.5px;letter-spacing:.24em;
+  color:var(--ochre);margin-bottom:7px;font-family:var(--serif)}
+.msg.wait::after{content:"…";animation:dots 1.2s steps(4,end) infinite}
+@keyframes dots{0%{content:""}25%{content:"·"}50%{content:"· ·"}75%{content:"· · ·"}}
+.hello{align-self:center;text-align:center;color:var(--ink-dim);font-family:var(--serif);
+  font-size:15px;line-height:2.1;letter-spacing:.05em;margin:26px 0 6px}
+form{display:flex;gap:12px;padding:16px 22px calc(20px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--rule);background:var(--paper)}
+textarea{flex:1;resize:none;border:1px solid var(--rule-strong);background:#fff;color:var(--ink);
+  font-family:var(--sans);font-size:15.5px;line-height:1.7;padding:12px 14px;height:52px;max-height:140px}
+textarea:focus{outline:none;border-color:var(--cinnabar)}
+button{border:0;background:#2c251c;color:#f7f2e7;font-family:var(--sans);font-size:14.5px;
+  letter-spacing:.12em;padding:0 26px;cursor:pointer}
+button:hover{background:var(--cinnabar)}
+button:disabled{opacity:.4;cursor:default}
+.fine{text-align:center;font-size:12px;color:var(--ink-faint);letter-spacing:.05em;
+  padding:0 22px 12px;background:var(--paper)}
+@media (max-width:640px){.msg{max-width:88%}}
+</style>
+</head><body>
+<header><a class="brand" href="index.html">浮生羅盤</a><span>浮生 · 陪妳說說話</span></header>
+<main>
+  <div id="log">
+    <p class="hello">我是浮生。<br>不用想好要說什麼，想到哪說到哪就可以。</p>
+  </div>
+  <form id="f">
+    <textarea id="inp" placeholder="想說什麼都可以…" rows="1" maxlength="2000"></textarea>
+    <button id="send" type="submit">說</button>
+  </form>
+  <p class="fine">浮生是 AI 陪伴者，不提供醫療或心理診斷。若有立即危險，請撥 119／110；安心專線 1925。</p>
+</main>
+<script>
+const API = window.SB_URL + "/functions/v1/fusheng-chat";
+const GUEST_LIMIT = 10; // 訪客一段對話最多 10 句
+const hist = [];
+const log = document.getElementById('log');
+const inp = document.getElementById('inp');
+const btn = document.getElementById('send');
+
+// 已登入會員的 access token（Supabase 存在 localStorage）
+function memberToken(){
+  try{
+    const ref = window.SB_URL.split('//')[1].split('.')[0];
+    const raw = localStorage.getItem('sb-'+ref+'-auth-token');
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    return (s && s.access_token) ? s.access_token : null;
+  }catch(e){ return null; }
+}
+
+let gated = false;
+function showGate(){
+  if(gated) return; gated = true;
+  const d = document.createElement('div');
+  d.className = 'msg fs';
+  d.innerHTML = '今天聊到這裡了。想繼續的話，加入會員（免費，只要 Email）就可以不限句數地聊。<br><a href="login.html?mode=up&next=chat" style="color:#a8412f">→ 免費加入會員，繼續跟我說</a><span style="color:#8a8172">　或　</span><a href="login.html?next=chat" style="color:#7a5630">我已經是會員，登入</a>';
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+  inp.disabled = true; btn.disabled = true;
+  inp.placeholder = '加入會員後可以繼續聊';
+}
+
+function add(role, text, wait){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (role==='user'?'me':'fs') + (wait?' wait':'');
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+  return d;
+}
+
+async function send(){
+  const text = inp.value.trim();
+  if(!text) return;
+  const tok = memberToken();
+  // 訪客滿 10 句：不再送出，直接請他加入會員
+  if(!tok && hist.filter(m=>m.role==='user').length >= GUEST_LIMIT){ showGate(); return; }
+  inp.value=''; inp.style.height='52px';
+  add('user', text);
+  hist.push({role:'user', content:text});
+  btn.disabled = true;
+  const w = add('fs', '', true);
+  try{
+    const r = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+(tok||window.SB_KEY),'apikey':window.SB_KEY},
+      body: JSON.stringify({messages: hist.slice(-80)})
+    });
+    const data = await r.json();
+    if(r.status===403 && data.error==='limit_guest'){ w.remove(); showGate(); return; }
+    if(!r.ok || !data.reply) throw new Error(data.error||'no reply');
+    w.classList.remove('wait');
+    w.textContent = data.reply;
+    hist.push({role:'assistant', content:data.reply});
+  }catch(e){
+    w.classList.remove('wait');
+    w.textContent = '抱歉，我這邊好像斷線了，稍等一下再試一次好嗎？';
+  }finally{
+    btn.disabled = false;
+    log.scrollTop = log.scrollHeight;
+    inp.focus();
+  }
+}
+
+document.getElementById('f').addEventListener('submit', e=>{e.preventDefault();send()});
+inp.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey && !e.isComposing){e.preventDefault();send()}
+});
+inp.addEventListener('input', ()=>{inp.style.height='52px';inp.style.height=Math.min(inp.scrollHeight,140)+'px'});
+</script>
+</body></html>

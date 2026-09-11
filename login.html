@@ -64,12 +64,14 @@ async function routeByRole(){
   if(NEXT==='qz'){ location.href='paipan.html?resume=qz'; return true; }
   if(NEXT==='pay2'){ location.href='hepan.html?resume=pay'; return true; }
   if(NEXT==='qz2'){ location.href='hepan.html?resume=qz'; return true; }
+  if(NEXT==='chat'){ location.href='chat.html'; return true; }
   const {data:prof} = await sb.from('profiles').select('role').eq('id',session.user.id).maybeSingle();
   location.href = (prof && prof.role==='admin') ? 'admin.html' : 'report.html';
   return true;
 }
 if(NEXT==='pay'||NEXT==='pay2'){ document.getElementById('modesub').textContent='登入或註冊後，將帶你回到付款步驟'; }
 if(NEXT==='qz'||NEXT==='qz2'){ document.getElementById('modesub').textContent='免費註冊（只需 Email），立即解鎖你的精華內容'; }
+if(NEXT==='chat'){ document.getElementById('modesub').textContent='免費加入會員後，就可以不限句數地跟浮生聊'; }
 
 $('submit').addEventListener('click', async ()=>{
   if(typeof RECOVERY!=='undefined'&&RECOVERY) return;
@@ -141,5 +143,6 @@ if(!location.hash.includes('type=recovery')) routeByRole();
     <a class="active" href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
   </div>
 </nav>
+<script src="fusheng-widget.js" defer></script>
 </body>
 </html>
