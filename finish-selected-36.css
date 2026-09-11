@@ -753,3 +753,13 @@ h1,h2,h3,.report-extract dd,.editions .edition-lead,.sample h4{text-spacing-trim
     mask-image:radial-gradient(115% 95% at 12% 42%,#000 34%,transparent 70%)}
   #script-panel h3,#script-panel .edition-lead{text-shadow:0 0 14px rgba(233,223,205,.9)}
 }
+
+/* ===== jing-band：經在人間 首頁引導帶 ===== */
+.jing-band{border-top:1px solid rgba(66,54,38,.16);border-bottom:1px solid rgba(66,54,38,.16);background:#faf6ec;padding:96px 24px}
+.jing-band>div{max-width:720px;margin:0 auto;text-align:center}
+.jing-band .jing-label{font-size:12.5px;letter-spacing:.3em;color:#8a8172;margin:0 0 18px}
+.jing-band h2{font-family:'Noto Serif TC',serif;font-weight:600;font-size:clamp(30px,5.4vw,42px);letter-spacing:.16em;margin:0 0 24px;color:#2c251c}
+.jing-band .jing-lede{font-family:'Noto Serif TC',serif;font-size:clamp(15.5px,3vw,17.5px);line-height:2.2;letter-spacing:.04em;color:#4c4437;margin:0 0 38px}
+.jing-band .action{display:inline-block;background:#2c251c;color:#f7f2e7;text-decoration:none;font-size:14.5px;letter-spacing:.12em;padding:15px 34px}
+.jing-band .action:hover{background:#a8412f}
+@media (max-width:640px){.jing-band{padding:72px 20px}.jing-band .jing-lede br{display:none}}
