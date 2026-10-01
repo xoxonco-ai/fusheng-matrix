@@ -1,0 +1,47 @@
+:root {
+  --ink-900: #080c0a;
+  --ink-800: #0a100d;
+  --ink-700: #121c16;
+  --ink-600: #1c2a20;
+  --ink-500: #2a3a2d;
+  --paper: #ece4d3;
+  --paper-dim: #adb9a9;
+  --paper-faint: #879185;
+  --cinnabar: #365c45;
+  --cinnabar-light: #5f8169;
+  --cinnabar-deep: #243f30;
+  --ochre: #a7804d;
+  --ochre-light: #d0a064;
+  --rule: rgba(200, 211, 183, .15);
+  --rule-strong: rgba(200, 211, 183, .25);
+  --bg: #0a100d;
+  --bg2: #121c16;
+  --bg3: #1c2a20;
+  --text: #ece4d3;
+  --muted: #adb9a9;
+  --gold: #a7804d;
+  --gold-bright: #d0a064;
+  --crimson: #365c45;
+  --crimson-bright: #5f8169;
+  --line: rgba(200, 211, 183, .15);
+  --brush-cinnabar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 14' preserveAspectRatio='none'%3E%3Cpath d='M1,8.1 C58,6.6 118,4.9 198,4.2 C288,3.4 358,3.7 438,4.6 C508,5.4 558,6.3 599,6.9 L599,8.2 C558,9.1 508,10.2 438,10.9 C358,11.7 288,11.2 198,10.1 C118,9.1 58,8.7 1,8.1 Z' fill='%23365c45' fill-opacity='.9'/%3E%3C/svg%3E");
+}
+
+body::before {
+  background:
+    radial-gradient(54% 42% at 13% 4%, rgba(64, 94, 68, .42), transparent 66%),
+    radial-gradient(45% 35% at 92% 24%, rgba(58, 71, 50, .28), transparent 65%),
+    radial-gradient(62% 28% at 55% 78%, rgba(72, 54, 38, .23), transparent 70%);
+}
+
+.card,
+.auth-box,
+.panel {
+  border-color: var(--rule);
+}
+
+input,
+select,
+textarea {
+  accent-color: var(--cinnabar-light);
+}

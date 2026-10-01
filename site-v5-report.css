@@ -1,0 +1,17 @@
+:root {
+  --paper: #e8deca;
+  --ink: #243126;
+  --muted: #68705f;
+  --line: #b9ab91;
+  --accent: #81643c;
+}
+
+.version-tabs button[aria-selected="true"] {
+  color: #233a2c;
+  border-bottom-color: #44654e;
+}
+
+.site-head .brand,
+blockquote {
+  color: #233a2c;
+}

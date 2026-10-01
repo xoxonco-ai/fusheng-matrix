@@ -36,3 +36,13 @@
 .home-story nav a{display:inline-flex;align-items:center;min-height:44px}
 .home-story a:hover{color:#93492e}
 @media(max-width:600px){.home-story .prose .home-arrival{font-size:22px}}
+
+/* V5 · 生與死：保留紙張閱讀感，轉為苔綠、枯木與暖金。 */
+:root{color:#28342c;background:#e7dfcd}
+body{background:radial-gradient(circle at 18% 0%,rgba(118,137,103,.16),transparent 36%),#e7dfcd;color:#28342c}
+header{border-bottom-color:#b7ab90}
+header span,.byline,.preview-note,.wood-story .story-art figcaption,.roles-story .role-lines{color:#68705f}
+.wood-story,.roles-story,.home-story{background:transparent;color:#28342c}
+nav{border-top-color:#b7ab90}
+a:focus-visible{outline-color:#8b7044}
+.wood-story a:hover,.roles-story a:hover,.home-story a:hover{color:#6d5937}
