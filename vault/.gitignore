@@ -1,0 +1,16 @@
+# Vault-local runtime and recovery state may contain note text or source URLs.
+# Exclude the contents rather than the directory itself, so the address counter
+# can be re-included: it holds only an integer, and it must travel with the
+# address map in .raw/.manifest.json or a fresh clone reassigns used addresses.
+.vault-meta/*
+!.vault-meta/address-counter.txt
+
+# Local MCP launch configuration may contain commands or credentials. Share a
+# reviewed `.mcp.example.json` instead of committing the live file.
+.mcp.json
+
+# Obsidian and operating-system session state.
+.obsidian/workspace*.json
+.trash/
+.DS_Store
+Thumbs.db

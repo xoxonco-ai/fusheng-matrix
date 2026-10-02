@@ -1,0 +1,196 @@
+{
+  "generated_at": "2026-08-27T05:35:00Z",
+  "schema": "claude-obsidian.claim-ledger.v1",
+  "claims": {
+    "clm-engine-deterministic": {
+      "text": "人生羅盤排盤為確定性計算：計算路徑內無隨機性、無當下時間，同一份出生資料在同一版引擎必得同一張命盤。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/排盤引擎架構.md",
+        "anchor": "確定性"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "八、誠實聲明"
+        },
+        {
+          "source_id": "src-26ef87d2e9881ea4316f",
+          "relation": "supports",
+          "locator": "Math.random() 僅 242 行星空動畫；Date.now() 僅 613、695 行快取；chartSummary() 與排盤主流程皆無"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "修補版位元組僅 599 行字串不同，計算路徑未變動"
+        }
+      ],
+      "supersedes": null,
+      "notes": "2026-08-27 由 provisional 升為 accepted：已掃過程式碼確認計算路徑無非確定性來源。但兩個來源共用 independence_key，不算獨立佐證；「可與第三方排盤軟體對照」這件事仍未實測，那需要拿已知出生資料跑一次比對。"
+    },
+    "clm-gate-years-computed": {
+      "text": "報告中的關卡年由三個實算訊號推得——土星回歸（掃描 27～32 歲，步長 0.05 年）、流年沖日支（14～55 歲）、大運交接（16～56 歲）——非人工編寫。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/關卡年推算.md",
+        "anchor": "三個訊號"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "五、關卡年（可驗證佐證）"
+        },
+        {
+          "source_id": "src-26ef87d2e9881ea4316f",
+          "relation": "supports",
+          "locator": "chartSummary() 583-593 行：for(age=27;age<=32;age+=0.05)、for(y=Y+14;y<=Y+55;y++)、_ag>=16&&_ag<=56"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "chartSummary() 583-593 行，修補版未變動"
+        }
+      ],
+      "supersedes": null,
+      "notes": "掃描範圍與步長逐字相符。「請從以上挑 2~3 個最關鍵年份寫進報告」的指示也確實在送給 AI 的字串裡。未驗證的是這些年份的預測效度——那不是程式碼能回答的問題。"
+    },
+    "clm-hd-design-88deg": {
+      "text": "人類圖設計盤取出生前太陽黃經倒退 88 度的時刻，以二分法在出生前 80～95 天區間迭代 60 次逼近，個性盤與設計盤各取 13 個天體。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/排盤引擎架構.md",
+        "anchor": "三個容易踩到的換算"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "四、人類圖／設計盤（Design）"
+        },
+        {
+          "source_id": "src-26ef87d2e9881ea4316f",
+          "relation": "supports",
+          "locator": "490、574 行：tg=(sunLon(utc)-88+360)%360，lo=utc-95*864e5，hi=utc-80*864e5，for(i=0;i<60;i++)；HB/B 陣列各 13 個天體"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "490、574 行，修補版未變動"
+        }
+      ],
+      "supersedes": null,
+      "notes": "程式碼逐字相符。未驗證二分法在極端輸入下的收斂行為，也未取得人類圖 88 度慣例的獨立來源。"
+    },
+    "clm-doc-code-consistent": {
+      "text": "技術文件所述的 12 項可查驗參數，於快照 2b791137 稽核時 11 項與 paipan.html 逐字相符；唯一落差（父母線索禁止範圍）已於同日修補，修補版 12 項全符。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/questions/排盤程式碼是否與技術文件一致.md",
+        "anchor": "逐項對照"
+      },
+      "evidence": [
+        {
+          "source_id": "src-26ef87d2e9881ea4316f",
+          "relation": "supports",
+          "locator": "逐項比對：三個引擎版本、紫微時辰索引、302°閘門起點、GATE_ORDER 64 元素、設計盤 88°、13 天體、ASC/MC 公式、h-tz、土星回歸、流年沖日支、大運 16-56 與 slice(1,9)、中午揭露四項"
+        },
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "全文各章節參數"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "修補後 12 項參數全數相符"
+        }
+      ],
+      "supersedes": null,
+      "notes": "GATE_ORDER 以程式逐一比對，64 元素完全相同且為 1-64 的完整排列。此主張只涵蓋 paipan.html；hepan.html 與 admin.html 未查。 2026-08-27 補記：唯一落差已修補，見 clm-parent-guard-fixed。"
+    },
+    "clm-parent-inference-restricted": {
+      "text": "技術文件明文規定父母線索只談關係與性格議題，嚴禁推測姓氏或具體事件。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/解讀邊界與誠實聲明.md",
+        "anchor": "硬性禁止"
+      },
+      "evidence": [
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "六、父母線索（佐證用）"
+        }
+      ],
+      "supersedes": null,
+      "notes": "這是關於文件規定的主張，官方來源即權威。但文件規定不等於實作照做——實作的落差見 clm-parent-guard-narrower。"
+    },
+    "clm-parent-guard-narrower": {
+      "text": "paipan.html 送給 AI 的父母線索防護字串只寫「嚴禁猜姓氏」，未涵蓋技術文件所稱的「具體事件」；全檔搜不到「具體事件」字樣。",
+      "risk": "normal",
+      "assessment": "deprecated",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/解讀邊界與誠實聲明.md",
+        "anchor": "硬性禁止"
+      },
+      "evidence": [
+        {
+          "source_id": "src-26ef87d2e9881ea4316f",
+          "relation": "supports",
+          "locator": "599 行：【父母線索｜只談關係/性格議題，嚴禁猜姓氏】"
+        },
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "contradicts",
+          "locator": "六、父母線索：「只談關係與性格議題，嚴禁猜測姓氏或具體事件」"
+        }
+      ],
+      "supersedes": null,
+      "notes": "此主張於快照 2b791137 為真，已於 2026-08-27 修補，由 clm-parent-guard-fixed 取代。保留紀錄的理由：這類「文件規範與送進模型的字串各自獨立」的落差會再發生，刪掉就失去了它曾經存在過的證據。文件的 contradicts 證據一併保留。"
+    },
+    "clm-parent-guard-fixed": {
+      "text": "paipan.html 599 行送給 AI 的父母線索防護字串為「只談關係/性格議題，嚴禁猜姓氏或具體事件」，與技術文件的規定一致。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-08-27",
+      "location": {
+        "path": "wiki/concepts/解讀邊界與誠實聲明.md",
+        "anchor": "硬性禁止"
+      },
+      "evidence": [
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "supports",
+          "locator": "599 行：【父母線索｜只談關係/性格議題，嚴禁猜姓氏或具體事件】"
+        },
+        {
+          "source_id": "src-5b529fe7c7f91bcdfdd6",
+          "relation": "supports",
+          "locator": "六、父母線索（佐證用）"
+        }
+      ],
+      "supersedes": "clm-parent-guard-narrower",
+      "notes": "修補僅替換一個字串，未動計算邏輯，inline JavaScript 通過 node --check。防護字串存在不等於模型必然遵守——那要靠實際產出抽查，尚未做。"
+    }
+  }
+}
