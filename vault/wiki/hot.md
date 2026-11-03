@@ -13,24 +13,28 @@ tags:
 
 ## Last Updated
 
-2026-11-03，ingest 操作 `ingest-paipan-dedupe-20261103` 完成（三處重複計算已收斂）。
+2026-11-03，ingest 操作 `ingest-hepan-20261103` 完成（hepan.html 稽核）。
 
 ## Key Recent Facts
 
-- 三處重複計算已收斂為頂層共用函式：`lonToGate`、`ziweiHourIndex(h)`、`designTime(utc)`，`compute()` 與 `chartSummary()` 共用同一份。
-- `_ltg` 一直是多餘的——它和 `lonToGate` 同屬一個 `<script>` 的頂層作用域，摘要那邊本來就能直接呼叫。
-- **刻意沒合併** `fmtSign`/`_fmt` 與 `CENTER_NAME`/`_CNM`：前者多語＋一位小數，後者固定繁中＋零位小數，行為不同。
-- 收斂版 `Math.random` 已降為 **0 處**（星空動畫隨首頁改版移除），確定性比稽核時更強。
-- `paipan.html` 在稽核版與收斂版之間被其他 commit 大幅改過（首頁改版、千字精華、聊天機器人），12 項參數已重新核對全數成立。
+- **hepan.html 內部零重複**——每個計算邏輯各只出現一次。paipan 那種「畫面一份、摘要一份」的問題不存在，因為合盤只有 `calcPerson()` 一條路徑。
+- **但跨檔重複約 14 項**：hepan 自帶 `GATE_ORDER`、`CHANNELS`、`_ltg`、`planetLon`、`sunLon`、五行表、土星回歸等。逐項驗證**目前零行為漂移**。
+- 三處「差異」純屬命名：`lonToGate`/`_ltg`、`trueNodeLon`/`_tnode`、參數 `date`/`dt`。正規化後逐字相同。
+- **檔內收斂反而加大不對稱**：paipan 已有 `ziweiHourIndex()`/`designTime()`，hepan 仍就地展開——改 paipan 不會同步到 hepan。
+- 合盤**不輸出父母線索**，所以沒有父母防護缺口的問題。但 `_fm`（218 宣告、234 賦值）零次讀取，是死碼。
+- hepan 的關卡年只有土星回歸一個訊號（與 paipan 逐字相同），沒有流年沖日支與大運交接。
+- paipan 殘留一份低風險重複：`wx`(634) 與 `_wx2`(685) 兩份天干五行表，都在 `chartSummary()` 內。靜態對照資料，漂移風險極低。
 
 ## Recent Changes
 
-- 擷取收斂版快照 `e375e4d6…`；修補版 `e5206373…` 轉為 `superseded`。四份快照全部保留。
-- 新增主張 `clm-calc-single-source`（accepted）。
-- 五則既有主張補上收斂版為支持證據並更新 `reviewed_at`。
+- 擷取 `hepan.html` 快照 `56f9cc27…`（482 行）。
+- 新增來源頁 [[hepan 合盤實作]]、問題頁 [[跨檔計算層重複]]。
+- 新增主張 `clm-hepan-no-internal-dup`、`clm-crossfile-calc-duplication`（皆 accepted）。
 
 ## Active Threads
 
+- **待決定**：跨檔重複的處理方式 A（抽出 `fusheng-calc.js` 共用）／ B（只對齊形式）／ C（維持現狀）。傾向 A。
 - **待抽查**：防護字串存在不等於模型遵守，要拿實際產出的報告抽驗父母段落。
-- **待驗**：拿已知出生資料與第三方排盤軟體對照——所有來源同 repo 同作者，這才是真正的獨立佐證。
-- **未讀**：`hepan.html`、`admin.html`。`hepan.html` 也有自己的 `calcPerson()`，可能存在同類的重複實作。
+- **待驗**：與第三方排盤軟體對照——所有來源同 repo 同作者，這才是真正的獨立佐證。
+- **未讀**：`admin.html`。
+- **可清**：hepan 的 `_fm` 死碼；paipan 的 `_wx2` 重複表。

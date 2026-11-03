@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T06:20:00Z",
+  "generated_at": "2026-11-03T06:35:00Z",
   "schema": "claude-obsidian.source-ledger.v1",
   "sources": {
     "src-5b529fe7c7f91bcdfdd6": {
@@ -91,7 +91,28 @@
         "wiki/concepts/排盤引擎架構.md",
         "wiki/concepts/關卡年推算.md",
         "wiki/concepts/解讀邊界與誠實聲明.md",
-        "wiki/questions/排盤程式碼是否與技術文件一致.md"
+        "wiki/questions/排盤程式碼是否與技術文件一致.md",
+        "wiki/questions/跨檔計算層重複.md"
+      ]
+    },
+    "src-48d6187131b9e9e7361e": {
+      "title": "hepan.html（合盤實作）",
+      "origin": {
+        "kind": "file",
+        "locator": ".raw/captured/56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d.html"
+      },
+      "content_kind": "code",
+      "content_sha256": "56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d",
+      "authority": "primary",
+      "review_status": "active",
+      "ingested_at": "2026-11-03",
+      "retrieved_at": "2026-11-03",
+      "refresh_due": "2027-02-03",
+      "independence_key": "fusheng-matrix-repo",
+      "supersedes": null,
+      "pages": [
+        "wiki/sources/hepan 合盤實作.md",
+        "wiki/questions/跨檔計算層重複.md"
       ]
     }
   }

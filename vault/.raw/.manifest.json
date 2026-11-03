@@ -4,6 +4,8 @@
     "wiki/concepts/解讀邊界與誠實聲明.md": "c-000004",
     "wiki/concepts/關卡年推算.md": "c-000003",
     "wiki/questions/排盤程式碼是否與技術文件一致.md": "c-000005",
+    "wiki/questions/跨檔計算層重複.md": "c-000008",
+    "wiki/sources/hepan 合盤實作.md": "l-000007",
     "wiki/sources/paipan 單人排盤實作.md": "l-000006",
     "wiki/sources/解盤公式技術文件.md": "l-000001"
   },
@@ -18,6 +20,17 @@
       "ingested_at": "2026-08-27",
       "operation_id": "ingest-paipan-20260827",
       "sha256": "2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a"
+    },
+    "src-48d6187131b9e9e7361e": {
+      "captured_path": ".raw/captured/56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d.html",
+      "generated_pages": [
+        "wiki/sources/hepan 合盤實作.md",
+        "wiki/questions/跨檔計算層重複.md"
+      ],
+      "inbox_path": "inbox/hepan.html",
+      "ingested_at": "2026-11-03",
+      "operation_id": "ingest-hepan-20261103",
+      "sha256": "56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d"
     },
     "src-5b529fe7c7f91bcdfdd6": {
       "captured_path": ".raw/captured/81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454.md",

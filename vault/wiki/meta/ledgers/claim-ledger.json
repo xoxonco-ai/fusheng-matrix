@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T06:20:00Z",
+  "generated_at": "2026-11-03T06:35:00Z",
   "schema": "claude-obsidian.claim-ledger.v1",
   "claims": {
     "clm-engine-deterministic": {
@@ -241,6 +241,51 @@
       ],
       "supersedes": null,
       "notes": "行為等價性由三層證據確立：從檔案抽出兩份實作逐值對跑 29,377 個黃經值零不一致；二分法 3 種 sunLon 替身 × 292 時刻零不一致；瀏覽器實跑 6 組出生資料，改動前後渲染 DOM 與 AI 摘要逐字相同。刻意未合併 fmtSign/_fmt 與 CENTER_NAME/_CNM——那兩組行為不同（多語＋小數位 vs 固定繁中）。"
+    },
+    "clm-hepan-no-internal-dup": {
+      "text": "hepan.html 內部沒有重複實作：閘門轉換、紫微時辰索引、設計盤二分、五行對照表、GATE_ORDER、CHANNELS 等在檔案內各只出現一次。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-03",
+      "location": {
+        "path": "wiki/sources/hepan 合盤實作.md",
+        "anchor": "與 paipan.html 的關係"
+      },
+      "evidence": [
+        {
+          "source_id": "src-48d6187131b9e9e7361e",
+          "relation": "supports",
+          "locator": "逐項計數：_ltg / sunLon / h===23 / sunLon(utc)-88 / 天干表 / 地支表 / GATE_ORDER / CHANNELS 各 1 份"
+        }
+      ],
+      "supersedes": null,
+      "notes": "paipan 原本那種「畫面一份、摘要一份」的檔內重複在 hepan 不存在，因為合盤只有 calcPerson() 一條計算路徑。"
+    },
+    "clm-crossfile-calc-duplication": {
+      "text": "paipan.html 與 hepan.html 各自帶一套計算層，約 14 項重複；經逐項驗證目前行為完全一致，但沒有任何機制保證兩邊同步。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-03",
+      "location": {
+        "path": "wiki/questions/跨檔計算層重複.md",
+        "anchor": "逐項比對結果"
+      },
+      "evidence": [
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "paipan 側：lonToGate、ziweiHourIndex、designTime、planetLon、trueNodeLon、sunLon、GATE_ORDER 等"
+        },
+        {
+          "source_id": "src-48d6187131b9e9e7361e",
+          "relation": "supports",
+          "locator": "hepan 側：_ltg、就地時辰索引(230)、就地設計盤二分(246)、planetLon、_tnode、sunLon、GATE_ORDER 等"
+        }
+      ],
+      "supersedes": null,
+      "notes": "驗證：閘門轉換掃 29,377 個黃經值 0 不一致；設計盤 3 種 sunLon 替身 × 292 時刻 = 876 次 0 不一致；時辰索引 h=0..23 0 不一致；planetLon 與北交點把命名差異正規化後逐字相同。2026-11-03 的檔內收斂使不對稱擴大——paipan 已抽成共用函式，hepan 仍就地展開，改 paipan 不會同步到 hepan。處理方式 A/B/C 待 repo 擁有者決定。"
     }
   }
 }
