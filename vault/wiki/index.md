@@ -3,7 +3,7 @@ type: meta
 title: Wiki Index
 status: evergreen
 created: 2026-08-24
-updated: 2026-08-27
+updated: 2026-11-03
 tags:
   - meta
   - index
@@ -16,7 +16,7 @@ This catalog is updated by completed knowledge operations.
 ## Sources
 
 - [[解盤公式技術文件]] — 人生羅盤排盤引擎的公開技術規格（official，2026-08-24）
-- [[paipan 單人排盤實作]] — 單人排盤頁完整實作（primary，2026-08-27，兩份快照）
+- [[paipan 單人排盤實作]] — 單人排盤頁完整實作（primary，四份快照，最新 2026-11-03）
 
 ## Concepts
 
