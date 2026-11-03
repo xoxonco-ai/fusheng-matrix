@@ -3,7 +3,7 @@ address: l-000006
 type: source
 title: paipan.html（單人排盤實作）
 created: 2026-08-27
-updated: 2026-08-27
+updated: 2026-11-03
 status: mature
 tags:
   - source
@@ -13,21 +13,22 @@ source_type: code
 author: 浮生矩陣
 date_published: ""
 url: ""
-source_id: src-a18adecb8477cace4c61
-sha256: e5206373e27f51c0badf09bc846f06ec6d7d2d8bda7e296aabb5735e067fe2ed
+source_id: src-928d2d54da9bc0df723a
+sha256: e375e4d6543399132a663787e5f52570e012cd85fbcf5ef914337df04ae624eb
 authority: primary
 independence_key: fusheng-matrix-repo
 review_state: active
 key_claims:
   - 計算路徑內無隨機性與當下時間，排盤為確定性計算
   - 關卡年三訊號的掃描範圍與步長與技術文件逐字吻合
-  - 父母線索的防護字串只禁止猜姓氏，未涵蓋「具體事件」
+  - 三處計算邏輯已收斂為單一來源，compute() 與 chartSummary() 共用
 claim_ids:
   - clm-engine-deterministic
   - clm-gate-years-computed
   - clm-hd-design-88deg
   - clm-doc-code-consistent
   - clm-parent-guard-fixed
+  - clm-calc-single-source
 related:
   - "[[解盤公式技術文件]]"
   - "[[排盤引擎架構]]"
@@ -53,10 +54,16 @@ JavaScript 計算、三語系文案、金流與 Supabase 串接，全在一個�
 | 快照 | SHA-256 前綴 | 狀態 | 內容 |
 |------|-------------|------|------|
 | 稽核版 | `2b791137…546a` | `superseded` | 父母線索防護只寫「嚴禁猜姓氏」 |
-| 修補版 | `e5206373…e2ed` | `active` | 防護補成「嚴禁猜姓氏或具體事件」 |
+| 修補版 | `e5206373…e2ed` | `superseded` | 防護補成「嚴禁猜姓氏或具體事件」 |
+| 收斂版 | `e375e4d6…24eb` | `active` | 三處重複計算收斂為共用函式 |
 
-兩份差異僅 599 行一個字串，其餘位元組相同。修補後 inline JavaScript
-通過 `node --check` 語法檢查。
+稽核版→修補版：差異僅一個字串，其餘位元組相同。
+
+修補版→收斂版：中間檔案還被其他 commit 大幅改過（首頁改版、千字精華、
+聊天機器人），所以**不是只有我的重構**。收斂版是「別人的改版 ＋ 防護修補
+＋ 三處去重」疊加後的結果，已重新核對過全部 12 項參數仍成立。
+
+每一版的 inline JavaScript 都通過 `node --check`。
 
 ## 為什麼權威層級是 primary 而非 official
 
@@ -86,5 +93,5 @@ JavaScript 計算、三語系文案、金流與 Supabase 串接，全在一個�
 
 - `hepan.html`（合盤）與 `admin.html`（後台）不在本次擷取範圍
 - 未執行程式、未與第三方排盤軟體對照實際輸出
-- 修補後未重跑完整參數稽核（差異僅一個字串，不影響任何計算）
+- 收斂版已重跑 12 項參數核對；但未逐行審閱中間那幾個 commit 帶進來的其他改動（首頁改版等），本頁的結論只涵蓋計算相關部分
 - 未檢視 CDN 上的三個開源引擎本身的實作

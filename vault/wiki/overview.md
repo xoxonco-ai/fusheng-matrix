@@ -3,7 +3,7 @@ type: overview
 title: Vault Overview
 status: developing
 created: 2026-08-24
-updated: 2026-08-27
+updated: 2026-11-03
 tags:
   - overview
 ---
@@ -21,7 +21,7 @@ This local-first vault compounds source-backed knowledge over time.
 
 ## 目前的證據狀態
 
-七則主張：六則 `accepted`、一則 `deprecated`。第一輪只有文件時，
+十則主張：九則 `accepted`、一則 `deprecated`。第一輪只有文件時，
 三則技術主張停在 `provisional`；第二輪讀了 `paipan.html` 逐項比對後升上來。
 
 **一則主張走完了完整生命週期**：`clm-parent-guard-narrower` 記錄了
@@ -29,9 +29,27 @@ This local-first vault compounds source-backed knowledge over time.
 落差修補後轉為 `deprecated`，由 `clm-parent-guard-fixed` 取代。
 舊主張與它的矛盾證據都沒有刪除——這類落差會再發生，紀錄留著才有參考價值。
 
+## 已處理的實作問題
+
+兩項稽核發現都已修掉，各自留下完整的證據鏈與退役紀錄：
+
+1. **父母線索防護缺口**（2026-08-27）——文件說禁止「姓氏或具體事件」，
+   程式碼只寫了「姓氏」。已補齊。
+2. **三處重複計算**（2026-11-03）——閘門轉換、紫微時辰索引、設計盤時刻
+   各有兩份實作，改一邊會靜默漂移。已收斂為共用函式，見 [[排盤引擎架構]]。
+
+## 待決定
+
+**[[跨檔計算層重複]]**——`hepan.html` 自帶一整套計算層，與 `paipan.html`
+重複約 14 項。逐項驗證目前零行為漂移，但沒有機制保證同步。而 2026-11-03
+的檔內收斂反而加大了不對稱：paipan 已抽成共用函式，hepan 仍就地展開。
+
+處理方式 A（抽出共用 JS）／ B（只對齊形式）／ C（維持現狀）待決定。
+
 ## 未解的部分
 
-- 與第三方排盤軟體對照實際輸出——兩個來源共用 `independence_key`，
-  互相佐證的份量有限，真正的獨立驗證還沒做
-- `hepan.html`、`admin.html` 未讀
+- 與第三方排盤軟體對照實際輸出——所有來源共用 `independence_key`
+  （同 repo、同作者），互相佐證的份量有限，真正的獨立驗證還沒做
+- 防護字串存在不等於模型遵守，需抽驗實際產出的報告
+- `admin.html` 未讀（`hepan.html` 已於 2026-11-03 稽核）
 - 三個 CDN 開源引擎本身只確認版本號，未檢視實作

@@ -3,7 +3,7 @@ type: meta
 title: Wiki Log
 status: evergreen
 created: 2026-08-24
-updated: 2026-08-27
+updated: 2026-11-03
 tags:
   - meta
   - log
@@ -12,6 +12,88 @@ tags:
 # Wiki Log
 
 Newest completed operations appear first.
+
+## 2026-11-03 — `ingest-hepan-20261103`
+
+稽核 `hepan.html`，釐清重複實作的實際範圍。來源：482 行，
+SHA-256 `56f9cc27…f19d`，權威層級 `primary`。
+
+**新增頁面**
+
+- `wiki/sources/hepan 合盤實作.md`
+- `wiki/questions/跨檔計算層重複.md`
+
+**結論**
+
+檔案內部**零重複**；但與 `paipan.html` **跨檔重複約 14 項**，
+逐項驗證目前零行為漂移。三處差異純屬命名。
+
+| 驗證 | 結果 |
+|------|------|
+| 閘門轉換 `lonToGate` vs `_ltg` | 29,377 個黃經值 → 0 不一致 |
+| 設計盤 `designTime` vs hepan 就地版 | 3 替身 × 292 時刻 = 876 次 → 0 不一致 |
+| 紫微時辰索引 | h=0..23 → 0 不一致 |
+| `planetLon`、北交點 | 命名正規化後逐字相同 |
+| `GATE_ORDER` 等 9 項常數與函式 | 逐字相同 |
+
+**主張評估**
+
+| 主張 | 評估 |
+|------|------|
+| `clm-hepan-no-internal-dup` | 新增 **accepted** |
+| `clm-crossfile-calc-duplication` | 新增 **accepted** |
+
+**附帶發現**：hepan 的 `_fm` 是死碼（宣告、賦值、零次讀取）；
+hepan 關卡年只有土星回歸；paipan 殘留 `wx`/`_wx2` 兩份天干五行表（低風險）。
+
+**未涵蓋**：未逐行審閱 `quickRead()` 的合盤判定邏輯與詮釋內容；
+`admin.html` 仍未讀。跨檔重複的處理方式待決定，本次只記錄不修改。
+
+
+## 2026-11-03 — `ingest-paipan-dedupe-20261103`
+
+收斂稽核時發現的三處重複計算，並重新擷取檔案為新快照。
+
+**程式碼變更**：`paipan.html`，18 行新增 / 8 行刪除
+
+| 邏輯 | 收斂後 | 收斂前 |
+|------|--------|--------|
+| 黃經轉閘門 | `lonToGate`（兩邊共用） | `lonToGate` / `_ltg` 各一份 |
+| 紫微時辰索引 | `ziweiHourIndex(h)` | 兩處就地運算 |
+| 設計盤時刻 | `designTime(utc)` | 兩處各自展開二分迴圈 |
+
+**行為等價性驗證（三層）**
+
+1. 從檔案抽出兩份實作逐值對跑：29,377 個黃經值（含 64 個閘門邊界 ±1e-9
+   與每爻邊界），零不一致
+2. 二分法：3 種確定性 `sunLon` 替身 × 292 個跨百年時刻 = 876 次，零不一致
+3. 端對端：用 npm 取回三個引擎在 Chromium 實跑 6 組出生資料（晚子時 23:00、
+   早子時 00:15、閏日、南半球、時間不確定、不同時區），改動前後渲染 DOM
+   與 AI 摘要逐字相同
+
+**刻意未合併**：`fmtSign`/`_fmt`、`CENTER_NAME`+`cName`/`_CNM`——行為不同
+（多語＋一位小數 vs 固定繁中＋零位小數）。看起來像重複就合併是錯的。
+
+**來源狀態**
+
+| 來源 | 變動 |
+|------|------|
+| `src-a18adecb…`（修補版 `e5206373…`） | active → **superseded** |
+| `src-928d2d54…`（收斂版 `e375e4d6…`） | 新增 active，`supersedes` 前者 |
+
+**主張評估變動**
+
+| 主張 | 變動 |
+|------|------|
+| `clm-calc-single-source` | 新增 **accepted** |
+| 其餘五則技術主張 | 補上收斂版為支持證據，`reviewed_at` → 2026-11-03 |
+
+**重新核對**：檔案在兩版之間被其他 commit 大幅改過，已對收斂版重跑 12 項
+參數核對，全數成立；`Math.random` 由 1 處降為 0 處。
+
+**未涵蓋**：未逐行審閱中間那幾個 commit 的非計算改動；`hepan.html` 的
+`calcPerson()` 可能有同類重複，未查。
+
 
 ## 2026-08-27 — `ingest-paipan-fix-20260827`
 

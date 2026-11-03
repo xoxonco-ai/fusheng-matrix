@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T05:35:00Z",
+  "generated_at": "2026-11-03T06:35:00Z",
   "schema": "claude-obsidian.source-ledger.v1",
   "sources": {
     "src-5b529fe7c7f91bcdfdd6": {
@@ -57,7 +57,7 @@
       "content_kind": "code",
       "content_sha256": "e5206373e27f51c0badf09bc846f06ec6d7d2d8bda7e296aabb5735e067fe2ed",
       "authority": "primary",
-      "review_status": "active",
+      "review_status": "superseded",
       "ingested_at": "2026-08-27",
       "retrieved_at": "2026-08-27",
       "refresh_due": "2026-11-27",
@@ -69,6 +69,50 @@
         "wiki/concepts/關卡年推算.md",
         "wiki/concepts/解讀邊界與誠實聲明.md",
         "wiki/questions/排盤程式碼是否與技術文件一致.md"
+      ]
+    },
+    "src-928d2d54da9bc0df723a": {
+      "title": "paipan.html（單人排盤實作，計算收斂版）",
+      "origin": {
+        "kind": "file",
+        "locator": ".raw/captured/e375e4d6543399132a663787e5f52570e012cd85fbcf5ef914337df04ae624eb.html"
+      },
+      "content_kind": "code",
+      "content_sha256": "e375e4d6543399132a663787e5f52570e012cd85fbcf5ef914337df04ae624eb",
+      "authority": "primary",
+      "review_status": "active",
+      "ingested_at": "2026-11-03",
+      "retrieved_at": "2026-11-03",
+      "refresh_due": "2027-02-03",
+      "independence_key": "fusheng-matrix-repo",
+      "supersedes": "src-a18adecb8477cace4c61",
+      "pages": [
+        "wiki/sources/paipan 單人排盤實作.md",
+        "wiki/concepts/排盤引擎架構.md",
+        "wiki/concepts/關卡年推算.md",
+        "wiki/concepts/解讀邊界與誠實聲明.md",
+        "wiki/questions/排盤程式碼是否與技術文件一致.md",
+        "wiki/questions/跨檔計算層重複.md"
+      ]
+    },
+    "src-48d6187131b9e9e7361e": {
+      "title": "hepan.html（合盤實作）",
+      "origin": {
+        "kind": "file",
+        "locator": ".raw/captured/56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d.html"
+      },
+      "content_kind": "code",
+      "content_sha256": "56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d",
+      "authority": "primary",
+      "review_status": "active",
+      "ingested_at": "2026-11-03",
+      "retrieved_at": "2026-11-03",
+      "refresh_due": "2027-02-03",
+      "independence_key": "fusheng-matrix-repo",
+      "supersedes": null,
+      "pages": [
+        "wiki/sources/hepan 合盤實作.md",
+        "wiki/questions/跨檔計算層重複.md"
       ]
     }
   }

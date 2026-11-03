@@ -399,6 +399,19 @@ function trueNodeLon(date){const e1=Astronomy.Ecliptic(Astronomy.GeoVector('Moon
 function planetLon(b,d){if(b==='Earth')return(Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon+180)%360;if(b==='NNode')return trueNodeLon(d);if(b==='SNode')return(trueNodeLon(d)+180)%360;return Astronomy.Ecliptic(Astronomy.GeoVector(b,d,true)).elon}
 const sunLon=d=>Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon;
 
+/* ===== 共用計算：compute()（畫面）與 chartSummary()（送 AI 的摘要）都走這裡 =====
+   以下函式——閘門轉換 lonToGate、紫微時辰索引、設計盤時刻——原本在兩處各有一份
+   實作。兩份內容相同時看不出問題，但只改一邊就會靜默漂移：使用者在畫面上看到的盤
+   與報告所依據的盤會不一致，而且不會拋錯。
+   調整演算法請只改這裡，不要在呼叫端就地展開。 */
+const ziweiHourIndex=h=>(h===23)?12:Math.floor((h+1)/2);          // 0=早子時 … 12=晚子時
+const designTime=utc=>{                                            // 出生前太陽黃經退 88° 的時刻
+  const tg=(sunLon(utc)-88+360)%360;
+  let lo=new Date(utc-95*864e5),hi=new Date(utc-80*864e5);
+  for(let i=0;i<60;i++){let m=new Date((+lo+ +hi)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi=m;else lo=m}
+  return new Date((+lo+ +hi)/2);
+};
+
 /* ===== 城市 ===== */
 const CITY_GROUPS=[
  ['台灣',[['台北',121.5654,25.0330,8],['新北',121.4628,25.0169,8],['基隆',121.7392,25.1276,8],['桃園',121.3010,24.9936,8],['新竹',120.9686,24.8138,8],['苗栗',120.8214,24.5602,8],['台中',120.6839,24.1477,8],['彰化',120.5161,24.0809,8],['南投',120.6840,23.9609,8],['雲林',120.4313,23.7092,8],['嘉義',120.4473,23.4801,8],['台南',120.2270,22.9999,8],['高雄',120.3014,22.6273,8],['屏東',120.4886,22.6826,8],['宜蘭',121.7195,24.7021,8],['花蓮',121.6015,23.9871,8],['台東',121.1444,22.7583,8],['澎湖',119.5793,23.5712,8],['金門',118.3186,24.4321,8],['馬祖',119.9499,26.1608,8]]],
@@ -522,7 +535,7 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
     `<dl class="kv" style="margin-top:14px"><dt>${T('taiyuan')}</dt><dd>${ec.getTaiYuan()}</dd><dt>${T('minggong')}</dt><dd>${ec.getMingGong()}</dd><dt>${T('shengong')}</dt><dd>${ec.getShenGong()}</dd><dt>${T('xunkong')}</dt><dd>${ec.getDayXunKong()}</dd></dl></div></details>`;
 
   /* ---------- 紫微 ---------- */
-  const ti=(h===23)?12:Math.floor((h+1)/2);
+  const ti=ziweiHourIndex(h);
   const ds=`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`;
   const zw=iztro.astro.bySolar(ds,ti,gender==='男'?'male':'female','zh-CN');
   const soulP=zw.palaces.find(p=>p.name==='命宫');
@@ -566,9 +579,7 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   document.getElementById('astro-extra').innerHTML=cav(T('cav_astro'))+`<p class="subhead">${T('aspects_h')}</p><div>${asp.join('')||'—'}</div><p class="subhead">${T('balance_h')}</p><div>${elBar}</div>`;
 
   /* ---------- 人類圖 ---------- */
-  const tg=(sunLon(utc)-88+360)%360;let lo=new Date(utc-95*864e5),hi2=new Date(utc-80*864e5);
-  for(let i=0;i<60;i++){let m=new Date((+lo+ +hi2)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi2=m;else lo=m}
-  const design=new Date((+lo+ +hi2)/2);
+  const design=designTime(utc);
   const HB=[['Sun',0],['Earth',1],['NNode',2],['SNode',3],['Moon',4],['Mercury',5],['Venus',6],['Mars',7],['Jupiter',8],['Saturn',9],['Uranus',10],['Neptune',11],['Pluto',12]];
   const HBNAME={tw:['太陽','地球','北交點','南交點','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],cn:['太阳','地球','北交点','南交点','月亮','水星','金星','火星','木星','土星','天王星','海王星','冥王星'],en:['Sun','Earth','North Node','South Node','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']};
   const act=new Set();let pSun,dSun,pEarth,dEarth;const pAct=[],dAct=[];
@@ -609,7 +620,6 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
 const _s2t=s2t;
 const _SG=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
 const _fmt=l=>{l=((l%360)+360)%360;return _SG[Math.floor(l/30)]+(l%30).toFixed(0)+'°'};
-const _ltg=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);return{gate:GATE_ORDER[i],line:Math.floor((d-i*5.625)/0.9375)+1}};
 const _CNM={head:'頭腦',ajna:'邏輯',throat:'喉嚨',g:'G中心',heart:'意志力',spleen:'直覺',sacral:'薦骨',solar:'情緒',root:'根部'};
 function chartSummary(c){
   const [Y,M,D]=(c.birth_date||'1990-01-01').split('-').map(Number);
@@ -629,7 +639,7 @@ function chartSummary(c){
   out.push(`【八字】四柱：${ec.getYear()} ${ec.getMonth()} ${ec.getDay()} ${unknown?'(時柱未定)':ec.getTime()}；日主：${ec.getDayGan()}(${wx[ec.getDayGan()]})；十神(年月時)：${ec.getYearShiShenGan()}/${ec.getMonthShiShenGan()}/${unknown?'—':ec.getTimeShiShenGan()}；五行：木${cnt2.木} 火${cnt2.火} 土${cnt2.土} 金${cnt2.金} 水${cnt2.水}；納音：${ec.getYearNaYin()}/${ec.getMonthNaYin()}/${ec.getDayNaYin()}`);
   // 紫微
   try{
-    const ti=(h===23)?12:Math.floor((h+1)/2);
+    const ti=ziweiHourIndex(h);
     const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
     const sp=zw.palaces.find(p=>p.name==='命宫');
     const _fmp=zw.palaces.find(p=>p.name==='父母'); if(_fmp)_fm=_s2t(_fmp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)';
@@ -645,9 +655,9 @@ function chartSummary(c){
   let mc2=((Math.atan2(Math.sin(ra),Math.cos(ra)*Math.cos(eps))*180/Math.PI)%360+360)%360;
   out.push(`【占星】${pls}；上升${_fmt(asc2)}；天頂${_fmt(mc2)}${unknown?'（上升/月亮因時間不確定僅供參考）':''}`);
   // 人類圖
-  const tg=(sunLon(utc)-88+360)%360;let lo2=new Date(utc-95*864e5),hi2=new Date(utc-80*864e5);for(let i=0;i<60;i++){let m=new Date((+lo2+ +hi2)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi2=m;else lo2=m}const des=new Date((+lo2+ +hi2)/2);
+  const des=designTime(utc);
   const B=['Sun','Earth','NNode','SNode','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
-  const act=new Set();let pSun,dSun;B.forEach(b=>{const g=_ltg(planetLon(b,utc));act.add(g.gate);if(b==='Sun')pSun=g});B.forEach(b=>{const g=_ltg(planetLon(b,des));act.add(g.gate);if(b==='Sun')dSun=g});
+  const act=new Set();let pSun,dSun;B.forEach(b=>{const g=lonToGate(planetLon(b,utc));act.add(g.gate);if(b==='Sun')pSun=g});B.forEach(b=>{const g=lonToGate(planetLon(b,des));act.add(g.gate);if(b==='Sun')dSun=g});
   const dc2=new Set();const adj2={};const defc=[];CHANNELS.forEach(ch=>{if(act.has(ch[0])&&act.has(ch[1])){defc.push(ch);const a=gco(ch[0]),b=gco(ch[1]);dc2.add(a);dc2.add(b);(adj2[a]=adj2[a]||new Set()).add(b);(adj2[b]=adj2[b]||new Set()).add(a)}});
   const conn2=(s,g)=>{if(!dc2.has(s)||!dc2.has(g))return false;const seen=new Set([s]),q=[s];while(q.length){const x=q.shift();if(x===g)return true;(adj2[x]||[]).forEach(y=>{if(!seen.has(y)){seen.add(y);q.push(y)}})}return false};
   let m2t2=false;MOTORS.forEach(m=>{if(conn2(m,'throat'))m2t2=true});
