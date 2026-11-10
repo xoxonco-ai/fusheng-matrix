@@ -1,46 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>隱私與資料安全｜浮生矩陣</title>
 <meta name="description" content="浮生矩陣的隱私說明：免費排盤在你的瀏覽器計算、資料不上傳；生辰資料只用於生成你的報告，不轉售、不做行銷名單；你可以隨時要求刪除帳號與資料。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ink.css">
-<link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="members.css">
-<style>
-.wrap{max-width:860px}
-h2.sec{font-size:20px;letter-spacing:.06em;margin:0 0 12px;color:var(--gold-bright)}
-.card p,.card li{font-family:var(--sans);font-weight:300;font-size:15px;color:var(--text);line-height:2}
-.card p{margin:0 0 12px}
-.card p:last-child{margin-bottom:0}
-.card ul{margin:0;padding-left:22px}
-.kicker{font-family:var(--sans);font-size:12px;letter-spacing:.1em;color:var(--gold);margin:0 0 10px}
-</style>
-<link rel="stylesheet" href="warm.css">
-<link rel="stylesheet" href="v5-theme.css?v=1">
+<meta name="theme-color" content="#0b130f">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lantern.css?v=1">
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <a class="brand" href="index.html">浮生羅盤</a>
-    <div class="row">
-      <a class="btn ghost small" href="about.html">品牌介紹</a>
-      <a class="btn ghost small" href="faq.html">FAQ</a>
-      <a class="btn ghost small" href="paipan.html">免費排盤</a>
-    </div>
-  </div>
-  <h1>隱私與資料安全</h1>
-  <p class="sub">你的生辰資料怎麼被使用、存在哪裡、如何刪除</p>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">跳至主要內容</a>
+<div class="grain" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <a class="brand" href="index.html" aria-label="浮生羅盤首頁"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M13 1.5 24.5 13 13 24.5 1.5 13Z"/><circle cx="13" cy="13" r="3.2"/></svg><span><strong>浮生羅盤</strong><small>FUSHENG MATRIX · NOTES ON LIVING</small></span></a>
+  <nav class="nav__links" aria-label="主選單"><a href="index.html#journal">讀一段浮生</a><a href="jing/index.html">經在人間</a><a href="index.html#reports">人生羅盤</a><a href="login.html">會員登入</a><a class="nav__cta" href="paipan.html">免費四盤總覽 <span class="arrow" aria-hidden="true">↗</span></a></nav>
+  <button class="burger" id="burger" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+</header>
+<div class="menu" id="menu"><a href="index.html#journal"><span>讀一段浮生</span><small>01</small></a><a href="jing/index.html"><span>經在人間</span><small>02</small></a><a href="index.html#reports"><span>人生羅盤</span><small>03</small></a><a href="login.html"><span>會員登入</span><small>04</small></a><a href="paipan.html"><span>免費四盤總覽</span><small>↗</small></a></div>
 
-  <div class="card">
+<main id="main">
+  <header class="mast" style="--art:url(assets/wood/hero-life-death.png);--ax:70%;--ay:60%;--as:cover">
+    <div class="mast__in">
+      <p class="label">Privacy · 資料安全</p>
+      <h1 class="mast__title"><span>隱私與資料安全</span></h1>
+      <p class="mast__lede">你的生辰資料怎麼被使用、存在哪裡、如何刪除</p>
+    </div>
+  </header>
+  <div class="sheet">
+    <div class="info">
+<section class="card rv">
     <p class="kicker">免費排盤</p>
     <h2 class="sec">在你的瀏覽器裡計算，資料不經伺服器。</h2>
     <p>免費排盤與千字精華由開源天文／曆法引擎直接在你的裝置上即時計算。這個階段你輸入的出生資料<b>不會上傳</b>到我們的伺服器——關掉頁面就沒有了，我們看不到、也存不到。</p>
-  </div>
-
-  <div class="card">
+  </section>
+<section class="card rv">
     <p class="kicker">完整報告與會員帳號</p>
     <h2 class="sec">開通萬字時，我們會收到並保存這些資料。</h2>
     <ul>
@@ -49,10 +47,9 @@ h2.sec{font-size:20px;letter-spacing:.06em;margin:0 0 12px;color:var(--gold-brig
       <li><b>你選填的補充</b>：例如「一件真實發生過的事」，用於提高報告準確度。</li>
       <li><b>報告內容</b>：生成的千字精華與完整報告，存放於你的帳號下供你隨時查看。</li>
     </ul>
-    <p style="margin-top:12px">資料儲存於 Supabase（雲端資料庫服務）並啟用列級權限控管：你只能讀到自己的資料，其他會員讀不到你的。</p>
-  </div>
-
-  <div class="card">
+    <p>資料儲存於 Supabase（雲端資料庫服務）並啟用列級權限控管：你只能讀到自己的資料，其他會員讀不到你的。</p>
+  </section>
+<section class="card rv">
     <p class="kicker">我們如何使用</p>
     <h2 class="sec">只用於為你服務，其他都不做。</h2>
     <ul>
@@ -61,32 +58,28 @@ h2.sec{font-size:20px;letter-spacing:.06em;margin:0 0 12px;color:var(--gold-brig
       <li>不會用你的資料訓練任何模型。</li>
       <li>我們不收集身分證字號、金融卡號等敏感資訊，也請你不要在任何欄位填寫這類資料。</li>
     </ul>
-  </div>
-
-  <div class="card">
+  </section>
+<section class="card rv">
     <p class="kicker">你的權利</p>
     <h2 class="sec">想刪就刪，私訊一聲就好。</h2>
-    <p>你可以隨時私訊我們（<a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener" style="color:var(--gold-bright)">Facebook</a>／<a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener" style="color:var(--gold-bright)">Instagram</a>）要求：查詢我們保存了你的哪些資料、更正錯誤的資料，或<b>刪除你的帳號與全部資料</b>（含出生資料與報告）。刪除後無法復原，我們會在確認身分後儘速處理。</p>
-  </div>
-
-  <div class="card">
+    <p>你可以隨時私訊我們（<a href="https://www.facebook.com/floatingmatrix" target="_blank" rel="noopener">Facebook</a>／<a href="https://www.instagram.com/floating_matrix/" target="_blank" rel="noopener">Instagram</a>）要求：查詢我們保存了你的哪些資料、更正錯誤的資料，或<b>刪除你的帳號與全部資料</b>（含出生資料與報告）。刪除後無法復原，我們會在確認身分後儘速處理。</p>
+  </section>
+<section class="card rv">
     <p class="kicker">最後</p>
     <h2 class="sec">一句話總結我們的立場。</h2>
     <p>你的生辰是你交給我們的信任，它只會被用來照見你自己——不會變成商品，也不會變成名單。本頁如有更新會直接修改並標註日期。（最後更新：2026 年 7 月）</p>
+  </section>
+    </div>
   </div>
+  <nav class="endnav" aria-label="接著讀"><a href="about.html"><small>接著讀</small><strong>關於浮生矩陣 <span class="arrow" aria-hidden="true">↗</span></strong></a><a href="paipan.html"><small>開始</small><strong>免費排盤 <span class="arrow" aria-hidden="true">↗</span></strong></a></nav>
+</main>
 
-  <p class="sub" style="margin:8px 0 0"><a href="index.html" class="muted" style="text-decoration:none">← 回首頁</a></p>
-</div>
-
-<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
-<nav class="tabbar" aria-label="主導覽">
-  <div class="tabs">
-    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
-    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
-    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
-    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
-  </div>
-</nav>
+<footer class="footer">
+  <a href="index.html">浮生羅盤</a>
+  <nav aria-label="頁尾導覽"><a href="chat.html">浮生對話</a><a href="manifesto.html">關於浮生</a><a href="jing/index.html">經在人間</a><a href="about.html">使用說明</a><a href="faq.html">常見問題</a><a href="privacy.html" aria-current="page">隱私政策</a></nav>
+  <small>© 2026 浮生矩陣</small>
+</footer>
+<script src="lantern.js?v=1"></script>
 <script src="fusheng-widget.js" defer></script>
 </body>
 </html>

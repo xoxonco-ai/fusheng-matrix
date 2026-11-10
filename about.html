@@ -1,60 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>關於浮生矩陣｜誰建立這套系統、報告如何產生</title>
 <meta name="description" content="浮生矩陣由湛娜創立，用紫微、八字、占星、人類圖四套系統交叉驗證，協助你看見自己的劇本。本頁誠實說明：誰建立這套系統、為什麼能整合四套語言、報告如何產生（實算＋框架＋AI 撰寫）、以及浮生導航是什麼。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ink.css">
-<link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="members.css">
-<style>
-.wrap{max-width:860px}
-h2.sec{font-size:22px;letter-spacing:.08em;margin:0 0 14px;color:var(--gold-bright)}
-.card p{font-family:var(--sans);font-weight:300;font-size:15.5px;color:var(--text);line-height:2;margin:0 0 14px}
-.card p:last-child{margin-bottom:0}
-.kicker{font-family:var(--sans);font-size:12px;letter-spacing:.1em;color:var(--gold);margin:0 0 10px}
-.steps4{display:grid;gap:12px;margin-top:8px}
-.steps4 div{border:0;background:var(--ink-700);padding:16px 18px;font-family:var(--sans);font-size:14.5px;font-weight:300;line-height:1.9}
-.steps4 b{color:var(--gold-bright);font-weight:500;display:block;margin-bottom:4px}
-.entry{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
-@media(max-width:560px){.entry{grid-template-columns:1fr}}
-.entry a{display:block;border:0;background:var(--ink-700);padding:16px 18px;text-decoration:none;color:var(--text);font-family:var(--sans);font-size:14px;transition:border-color .25s}
-.entry a:hover{border-color:var(--gold)}
-.entry b{color:var(--gold-bright);font-weight:500;display:block;margin-bottom:4px}
-</style>
-<link rel="stylesheet" href="warm.css">
-<link rel="stylesheet" href="v5-theme.css?v=1">
+<meta name="theme-color" content="#0b130f">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lantern.css?v=1">
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <a class="brand" href="index.html">浮生羅盤</a>
-    <div class="row">
-      <a class="btn ghost small" href="faq.html">FAQ</a>
-      <a class="btn ghost small" href="privacy.html">隱私</a>
-      <a class="btn ghost small" href="paipan.html">免費排盤</a>
-    </div>
-  </div>
-  <h1>關於浮生矩陣</h1>
-  <p class="sub">誰建立這套系統・報告如何產生・浮生導航是什麼</p>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">跳至主要內容</a>
+<div class="grain" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <a class="brand" href="index.html" aria-label="浮生羅盤首頁"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M13 1.5 24.5 13 13 24.5 1.5 13Z"/><circle cx="13" cy="13" r="3.2"/></svg><span><strong>浮生羅盤</strong><small>FUSHENG MATRIX · NOTES ON LIVING</small></span></a>
+  <nav class="nav__links" aria-label="主選單"><a href="index.html#journal">讀一段浮生</a><a href="jing/index.html">經在人間</a><a href="index.html#reports">人生羅盤</a><a href="login.html">會員登入</a><a class="nav__cta" href="paipan.html">免費四盤總覽 <span class="arrow" aria-hidden="true">↗</span></a></nav>
+  <button class="burger" id="burger" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+</header>
+<div class="menu" id="menu"><a href="index.html#journal"><span>讀一段浮生</span><small>01</small></a><a href="jing/index.html"><span>經在人間</span><small>02</small></a><a href="index.html#reports"><span>人生羅盤</span><small>03</small></a><a href="login.html"><span>會員登入</span><small>04</small></a><a href="paipan.html"><span>免費四盤總覽</span><small>↗</small></a></div>
 
-  <div class="card">
+<main id="main">
+  <header class="mast" style="--art:url(assets/wood/hero-life-death.png);--ax:18%;--ay:46%;--as:auto 175%">
+    <div class="mast__in">
+      <p class="label">About · 關於</p>
+      <h1 class="mast__title"><span>關於浮生矩陣</span></h1>
+      <p class="mast__lede">誰建立這套系統・報告如何產生・浮生導航是什麼</p>
+    </div>
+  </header>
+  <div class="sheet">
+    <div class="info">
+<section class="card rv">
     <p class="kicker">浮生矩陣是什麼</p>
     <h2 class="sec">一個覺察品牌，不是一間算命館。</h2>
     <p>浮生矩陣把紫微斗數、八字命理、西洋占星、人類圖當成四種「描述人的語言」，同時攤開、交叉驗證：四套語言都說同一件事的地方，通常是你穩定的底層結構；互相矛盾的地方，通常是你最值得注意的訊號。</p>
     <p>我們不預測未來、不斷吉凶、不下命定標籤。命盤在這裡只有一個用途：當一面夠清楚的鏡子，讓你看見自己正在用哪一套劇本生活——然後由你自己決定，要不要換一種演法。</p>
-  </div>
-
-  <div class="card">
+  </section>
+<section class="card rv">
     <p class="kicker">誰建立這套系統</p>
     <h2 class="sec">湛娜——整理者、陪跑者，不是大師。</h2>
     <p>湛娜是浮生矩陣的創辦人與主要內容創作者。她長期研究紫微斗數、八字、西洋占星與人類圖這四套命盤語言，並將它們與決策思維工具結合，發展出「四系統交叉驗證」的讀法：不比較哪一套更準，而是看四套語言在同一個人身上的共振與矛盾。</p>
     <p>需要說清楚的是：湛娜不預言未來、不替人做決定、也不宣稱自己有任何超自然能力。她的角色是把命盤攤開、把結構講成人話、把問題整理到你可以自己做決定的程度。答案永遠在你手上。</p>
-  </div>
-
-  <div class="card" id="how">
+  </section>
+<section class="card rv" id="how">
     <p class="kicker">報告如何產生</p>
     <h2 class="sec">實算＋框架＋AI 撰寫＋人工把關，四關都攤開講。</h2>
     <div class="steps4">
@@ -63,17 +54,15 @@ h2.sec{font-size:22px;letter-spacing:.08em;margin:0 0 14px;color:var(--gold-brig
       <div><b>③ AI 撰寫</b>我們誠實告訴你：完整報告的初稿由 AI 依上述框架與你的實算命盤撰寫。AI 讓報告能寫到萬字的深度與細度，但它只能在框架的邊界內工作。</div>
       <div><b>④ 人工把關</b>付款後報告自動生成、直接存入你的會員帳號（約 5～10 分鐘）。框架與輸出品質由湛娜持續抽查與打磨；你對內容有任何疑問，私訊即由湛娜親自回覆。</div>
     </div>
-    <p style="margin-top:16px">想先看報告長什麼樣子？<a href="index.html#teaser" style="color:var(--gold-bright)">首頁有公開的千字範例節錄 →</a></p>
-  </div>
-
-  <div class="card">
+    <p>想先看報告長什麼樣子？<a href="report-preview.html">這裡有公開的報告示意頁 →</a></p>
+  </section>
+<section class="card rv">
     <p class="kicker">浮生導航是什麼</p>
     <h2 class="sec">一套結合個人報告、提問工具與陪跑練習的決策校正服務。</h2>
     <p>報告讓你「看見」結構；浮生導航讓你開始「使用」結構。它以你的個人報告為底圖，搭配一組提問工具，在一對一的陪跑練習裡，把你正在面對的真實抉擇（要不要換工作、一段關係的卡點）拆到可以行動的程度。</p>
     <p>它不替你做決定、不承諾結果，目標是幫你建立一套屬於自己的判斷系統——練到你不再需要陪跑。</p>
-  </div>
-
-  <div class="card">
+  </section>
+<section class="card rv">
     <p class="kicker">走下去之前</p>
     <h2 class="sec">四個入口，把話講清楚再開始。</h2>
     <div class="entry">
@@ -82,20 +71,18 @@ h2.sec{font-size:22px;letter-spacing:.08em;margin:0 0 14px;color:var(--gold-brig
       <a href="privacy.html"><b>隱私與資料安全</b>你的生辰資料怎麼被使用、存在哪裡、如何刪除。</a>
       <a href="faq.html"><b>常見問題與使用邊界</b>是算命嗎？適合誰？被說中就是準嗎？一次講清楚。</a>
     </div>
+  </section>
+    </div>
   </div>
+  <nav class="endnav" aria-label="接著讀"><a href="faq.html"><small>接著讀</small><strong>常見問題與使用邊界 <span class="arrow" aria-hidden="true">↗</span></strong></a><a href="paipan.html"><small>開始</small><strong>免費排盤 <span class="arrow" aria-hidden="true">↗</span></strong></a></nav>
+</main>
 
-  <p class="sub" style="margin:8px 0 0"><a href="index.html" class="muted" style="text-decoration:none">← 回首頁</a></p>
-</div>
-
-<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
-<nav class="tabbar" aria-label="主導覽">
-  <div class="tabs">
-    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
-    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
-    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
-    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
-  </div>
-</nav>
+<footer class="footer">
+  <a href="index.html">浮生羅盤</a>
+  <nav aria-label="頁尾導覽"><a href="chat.html">浮生對話</a><a href="manifesto.html">關於浮生</a><a href="jing/index.html">經在人間</a><a href="about.html" aria-current="page">使用說明</a><a href="faq.html">常見問題</a><a href="privacy.html">隱私政策</a></nav>
+  <small>© 2026 浮生矩陣</small>
+</footer>
+<script src="lantern.js?v=1"></script>
 <script src="fusheng-widget.js" defer></script>
 </body>
 </html>

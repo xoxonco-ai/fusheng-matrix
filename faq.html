@@ -1,71 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>常見問題與使用邊界｜浮生矩陣</title>
 <meta name="description" content="浮生矩陣常見問題：這是算命嗎？報告是 AI 還是人工？適合誰、不適合誰？被說中代表準嗎？出生時間不確定怎麼辦？使用邊界與身心危機轉介一次講清楚。">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="ink.css">
-<link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="members.css">
-<style>
-.wrap{max-width:860px}
-details{border:0;background:var(--ink-700);background:var(--ink-600);margin-bottom:12px}
-summary{cursor:pointer;list-style:none;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";color:var(--gold);font-size:24px;font-weight:600;flex:none}
-details[open] summary::after{content:"−"}
-summary h2{margin:0;font-size:17px;letter-spacing:.04em;font-weight:600;line-height:1.5}
-.ans{padding:0 22px 20px;border-top:1px solid var(--rule)}
-.ans p{font-family:var(--sans);font-weight:300;font-size:15px;color:var(--text);line-height:2;margin:14px 0 0}
-.fitgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-@media(max-width:620px){.fitgrid{grid-template-columns:1fr}}
-.fitcol{border:0;background:var(--ink-700);padding:16px 18px;font-family:var(--sans);font-size:14px;font-weight:300;line-height:2}
-.fitcol b{display:block;margin-bottom:6px;font-weight:500}
-.fitcol.yes b{color:var(--gold-bright)}
-.fitcol.no b{color:var(--cinnabar-light)}
-.fitcol ul{margin:0;padding-left:18px}
-.crisis{border-left:4px solid var(--cinnabar);border-radius:0;background:rgba(168,65,47,.12);padding:16px 20px;margin-top:16px;font-family:var(--sans);font-size:14px;font-weight:300;line-height:2}
-</style>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"zh-Hant","mainEntity":[
-{"@type":"Question","name":"這是算命嗎？","acceptedAnswer":{"@type":"Answer","text":"不是。算命給你關於未來的結論；浮生矩陣不預測未來、不斷吉凶、不下命定標籤。我們用紫微、八字、占星、人類圖四套系統交叉驗證，描述你現在的結構與慣性劇本，讓你自己對照、驗證、使用。"}},
-{"@type":"Question","name":"報告是全自動 AI 生成，還是人工校閱？","acceptedAnswer":{"@type":"Answer","text":"誠實說：命盤由開源引擎實算，報告由 AI 依湛娜設計的解讀框架與寫作規則自動生成，付款後約 5～10 分鐘完成。框架本身經過人工反覆打磨與抽查，確保不越界；若你對內容有疑問，隨時可私訊由湛娜親自回覆。"}},
-{"@type":"Question","name":"適合誰、不適合誰？","acceptedAnswer":{"@type":"Answer","text":"適合：明知問題卻重複同一種選擇、正處於關係／工作／身份轉換期、看過單一命盤仍無法理解矛盾的自己、不想被預言只想理解自己運作方式的人。不適合：只想知道何時發財何時離婚、希望有人替你做決定、把命盤視為不可改變的判決、或正需要醫療／心理危機／法律處理的人。"}},
-{"@type":"Question","name":"被說中，代表一定準嗎？","acceptedAnswer":{"@type":"Answer","text":"不一定。人對「聽起來像自己」的描述天生容易點頭（巴納姆效應）。正確用法是把每個論斷當假設，拿回真實生活驗證：對得上的留下，對不上的劃掉。經得起你打折扣的部分，才值得使用。"}},
-{"@type":"Question","name":"出生時間不確定怎麼辦？","acceptedAnswer":{"@type":"Answer","text":"可勾選「不確定出生時間」，系統以中午推算並標示哪些結果與時辰相關、僅供參考。解讀會以不受時辰影響的部分為主；日後查到準確時間隨時可重排。"}},
-{"@type":"Question","name":"我的生辰資料會被拿去做什麼？","acceptedAnswer":{"@type":"Answer","text":"免費排盤在你的瀏覽器計算、不上傳。開通完整報告時，出生資料只用於生成你的報告，不轉售、不做行銷名單、不用於訓練模型。你可以隨時私訊要求刪除帳號與全部資料。詳見隱私與資料安全頁。"}},
-{"@type":"Question","name":"完整報告要收費嗎？","acceptedAnswer":{"@type":"Answer","text":"分三層：四盤總覽免費看、不用註冊；千字精華免費，只需 Email 註冊會員；完整萬字報告採線上付款——單人（劇本版＋破局版）NT$888、情侶合盤（同頻版＋碰撞版）NT$1,288，付款後系統自動生成並存入你的會員帳號，隨時重看。"}},
-{"@type":"Question","name":"會不會讓我依賴老師或 AI？","acceptedAnswer":{"@type":"Answer","text":"整套設計就在防這件事：報告攤開推論依據讓你自己驗證、每章給可執行步驟而不是懸念、陪跑的目標是你之後不需要陪跑。如果你發現每個決定都要先問盤，那本身就是最值得注意的訊號。"}},
-{"@type":"Question","name":"浮生導航是什麼？","acceptedAnswer":{"@type":"Answer","text":"浮生導航是一套結合個人報告、提問工具與陪跑練習的決策校正服務。以你的報告為底圖，在一對一陪跑中把你正在面對的真實抉擇拆到可以行動的程度。不替你做決定、不承諾結果。"}},
-{"@type":"Question","name":"我現在很痛苦，該先做人生羅盤嗎？","acceptedAnswer":{"@type":"Answer","text":"不該，請先照顧自己。若你正處於強烈痛苦、有傷害自己的念頭，或身心狀態已影響生活，請先聯繫精神科醫師、心理師或撥打台灣 1925 安心專線（24 小時）。命盤工具不能取代醫療，等你站穩了，羅盤隨時都在。"}}
-]}
-</script>
-<link rel="stylesheet" href="warm.css">
-<link rel="stylesheet" href="v5-theme.css?v=1">
+<meta name="theme-color" content="#0b130f">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lantern.css?v=1">
 </head>
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <a class="brand" href="index.html">浮生羅盤</a>
-    <div class="row">
-      <a class="btn ghost small" href="about.html">品牌介紹</a>
-      <a class="btn ghost small" href="privacy.html">隱私</a>
-      <a class="btn ghost small" href="paipan.html">免費排盤</a>
-    </div>
-  </div>
-  <h1>常見問題與使用邊界</h1>
-  <p class="sub">開始之前，先把話講清楚——包括我們做不到的事</p>
+<script>document.documentElement.classList.add('js')</script>
+<a class="skip" href="#main">跳至主要內容</a>
+<div class="grain" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <a class="brand" href="index.html" aria-label="浮生羅盤首頁"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M13 1.5 24.5 13 13 24.5 1.5 13Z"/><circle cx="13" cy="13" r="3.2"/></svg><span><strong>浮生羅盤</strong><small>FUSHENG MATRIX · NOTES ON LIVING</small></span></a>
+  <nav class="nav__links" aria-label="主選單"><a href="index.html#journal">讀一段浮生</a><a href="jing/index.html">經在人間</a><a href="index.html#reports">人生羅盤</a><a href="login.html">會員登入</a><a class="nav__cta" href="paipan.html">免費四盤總覽 <span class="arrow" aria-hidden="true">↗</span></a></nav>
+  <button class="burger" id="burger" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+</header>
+<div class="menu" id="menu"><a href="index.html#journal"><span>讀一段浮生</span><small>01</small></a><a href="jing/index.html"><span>經在人間</span><small>02</small></a><a href="index.html#reports"><span>人生羅盤</span><small>03</small></a><a href="login.html"><span>會員登入</span><small>04</small></a><a href="paipan.html"><span>免費四盤總覽</span><small>↗</small></a></div>
 
-  <details open>
+<main id="main">
+  <header class="mast" style="--art:url(assets/wood/hero-life-death.png);--ax:94%;--ay:62%;--as:auto 175%">
+    <div class="mast__in">
+      <p class="label">FAQ · 使用邊界</p>
+      <h1 class="mast__title"><span>常見問題與使用邊界</span></h1>
+      <p class="mast__lede">開始之前，先把話講清楚——包括我們做不到的事</p>
+    </div>
+  </header>
+  <div class="sheet">
+    <div class="faq">
+<details open>
     <summary><h2>這是算命嗎？</h2></summary>
     <div class="ans"><p>不是。算命給你一個關於未來的結論；浮生矩陣不預測未來、不斷吉凶、不下命定標籤。我們用四套系統交叉驗證，描述你「現在」的結構與慣性劇本——四套都同意的是你的底層設定，互相矛盾的是值得注意的訊號。照完鏡子之後怎麼走，是你的事。</p></div>
   </details>
 
   <details>
     <summary><h2>報告是全自動 AI 生成，還是人工校閱？</h2></summary>
-    <div class="ans"><p>誠實說：①命盤由開源天文／曆法引擎實算；②報告由 AI 依湛娜設計的解讀框架與寫作規則自動生成——白話優先、每個論斷扣回具體命盤特徵、禁止套話與預言——付款後約 5～10 分鐘完成；③框架本身經過人工反覆打磨與抽查，確保它不越界。AI 讓報告寫得到萬字的深度，框架把關確保品質；若你對內容有任何疑問，隨時可私訊，由湛娜親自回覆。完整流程見<a href="about.html#how" style="color:var(--gold-bright)">「報告如何產生」</a>。</p></div>
+    <div class="ans"><p>誠實說：①命盤由開源天文／曆法引擎實算；②報告由 AI 依湛娜設計的解讀框架與寫作規則自動生成——白話優先、每個論斷扣回具體命盤特徵、禁止套話與預言——付款後約 5～10 分鐘完成；③框架本身經過人工反覆打磨與抽查，確保它不越界。AI 讓報告寫得到萬字的深度，框架把關確保品質；若你對內容有任何疑問，隨時可私訊，由湛娜親自回覆。完整流程見<a href="about.html#how">「報告如何產生」</a>。</p></div>
   </details>
 
   <details>
@@ -105,12 +80,12 @@ summary h2{margin:0;font-size:17px;letter-spacing:.04em;font-weight:600;line-hei
 
   <details>
     <summary><h2>我的生辰資料會被拿去做什麼？</h2></summary>
-    <div class="ans"><p>免費排盤在你的瀏覽器裡計算，資料不上傳伺服器。開通完整報告時，你的出生資料只用於生成你的報告——不轉售、不做行銷名單、不用於訓練模型。你可以隨時私訊我們要求刪除帳號與全部資料。詳細說明見<a href="privacy.html" style="color:var(--gold-bright)">隱私與資料安全</a>。</p></div>
+    <div class="ans"><p>免費排盤在你的瀏覽器裡計算，資料不上傳伺服器。開通完整報告時，你的出生資料只用於生成你的報告——不轉售、不做行銷名單、不用於訓練模型。你可以隨時私訊我們要求刪除帳號與全部資料。詳細說明見<a href="privacy.html">隱私與資料安全</a>。</p></div>
   </details>
 
   <details>
     <summary><h2>完整報告要收費嗎？</h2></summary>
-    <div class="ans"><p>分三層：<b>四盤總覽</b>——到<a href="paipan.html" style="color:var(--gold-bright)">免費排盤</a>輸入生辰即可看，完全免費、不用註冊。<b>千字精華</b>——免費，只需用 Email 註冊會員即可解鎖。<b>完整萬字報告</b>——線上付款解鎖：單人（劇本版＋破局版）NT$888、情侶合盤（同頻版＋碰撞版）NT$1,288，付款後系統依你的命盤自動生成（約 5～10 分鐘），存進你的帳號隨時重看。付款遇到問題可私訊我們任一平台。</p></div>
+    <div class="ans"><p>分三層：<b>四盤總覽</b>——到<a href="paipan.html">免費排盤</a>輸入生辰即可看，完全免費、不用註冊。<b>千字精華</b>——免費，只需用 Email 註冊會員即可解鎖。<b>完整萬字報告</b>——線上付款解鎖：單人（劇本版＋破局版）NT$888、情侶合盤（同頻版＋碰撞版）NT$1,288，付款後系統依你的命盤自動生成（約 5～10 分鐘），存進你的帳號隨時重看。付款遇到問題可私訊我們任一平台。</p></div>
   </details>
 
   <details>
@@ -131,26 +106,24 @@ summary h2{margin:0;font-size:17px;letter-spacing:.04em;font-weight:600;line-hei
     </div>
   </details>
 
-  <div class="card center" style="margin-top:24px">
+  <div class="card center">
     <p class="muted" style="font-family:var(--sans);font-size:14px;margin:0 0 14px">問題問完了，剩下的用你自己的盤驗證。</p>
     <div class="row" style="justify-content:center">
       <a class="btn small" href="paipan.html">免費排盤 →</a>
       <a class="btn ghost small" href="about.html">認識浮生矩陣</a>
     </div>
   </div>
-
-  <p class="sub" style="margin:8px 0 0"><a href="index.html" class="muted" style="text-decoration:none">← 回首頁</a></p>
-</div>
-
-<style>body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}</style>
-<nav class="tabbar" aria-label="主導覽">
-  <div class="tabs">
-    <a href="index.html"><span class="g" aria-hidden="true">浮</span>首頁</a>
-    <a href="paipan.html"><span class="g" aria-hidden="true">排</span>排盤</a>
-    <a href="hepan.html"><span class="g" aria-hidden="true">合</span>合盤</a>
-    <a href="login.html"><span class="g" aria-hidden="true">我</span>我的</a>
+    </div>
   </div>
-</nav>
+  <nav class="endnav" aria-label="接著讀"><a href="privacy.html"><small>接著讀</small><strong>隱私與資料安全 <span class="arrow" aria-hidden="true">↗</span></strong></a><a href="paipan.html"><small>開始</small><strong>免費排盤 <span class="arrow" aria-hidden="true">↗</span></strong></a></nav>
+</main>
+
+<footer class="footer">
+  <a href="index.html">浮生羅盤</a>
+  <nav aria-label="頁尾導覽"><a href="chat.html">浮生對話</a><a href="manifesto.html">關於浮生</a><a href="jing/index.html">經在人間</a><a href="about.html">使用說明</a><a href="faq.html" aria-current="page">常見問題</a><a href="privacy.html">隱私政策</a></nav>
+  <small>© 2026 浮生矩陣</small>
+</footer>
+<script src="lantern.js?v=1"></script>
 <script src="fusheng-widget.js" defer></script>
 </body>
 </html>
