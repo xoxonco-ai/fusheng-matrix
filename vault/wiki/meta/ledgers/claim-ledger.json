@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T05:35:00Z",
+  "generated_at": "2026-11-03T06:35:00Z",
   "schema": "claude-obsidian.claim-ledger.v1",
   "claims": {
     "clm-engine-deterministic": {
@@ -7,7 +7,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-08-27",
+      "reviewed_at": "2026-11-03",
       "location": {
         "path": "wiki/concepts/排盤引擎架構.md",
         "anchor": "確定性"
@@ -27,17 +27,22 @@
           "source_id": "src-a18adecb8477cace4c61",
           "relation": "supports",
           "locator": "修補版位元組僅 599 行字串不同，計算路徑未變動"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "收斂版重新掃過：Math.random 0 處（星空動畫已隨首頁改版移除）、Date.now 僅 708/790 行快取時戳、new Date() 無參數 0 處"
         }
       ],
       "supersedes": null,
-      "notes": "2026-08-27 由 provisional 升為 accepted：已掃過程式碼確認計算路徑無非確定性來源。但兩個來源共用 independence_key，不算獨立佐證；「可與第三方排盤軟體對照」這件事仍未實測，那需要拿已知出生資料跑一次比對。"
+      "notes": "2026-08-27 由 provisional 升為 accepted：已掃過程式碼確認計算路徑無非確定性來源。但兩個來源共用 independence_key，不算獨立佐證；「可與第三方排盤軟體對照」這件事仍未實測，那需要拿已知出生資料跑一次比對。 2026-11-03 補記：收斂版的 Math.random 已降為 0 處（星空動畫隨首頁改版移除），確定性比稽核時更強。「可與第三方排盤軟體對照」仍未實測。"
     },
     "clm-gate-years-computed": {
       "text": "報告中的關卡年由三個實算訊號推得——土星回歸（掃描 27～32 歲，步長 0.05 年）、流年沖日支（14～55 歲）、大運交接（16～56 歲）——非人工編寫。",
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-08-27",
+      "reviewed_at": "2026-11-03",
       "location": {
         "path": "wiki/concepts/關卡年推算.md",
         "anchor": "三個訊號"
@@ -57,6 +62,11 @@
           "source_id": "src-a18adecb8477cace4c61",
           "relation": "supports",
           "locator": "chartSummary() 583-593 行，修補版未變動"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "收斂版 age=27;age<=32;age+=0.05、y=Y+14;y<=Y+55、_ag>=16&&_ag<=56 均未變動"
         }
       ],
       "supersedes": null,
@@ -67,7 +77,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-08-27",
+      "reviewed_at": "2026-11-03",
       "location": {
         "path": "wiki/concepts/排盤引擎架構.md",
         "anchor": "三個容易踩到的換算"
@@ -87,6 +97,11 @@
           "source_id": "src-a18adecb8477cace4c61",
           "relation": "supports",
           "locator": "490、574 行，修補版未變動"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "收斂版移入共用函式 designTime：88°、utc-95*864e5～utc-80*864e5、i<60 參數不變"
         }
       ],
       "supersedes": null,
@@ -97,7 +112,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-08-27",
+      "reviewed_at": "2026-11-03",
       "location": {
         "path": "wiki/questions/排盤程式碼是否與技術文件一致.md",
         "anchor": "逐項對照"
@@ -117,10 +132,15 @@
           "source_id": "src-a18adecb8477cace4c61",
           "relation": "supports",
           "locator": "修補後 12 項參數全數相符"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "收斂版重新核對 12 項參數全數成立"
         }
       ],
       "supersedes": null,
-      "notes": "GATE_ORDER 以程式逐一比對，64 元素完全相同且為 1-64 的完整排列。此主張只涵蓋 paipan.html；hepan.html 與 admin.html 未查。 2026-08-27 補記：唯一落差已修補，見 clm-parent-guard-fixed。"
+      "notes": "GATE_ORDER 以程式逐一比對，64 元素完全相同且為 1-64 的完整排列。此主張只涵蓋 paipan.html；hepan.html 與 admin.html 未查。 2026-08-27 補記：唯一落差已修補，見 clm-parent-guard-fixed。 2026-11-03：檔案中間被其他 commit 大幅改過，已對收斂版重跑 12 項參數核對，全數仍成立。"
     },
     "clm-parent-inference-restricted": {
       "text": "技術文件明文規定父母線索只談關係與性格議題，嚴禁推測姓氏或具體事件。",
@@ -172,7 +192,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-08-27",
+      "reviewed_at": "2026-11-03",
       "location": {
         "path": "wiki/concepts/解讀邊界與誠實聲明.md",
         "anchor": "硬性禁止"
@@ -187,10 +207,85 @@
           "source_id": "src-5b529fe7c7f91bcdfdd6",
           "relation": "supports",
           "locator": "六、父母線索（佐證用）"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "收斂版防護字串仍為「嚴禁猜姓氏或具體事件」，全檔 1 處"
         }
       ],
       "supersedes": "clm-parent-guard-narrower",
       "notes": "修補僅替換一個字串，未動計算邏輯，inline JavaScript 通過 node --check。防護字串存在不等於模型必然遵守——那要靠實際產出抽查，尚未做。"
+    },
+    "clm-calc-single-source": {
+      "text": "paipan.html 中的黃經轉閘門、紫微時辰索引、設計盤時刻各只有一份實作（lonToGate、ziweiHourIndex、designTime），compute() 與 chartSummary() 共用同一份。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-03",
+      "location": {
+        "path": "wiki/concepts/排盤引擎架構.md",
+        "anchor": "共用計算（原為重複實作）"
+      },
+      "evidence": [
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "_ltg 0 處；(h===23)?12:Math.floor 僅共用函式 1 處；sunLon(utc)-88 僅 designTime 1 處；ziweiHourIndex / designTime 各 1 定義 + 2 呼叫"
+        },
+        {
+          "source_id": "src-a18adecb8477cace4c61",
+          "relation": "context",
+          "locator": "收斂前：lonToGate/_ltg、時辰索引 ×2、設計盤二分 ×2"
+        }
+      ],
+      "supersedes": null,
+      "notes": "行為等價性由三層證據確立：從檔案抽出兩份實作逐值對跑 29,377 個黃經值零不一致；二分法 3 種 sunLon 替身 × 292 時刻零不一致；瀏覽器實跑 6 組出生資料，改動前後渲染 DOM 與 AI 摘要逐字相同。刻意未合併 fmtSign/_fmt 與 CENTER_NAME/_CNM——那兩組行為不同（多語＋小數位 vs 固定繁中）。"
+    },
+    "clm-hepan-no-internal-dup": {
+      "text": "hepan.html 內部沒有重複實作：閘門轉換、紫微時辰索引、設計盤二分、五行對照表、GATE_ORDER、CHANNELS 等在檔案內各只出現一次。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-03",
+      "location": {
+        "path": "wiki/sources/hepan 合盤實作.md",
+        "anchor": "與 paipan.html 的關係"
+      },
+      "evidence": [
+        {
+          "source_id": "src-48d6187131b9e9e7361e",
+          "relation": "supports",
+          "locator": "逐項計數：_ltg / sunLon / h===23 / sunLon(utc)-88 / 天干表 / 地支表 / GATE_ORDER / CHANNELS 各 1 份"
+        }
+      ],
+      "supersedes": null,
+      "notes": "paipan 原本那種「畫面一份、摘要一份」的檔內重複在 hepan 不存在，因為合盤只有 calcPerson() 一條計算路徑。"
+    },
+    "clm-crossfile-calc-duplication": {
+      "text": "paipan.html 與 hepan.html 各自帶一套計算層，約 14 項重複；經逐項驗證目前行為完全一致，但沒有任何機制保證兩邊同步。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-03",
+      "location": {
+        "path": "wiki/questions/跨檔計算層重複.md",
+        "anchor": "逐項比對結果"
+      },
+      "evidence": [
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "supports",
+          "locator": "paipan 側：lonToGate、ziweiHourIndex、designTime、planetLon、trueNodeLon、sunLon、GATE_ORDER 等"
+        },
+        {
+          "source_id": "src-48d6187131b9e9e7361e",
+          "relation": "supports",
+          "locator": "hepan 側：_ltg、就地時辰索引(230)、就地設計盤二分(246)、planetLon、_tnode、sunLon、GATE_ORDER 等"
+        }
+      ],
+      "supersedes": null,
+      "notes": "驗證：閘門轉換掃 29,377 個黃經值 0 不一致；設計盤 3 種 sunLon 替身 × 292 時刻 = 876 次 0 不一致；時辰索引 h=0..23 0 不一致；planetLon 與北交點把命名差異正規化後逐字相同。2026-11-03 的檔內收斂使不對稱擴大——paipan 已抽成共用函式，hepan 仍就地展開，改 paipan 不會同步到 hepan。處理方式 A/B/C 待 repo 擁有者決定。"
     }
   }
 }
