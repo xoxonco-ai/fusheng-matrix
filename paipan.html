@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="fusheng-calc.js"></script>
 <link rel="stylesheet" href="ink.css">
 <link rel="stylesheet" href="app.css">
 <style>
@@ -322,7 +323,6 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 const IZ={"star":{"紫微":{"tw":"紫微","en":"emperor"},"天机":{"tw":"天機","en":"advisor"},"太阳":{"tw":"太陽","en":"sun"},"武曲":{"tw":"武曲","en":"general"},"天同":{"tw":"天同","en":"fortunate"},"廉贞":{"tw":"廉貞","en":"judge"},"天府":{"tw":"天府","en":"empress"},"太阴":{"tw":"太陰","en":"moon"},"贪狼":{"tw":"貪狼","en":"wolf"},"巨门":{"tw":"巨門","en":"advocator"},"天相":{"tw":"天相","en":"minister"},"天梁":{"tw":"天梁","en":"sage"},"七杀":{"tw":"七殺","en":"marshal"},"破军":{"tw":"破軍","en":"rebel"},"左辅":{"tw":"左輔","en":"officer"},"右弼":{"tw":"右弼","en":"helper"},"文昌":{"tw":"文昌","en":"scholar"},"文曲":{"tw":"文曲","en":"artist"},"禄存":{"tw":"祿存","en":"money"},"天马":{"tw":"天馬","en":"horse"},"擎羊":{"tw":"擎羊","en":"driven"},"陀罗":{"tw":"陀羅","en":"tangled"},"火星":{"tw":"火星","en":"impulsive"},"铃星":{"tw":"鈴星","en":"spark"},"天魁":{"tw":"天魁","en":"assistant"},"天钺":{"tw":"天鉞","en":"aide"},"地空":{"tw":"地空","en":"ideologue"},"地劫":{"tw":"地劫","en":"fickle"},"劫杀":{"tw":"劫殺","en":"murder"},"天空":{"tw":"天空","en":"utopian"},"天刑":{"tw":"天刑","en":"serious"},"天姚":{"tw":"天姚","en":"social"},"解神":{"tw":"解神","en":"considery"},"阴煞":{"tw":"陰煞","en":"gloomy"},"天喜":{"tw":"天喜","en":"cheerful"},"天官":{"tw":"天官","en":"solemn"},"天福":{"tw":"天福","en":"lucky"},"天哭":{"tw":"天哭","en":"upset"},"天虚":{"tw":"天虛","en":"frail"},"龙池":{"tw":"龍池","en":"talented"},"凤阁":{"tw":"鳳閣","en":"refined"},"红鸾":{"tw":"紅鸞","en":"attractive"},"孤辰":{"tw":"孤辰","en":"alone"},"寡宿":{"tw":"寡宿","en":"lonely"},"蜚廉":{"tw":"蜚廉","en":"instigated"},"破碎":{"tw":"破碎","en":"broken"},"台辅":{"tw":"台輔","en":"honorable"},"封诰":{"tw":"封誥","en":"awarded"},"天巫":{"tw":"天巫","en":"psychic"},"天月":{"tw":"天月","en":"sickly"},"三台":{"tw":"三台","en":"senior"},"八座":{"tw":"八座","en":"dignified"},"恩光":{"tw":"恩光","en":"grateful"},"天贵":{"tw":"天貴","en":"noble"},"天才":{"tw":"天才","en":"gifted"},"天寿":{"tw":"天壽","en":"ageless"},"截空":{"tw":"截空","en":"interrupted"},"旬中":{"tw":"旬中","en":"meditative"},"旬空":{"tw":"旬空","en":"fancied"},"空亡":{"tw":"空亡","en":"bottomless"},"截路":{"tw":"截路","en":"intercepted"},"月德":{"tw":"月德","en":"peaceful"},"天伤":{"tw":"天傷","en":"wounded"},"天使":{"tw":"天使","en":"heaven"},"天厨":{"tw":"天廚","en":"gourmet"},"长生":{"tw":"長生","en":"born"},"沐浴":{"tw":"沐浴","en":"infancy"},"冠带":{"tw":"冠帶","en":"adolescence"},"临官":{"tw":"臨官","en":"adulthood"},"帝旺":{"tw":"帝旺","en":"prime"},"衰":{"tw":"衰","en":"weak"},"病":{"tw":"病","en":"sick"},"死":{"tw":"死","en":"dead"},"墓":{"tw":"墓","en":"buried"},"绝":{"tw":"絕","en":"dissipated"},"胎":{"tw":"胎","en":"embryo"},"养":{"tw":"養","en":"molding"},"博士":{"tw":"博士","en":"doctor"},"力士":{"tw":"力士","en":"sumo"},"青龙":{"tw":"青龍","en":"dragon"},"小耗":{"tw":"小耗","en":"consumer"},"将军":{"tw":"將軍","en":"general"},"奏书":{"tw":"奏書","en":"book"},"飞廉":{"tw":"飛廉","en":"gossip"},"喜神":{"tw":"喜神","en":"happiness"},"病符":{"tw":"病符","en":"illness"},"大耗":{"tw":"大耗","en":"wastrel"},"岁破":{"tw":"歲破","en":"wastrel"},"伏兵":{"tw":"伏兵","en":"ambush"},"官府":{"tw":"官府","en":"government"},"岁建":{"tw":"歲建","en":"initial"},"晦气":{"tw":"晦氣","en":"unlucky"},"丧门":{"tw":"喪門","en":"downcast"},"贯索":{"tw":"貫索","en":"tied"},"官符":{"tw":"官符","en":"official"},"龙德":{"tw":"龍德","en":"virtuous"},"白虎":{"tw":"白虎","en":"sinister"},"天德":{"tw":"天德","en":"blessed"},"吊客":{"tw":"弔客","en":"sorrowing"},"将星":{"tw":"將星","en":"capable"},"攀鞍":{"tw":"攀鞍","en":"admired"},"岁驿":{"tw":"歲驛","en":"varied"},"息神":{"tw":"息神","en":"listless"},"华盖":{"tw":"華蓋","en":"religious"},"劫煞":{"tw":"劫煞","en":"robbed"},"灾煞":{"tw":"災煞","en":"disastery"},"天煞":{"tw":"天煞","en":"condemned"},"指背":{"tw":"指背","en":"insidious"},"咸池":{"tw":"咸池","en":"passionate"},"月煞":{"tw":"月煞","en":"hapless"},"亡神":{"tw":"亡神","en":"perished"},"运魁":{"tw":"運魁","en":"assistant(D)"},"运钺":{"tw":"運鉞","en":"aide(D)"},"运昌":{"tw":"運昌","en":"scholar(D)"},"运曲":{"tw":"運曲","en":"artist(D)"},"运鸾":{"tw":"運鸞","en":"attractive(D)"},"运喜":{"tw":"運喜","en":"cheerful(D)"},"运禄":{"tw":"運祿","en":"money(D)"},"运羊":{"tw":"運羊","en":"driven(D)"},"运陀":{"tw":"運陀","en":"tangled(D)"},"运马":{"tw":"運馬","en":"horse(D)"},"流魁":{"tw":"流魁","en":"assistant(Y)"},"流钺":{"tw":"流鉞","en":"aide(Y)"},"流昌":{"tw":"流昌","en":"scholar(Y)"},"流曲":{"tw":"流曲","en":"artist(Y)"},"流鸾":{"tw":"流鸞","en":"attractive(Y)"},"流喜":{"tw":"流喜","en":"cheerful(Y)"},"流禄":{"tw":"流祿","en":"money(Y)"},"流羊":{"tw":"流羊","en":"driven(Y)"},"流陀":{"tw":"流陀","en":"tangled(Y)"},"流马":{"tw":"流馬","en":"horse(Y)"},"年解":{"tw":"年解","en":"considery(Y)"},"月魁":{"tw":"月魁","en":"assistant(M)"},"月钺":{"tw":"月鉞","en":"aide(M)"},"月昌":{"tw":"月昌","en":"scholar(M)"},"月曲":{"tw":"月曲","en":"artist(M)"},"月鸾":{"tw":"月鸞","en":"attractive(M)"},"月喜":{"tw":"月喜","en":"cheerful(M)"},"月禄":{"tw":"月祿","en":"money(M)"},"月羊":{"tw":"月羊","en":"driven(M)"},"月陀":{"tw":"月陀","en":"tangled(M)"},"月马":{"tw":"月馬","en":"horse(M)"},"日魁":{"tw":"日魁","en":"assistant(d)"},"日钺":{"tw":"日鉞","en":"aide(d)"},"日昌":{"tw":"日昌","en":"scholar(d)"},"日曲":{"tw":"日曲","en":"artist(d)"},"日鸾":{"tw":"日鸞","en":"attractive(d)"},"日喜":{"tw":"日喜","en":"cheerful(d)"},"日禄":{"tw":"日祿","en":"money(d)"},"日羊":{"tw":"日羊","en":"driven(d)"},"日陀":{"tw":"日陀","en":"tangled(d)"},"日马":{"tw":"日馬","en":"horse(d)"},"时魁":{"tw":"時魁","en":"assistant(H)"},"时钺":{"tw":"時鉞","en":"aide(H)"},"时昌":{"tw":"時昌","en":"scholar(H)"},"时曲":{"tw":"時曲","en":"artist(H)"},"时鸾":{"tw":"時鸞","en":"attractive(H)"},"时喜":{"tw":"時喜","en":"cheerful(H)"},"时禄":{"tw":"時祿","en":"money(H)"},"时羊":{"tw":"時羊","en":"driven(H)"},"时陀":{"tw":"時陀","en":"tangled(H)"},"时马":{"tw":"時馬","en":"horse(H)"}},"palace":{"命宫":{"tw":"命宮","en":"soul"},"身宫":{"tw":"身宮","en":"body"},"兄弟":{"tw":"兄弟","en":"siblings"},"夫妻":{"tw":"夫妻","en":"spouse"},"子女":{"tw":"子女","en":"children"},"财帛":{"tw":"財帛","en":"wealth"},"疾厄":{"tw":"疾厄","en":"health"},"迁移":{"tw":"遷移","en":"surface"},"仆役":{"tw":"僕役","en":"friends"},"官禄":{"tw":"官祿","en":"career"},"田宅":{"tw":"田宅","en":"property"},"福德":{"tw":"福德","en":"spirit"},"父母":{"tw":"父母","en":"parents"},"来因":{"tw":"来因","en":"origin"}},"wuxingju":{"水二局":{"tw":"水二局","en":"water 2nd"},"木三局":{"tw":"木三局","en":"wood 3rd"},"金四局":{"tw":"金四局","en":"metal 4th"},"土五局":{"tw":"土五局","en":"earth 5th"},"火六局":{"tw":"火六局","en":"fire 6th"}},"mutagen":{"禄":{"tw":"祿","en":"A"},"权":{"tw":"權","en":"B"},"科":{"tw":"科","en":"C"},"忌":{"tw":"忌","en":"D"}},"stem":{"甲":{"tw":"甲","en":"jia"},"乙":{"tw":"乙","en":"yi"},"丙":{"tw":"丙","en":"bing"},"丁":{"tw":"丁","en":"ding"},"戊":{"tw":"戊","en":"wu"},"己":{"tw":"己","en":"ji"},"庚":{"tw":"庚","en":"geng"},"辛":{"tw":"辛","en":"xin"},"壬":{"tw":"壬","en":"ren"},"癸":{"tw":"癸","en":"gui"}},"branch":{"子":{"tw":"子","en":"zi"},"丑":{"tw":"丑","en":"chou"},"寅":{"tw":"寅","en":"yin"},"卯":{"tw":"卯","en":"mao"},"辰":{"tw":"辰","en":"chen"},"巳":{"tw":"巳","en":"si"},"午":{"tw":"午","en":"woo"},"未":{"tw":"未","en":"wei"},"申":{"tw":"申","en":"shen"},"酉":{"tw":"酉","en":"you"},"戌":{"tw":"戌","en":"xu"},"亥":{"tw":"亥","en":"hai"}},"brightness":{"庙":{"tw":"廟","en":"[+3]"},"旺":{"tw":"旺","en":"[+2]"},"得":{"tw":"得","en":"[+1]"},"利":{"tw":"利","en":"[0]"},"平":{"tw":"平","en":"[-1]"},"不":{"tw":"不","en":"[-2]"},"陷":{"tw":"陷","en":"[-3]"}}};
 /* ===== i18n ===== */
 let LANG='tw';
-const s2t=(window.OpenCC)?OpenCC.Converter({from:'cn',to:'tw'}):(x=>x);
 const zh=s=>LANG==='tw'?s2t(s):s;            // lunar 中文：繁體轉換，簡體原樣
 const pick=(map,cn)=>{const o=map[cn];if(!o)return cn;return LANG==='en'?o.en:(LANG==='tw'?o.tw:cn)};
 const izStar=c=>pick(IZ.star,c),izPal=c=>pick(IZ.palace,c),izCls=c=>pick(IZ.wuxingju,c),izBri=c=>pick(IZ.brightness,c);
@@ -379,13 +379,9 @@ const ASPECTS=[[0,8,{tw:'合',cn:'合',en:'Conj'}],[60,4,{tw:'六分',cn:'六分
 function fmtSign(lon){lon=((lon%360)+360)%360;const s=Math.floor(lon/30);return SIGN[LANG][s]+' '+(lon%30).toFixed(1)+'°'}
 
 /* ===== 人類圖 對照 ===== */
-const GATE_ORDER=[41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60];
-const GATE_CENTER={head:[64,61,63],ajna:[47,24,4,17,11,43],throat:[62,23,56,16,20,35,12,45,33,8,31],g:[7,1,13,10,25,46,2,15],heart:[21,40,26,51],spleen:[48,57,44,50,32,28,18],sacral:[5,14,29,59,9,3,42,27,34],solar:[6,37,22,36,30,55,49],root:[53,60,52,19,39,41,58,38,54]};
 const CENTER_ORDER=['head','ajna','throat','g','heart','spleen','sacral','solar','root'];
 const CENTER_NAME={head:{tw:'頭腦',cn:'头脑',en:'Head'},ajna:{tw:'邏輯',cn:'逻辑',en:'Ajna'},throat:{tw:'喉嚨',cn:'喉咙',en:'Throat'},g:{tw:'G中心',cn:'G中心',en:'G'},heart:{tw:'意志力',cn:'意志力',en:'Heart'},spleen:{tw:'直覺',cn:'直觉',en:'Spleen'},sacral:{tw:'薦骨',cn:'荐骨',en:'Sacral'},solar:{tw:'情緒',cn:'情绪',en:'Solar Plexus'},root:{tw:'根部',cn:'根部',en:'Root'}};
 const cName=c=>CENTER_NAME[c][LANG]||CENTER_NAME[c].tw;
-const MOTORS=['sacral','heart','solar','root'];
-const CHANNELS=[[1,8],[2,14],[3,60],[4,63],[5,15],[6,59],[7,31],[9,52],[10,20],[10,34],[10,57],[11,56],[16,48],[12,22],[13,33],[17,62],[18,58],[19,49],[20,34],[20,57],[21,45],[23,43],[24,61],[25,51],[26,44],[27,50],[28,38],[29,46],[30,41],[32,54],[34,57],[35,36],[37,40],[39,55],[42,53],[47,64]];
 const TYPE={mani:{tw:'顯示者',cn:'显示者',en:'Manifestor'},gen:{tw:'生產者',cn:'生产者',en:'Generator'},mg:{tw:'顯示生產者',cn:'显示生产者',en:'Manifesting Generator'},proj:{tw:'投射者',cn:'投射者',en:'Projector'},refl:{tw:'反映者',cn:'反映者',en:'Reflector'}};
 const STRAT={mani:{tw:'告知後行動',cn:'告知后行动',en:'Inform before acting'},gen:{tw:'等待回應',cn:'等待回应',en:'Wait to respond'},mg:{tw:'回應後告知',cn:'回应后告知',en:'Respond, then inform'},proj:{tw:'等待邀請',cn:'等待邀请',en:'Wait for the invitation'},refl:{tw:'等待一個月週期',cn:'等待一个月周期',en:'Wait a lunar cycle'}};
 const NOTSELF={mani:{tw:'憤怒',cn:'愤怒',en:'Anger'},gen:{tw:'挫折',cn:'挫折',en:'Frustration'},mg:{tw:'挫折與憤怒',cn:'挫折与愤怒',en:'Frustration & Anger'},proj:{tw:'苦澀',cn:'苦涩',en:'Bitterness'},refl:{tw:'失望',cn:'失望',en:'Disappointment'}};
@@ -394,24 +390,6 @@ const AUTH={solar:{tw:'情緒型（等待情緒清明）',cn:'情绪型（等待
 const ROLE={1:{tw:'研究者',cn:'研究者',en:'Investigator'},2:{tw:'隱士',cn:'隐士',en:'Hermit'},3:{tw:'烈士',cn:'烈士',en:'Martyr'},4:{tw:'機會主義者',cn:'机会主义者',en:'Opportunist'},5:{tw:'異端',cn:'异端',en:'Heretic'},6:{tw:'榜樣',cn:'榜样',en:'Role Model'}};
 const DEFN=[{tw:'無定義',cn:'无定义',en:'No Definition'},{tw:'一分人',cn:'一分人',en:'Single'},{tw:'二分人',cn:'二分人',en:'Split'},{tw:'三分人',cn:'三分人',en:'Triple Split'},{tw:'四分人',cn:'四分人',en:'Quadruple Split'}];
 const L=o=>o[LANG]||o.tw;
-const gco=g=>{for(const c in GATE_CENTER)if(GATE_CENTER[c].includes(g))return c};
-const lonToGate=l=>{let d=((l-302)%360+360)%360;let i=Math.floor(d/5.625);let w=d-i*5.625;return{gate:GATE_ORDER[i],line:Math.floor(w/0.9375)+1}};
-function trueNodeLon(date){const e1=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',date,true)).vec;const e2=Astronomy.Ecliptic(Astronomy.GeoVector('Moon',new Date(date.getTime()+43200),true)).vec;const r=e1,v={x:e2.x-e1.x,y:e2.y-e1.y,z:e2.z-e1.z};const h={x:r.y*v.z-r.z*v.y,y:r.z*v.x-r.x*v.z,z:r.x*v.y-r.y*v.x};return((Math.atan2(h.x,-h.y)*180/Math.PI)%360+360)%360}
-function planetLon(b,d){if(b==='Earth')return(Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon+180)%360;if(b==='NNode')return trueNodeLon(d);if(b==='SNode')return(trueNodeLon(d)+180)%360;return Astronomy.Ecliptic(Astronomy.GeoVector(b,d,true)).elon}
-const sunLon=d=>Astronomy.Ecliptic(Astronomy.GeoVector('Sun',d,true)).elon;
-
-/* ===== 共用計算：compute()（畫面）與 chartSummary()（送 AI 的摘要）都走這裡 =====
-   以下函式——閘門轉換 lonToGate、紫微時辰索引、設計盤時刻——原本在兩處各有一份
-   實作。兩份內容相同時看不出問題，但只改一邊就會靜默漂移：使用者在畫面上看到的盤
-   與報告所依據的盤會不一致，而且不會拋錯。
-   調整演算法請只改這裡，不要在呼叫端就地展開。 */
-const ziweiHourIndex=h=>(h===23)?12:Math.floor((h+1)/2);          // 0=早子時 … 12=晚子時
-const designTime=utc=>{                                            // 出生前太陽黃經退 88° 的時刻
-  const tg=(sunLon(utc)-88+360)%360;
-  let lo=new Date(utc-95*864e5),hi=new Date(utc-80*864e5);
-  for(let i=0;i<60;i++){let m=new Date((+lo+ +hi)/2);let df=((sunLon(m)-tg+540)%360)-180;if(df>0)hi=m;else lo=m}
-  return new Date((+lo+ +hi)/2);
-};
 
 /* ===== 城市 ===== */
 const CITY_GROUPS=[
@@ -619,9 +597,6 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
    付費解鎖：命盤摘要（給 AI 用，與後台同邏輯，一律繁體）
 ============================================================ */
 const _s2t=s2t;
-const _SG=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
-const _fmt=l=>{l=((l%360)+360)%360;return _SG[Math.floor(l/30)]+(l%30).toFixed(0)+'°'};
-const _CNM={head:'頭腦',ajna:'邏輯',throat:'喉嚨',g:'G中心',heart:'意志力',spleen:'直覺',sacral:'薦骨',solar:'情緒',root:'根部'};
 function chartSummary(c){
   const [Y,M,D]=(c.birth_date||'1990-01-01').split('-').map(Number);
   let h,mi,unknown=false;
@@ -632,8 +607,7 @@ function chartSummary(c){
   out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
   // 八字
   const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
-  const wx={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
-  const bz={子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+  const wx=STEM_WUXING,bz=BRANCH_WUXING;
   const cnt2={木:0,火:0,土:0,金:0,水:0};
   [ec.getYearGan(),ec.getMonthGan(),ec.getDayGan(),unknown?null:ec.getTimeGan()].forEach(g=>{if(g)cnt2[wx[g]]++});
   [ec.getYearZhi(),ec.getMonthZhi(),ec.getDayZhi(),unknown?null:ec.getTimeZhi()].forEach(z=>{if(z)cnt2[bz[z]]++});
@@ -667,23 +641,19 @@ function chartSummary(c){
   out.push(`【人類圖】類型：${type2}；內在權威：${auth2}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc2].map(x=>_CNM[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
   // 關卡年（可驗證佐證）
   try{
-    const _natSat=Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',utc,true)).elon;
-    let _best=null;
-    for(let age=27;age<=32;age+=0.05){const _dt=new Date(utc.getTime()+age*365.25*864e5);let _dd=((Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',_dt,true)).elon-_natSat+540)%360)-180;if(_best===null||Math.abs(_dd)<Math.abs(_best.d)){_best={age,d:_dd,year:_dt.getUTCFullYear()};}}
-    const _ZHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    const _di=_ZHI.indexOf(ec.getDayZhi());const _opp=(_di+6)%12;
-    const _chong=[];for(let y=Y+14;y<=Y+55;y++){if((((y-4)%12)+12)%12===_opp)_chong.push(y);}
+    const _best=saturnReturn(utc);
+    const _c=chongYears(ec.getDayZhi(),Y);
     let _dayun='';
     try{
       const _yun=ec.getYun(gender==='男'?1:0);const _dy=_yun.getDaYun();
       const _dn=[];for(let i=1;i<=7;i++){const _d=_dy[i];const _yy=_d.getStartYear(),_ag=_d.getStartAge();if(_ag>=16&&_ag<=56)_dn.push(_yy+'(約'+_ag+'歲)');}
       if(_dn.length)_dayun='；大運交接(人生階段大轉換)：'+_dn.join('、');
     }catch(e){}
-    out.push(`【關卡年｜可驗證佐證，請寫成「你在西元__年前後…」】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲，人生結構性重整／重大抉擇）；流年沖日支(${ec.getDayZhi()}沖${_ZHI[_opp]})：${_chong.join('、')}（變動、低谷或重要轉折，抓前後一兩年）${_dayun}　【請從以上挑 2~3 個最關鍵年份寫進報告】`);
+    out.push(`【關卡年｜可驗證佐證，請寫成「你在西元__年前後…」】土星回歸：約西元${_best.year}年（約${_best.age.toFixed(0)}歲，人生結構性重整／重大抉擇）；流年沖日支(${ec.getDayZhi()}沖${_c.opp})：${_c.years.join('、')}（變動、低谷或重要轉折，抓前後一兩年）${_dayun}　【請從以上挑 2~3 個最關鍵年份寫進報告】`);
   }catch(e){}
   // 父母線索
   try{
-    const _wx2={甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+    const _wx2=STEM_WUXING;
     const _DME=_wx2[ec.getDayGan()];
     const _SHENG={木:'水',火:'木',土:'火',金:'土',水:'金'};const _KE={木:'土',火:'金',土:'水',金:'木',水:'火'};
     out.push(`【父母線索｜只談關係/性格議題，嚴禁猜姓氏或具體事件】八字：印星(${_SHENG[_DME]}=母)${cnt2[_SHENG[_DME]]||0}個、財星(${_KE[_DME]}=父)${cnt2[_KE[_DME]]||0}個（0=緣薄/滋養缺位，多=影響強/有張力）；紫微父母宮主星：${_fm||'(略)'}　→ 據此推「與父母的關係與議題」當作可被驗證的佐證`);

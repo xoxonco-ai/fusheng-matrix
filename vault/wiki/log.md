@@ -3,7 +3,7 @@ type: meta
 title: Wiki Log
 status: evergreen
 created: 2026-08-24
-updated: 2026-11-03
+updated: 2026-11-10
 tags:
   - meta
   - log
@@ -12,6 +12,52 @@ tags:
 # Wiki Log
 
 Newest completed operations appear first.
+
+## 2026-11-10 — `ingest-shared-calc-20261110`
+
+抽出 `fusheng-calc.js`，把 paipan 與 hepan 的計算層收斂為單一來源（方案 A）。
+
+**程式碼變更**
+
+| 檔案 | 變化 |
+|------|------|
+| `fusheng-calc.js` | 新增，62 行、19 個頂層宣告 |
+| `paipan.html` | −3,384 字元 |
+| `hepan.html` | −2,867 字元 |
+
+收進共用檔：`s2t`、`_SG`/`_fmt`/`_CNM`、`GATE_ORDER`/`GATE_CENTER`/`MOTORS`/
+`CHANNELS`/`gco`/`lonToGate`、`trueNodeLon`/`planetLon`/`sunLon`/`designTime`、
+`ziweiHourIndex`、`STEM_WUXING`/`BRANCH_WUXING`、`saturnReturn`/`chongYears`。
+
+刻意保留在各頁：多語 UI 資料（`fmtSign`、`CENTER_NAME`、`TYPE`…）、
+`STEM_EL`/`BRANCH_EL`（對映 CSS class，不同資料形狀）、合盤專屬的
+`elPair`/`quickRead`。
+
+**驗證（23 項，零差異）**
+
+| 層次 | 內容 | 結果 |
+|------|------|------|
+| 靜態 | 宣告衝突交集 / 未定義引用 | 0 / 0 |
+| 語法 | 共用檔與兩頁 inline | `node --check` 全過 |
+| 端對端 | paipan 6 組渲染 DOM＋摘要 | 逐字相同 |
+| 端對端 | hepan 6 組 `calcPerson()`＋5 組 `quickRead()` | 逐字相同 |
+| 跨頁 | 5 組單人盤 vs 合盤的人類圖類型／權威／角色 | 全一致 |
+
+**主張評估變動**
+
+| 主張 | 變動 |
+|------|------|
+| `clm-calc-shared-across-pages` | 新增 **accepted**，`supersedes` 下一列 |
+| `clm-crossfile-calc-duplication` | accepted → **deprecated** |
+| 六則既有技術主張 | 補上新快照為支持證據 |
+
+**更正**：2026-11-03 的記錄寫「hepan 關卡年只有土星回歸」有誤，
+實際有土星回歸與流年沖日支**兩個**訊號，只缺大運交接。
+錯因為只數 grep 命中次數、未逐行讀該區塊。已在 hepan 來源頁標註更正。
+
+**未涵蓋**：`admin.html` 未納入共用、仍未讀；未引入打包工具；
+hepan 的 `_fm` 死碼未清。
+
 
 ## 2026-11-03 — `ingest-hepan-20261103`
 
