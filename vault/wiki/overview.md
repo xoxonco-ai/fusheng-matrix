@@ -3,7 +3,7 @@ type: overview
 title: Vault Overview
 status: developing
 created: 2026-08-24
-updated: 2026-11-03
+updated: 2026-11-10
 tags:
   - overview
 ---
@@ -21,7 +21,7 @@ This local-first vault compounds source-backed knowledge over time.
 
 ## 目前的證據狀態
 
-十則主張：九則 `accepted`、一則 `deprecated`。第一輪只有文件時，
+十一則主張：九則 `accepted`、兩則 `deprecated`。第一輪只有文件時，
 三則技術主張停在 `provisional`；第二輪讀了 `paipan.html` 逐項比對後升上來。
 
 **一則主張走完了完整生命週期**：`clm-parent-guard-narrower` 記錄了
@@ -38,18 +38,25 @@ This local-first vault compounds source-backed knowledge over time.
 2. **三處重複計算**（2026-11-03）——閘門轉換、紫微時辰索引、設計盤時刻
    各有兩份實作，改一邊會靜默漂移。已收斂為共用函式，見 [[排盤引擎架構]]。
 
-## 待決定
+## 三個實作問題都已修掉
 
-**[[跨檔計算層重複]]**——`hepan.html` 自帶一整套計算層，與 `paipan.html`
-重複約 14 項。逐項驗證目前零行為漂移，但沒有機制保證同步。而 2026-11-03
-的檔內收斂反而加大了不對稱：paipan 已抽成共用函式，hepan 仍就地展開。
+每一項都留下完整證據鏈與退役紀錄，舊主張與矛盾證據都沒有刪除：
 
-處理方式 A（抽出共用 JS）／ B（只對齊形式）／ C（維持現狀）待決定。
+1. **父母線索防護缺口**（2026-08-27）——文件說禁止「姓氏或具體事件」，
+   程式碼只寫了「姓氏」。已補齊。
+2. **檔內重複計算**（2026-11-03）——paipan 的三處邏輯畫面與摘要各一份。
+   已收斂為共用函式。
+3. **跨檔計算層重複**（2026-11-10）——paipan 與 hepan 各帶一整套。
+   已抽出 [[fusheng-calc.js（共用命理計算層）]]，見 [[跨檔計算層重複]]。
+
+第 3 項最大的風險面不是演算法而是**宣告衝突**：classic script 的頂層 `const`
+與 inline script 共用同一個全域詞法環境，同名宣告會讓整個 inline 區塊因
+SyntaxError 不執行。靠宣告名稱交集檢查擋住。
 
 ## 未解的部分
 
 - 與第三方排盤軟體對照實際輸出——所有來源共用 `independence_key`
   （同 repo、同作者），互相佐證的份量有限，真正的獨立驗證還沒做
 - 防護字串存在不等於模型遵守，需抽驗實際產出的報告
-- `admin.html` 未讀（`hepan.html` 已於 2026-11-03 稽核）
+- `admin.html` 未讀，也未納入共用計算層
 - 三個 CDN 開源引擎本身只確認版本號，未檢視實作
