@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0f1115;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: #e7e5df;
+}
