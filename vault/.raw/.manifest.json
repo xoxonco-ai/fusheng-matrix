@@ -5,6 +5,7 @@
     "wiki/concepts/關卡年推算.md": "c-000003",
     "wiki/questions/排盤程式碼是否與技術文件一致.md": "c-000005",
     "wiki/questions/跨檔計算層重複.md": "c-000008",
+    "wiki/sources/fusheng-calc.js（共用命理計算層）.md": "l-000009",
     "wiki/sources/hepan 合盤實作.md": "l-000007",
     "wiki/sources/paipan 單人排盤實作.md": "l-000006",
     "wiki/sources/解盤公式技術文件.md": "l-000001"
@@ -20,6 +21,16 @@
       "ingested_at": "2026-08-27",
       "operation_id": "ingest-paipan-20260827",
       "sha256": "2b79113717db83d88874b8b2a5d4d3e6a1fef6f0abfebff9ff0ca51e99ca546a"
+    },
+    "src-3301ff0f80770cf86ae3": {
+      "captured_path": ".raw/captured/7f9b0f6fdc9628e5986afb2505bfd104dfad6c8fb9b73febc3fa1fde5e73af6b.bin",
+      "generated_pages": [
+        "wiki/sources/fusheng-calc.js（共用命理計算層）.md"
+      ],
+      "inbox_path": "inbox/fusheng-calc.js",
+      "ingested_at": "2026-11-10",
+      "operation_id": "ingest-shared-calc-20261110",
+      "sha256": "7f9b0f6fdc9628e5986afb2505bfd104dfad6c8fb9b73febc3fa1fde5e73af6b"
     },
     "src-48d6187131b9e9e7361e": {
       "captured_path": ".raw/captured/56f9cc2715d12cca5500fbdbaffbb662ddb9b4ac83d468210b74fc1b54c8f19d.html",
@@ -45,6 +56,24 @@
       "ingested_at": "2026-08-24",
       "operation_id": "ingest-jiepan-20260824",
       "sha256": "81546581d6db1d7f5cb6b39b8d1b782d301f09235f8a587db5dd7bef0db32454"
+    },
+    "src-7866d5e3e39888d5e452": {
+      "captured_path": ".raw/captured/ae9c64cc98ab2f640224c1e6c69c593e16f441465b209ad7edf0334fd6824816.html",
+      "generated_pages": [],
+      "inbox_path": "inbox/paipan.html",
+      "ingested_at": "2026-11-10",
+      "operation_id": "ingest-shared-calc-20261110",
+      "sha256": "ae9c64cc98ab2f640224c1e6c69c593e16f441465b209ad7edf0334fd6824816",
+      "supersedes": "src-928d2d54da9bc0df723a"
+    },
+    "src-86184c277cd230b519c9": {
+      "captured_path": ".raw/captured/d9b0f23411640ab1475699c7982923a6a28005c9f8461753ca5a1beadfdc436a.html",
+      "generated_pages": [],
+      "inbox_path": "inbox/hepan.html",
+      "ingested_at": "2026-11-10",
+      "operation_id": "ingest-shared-calc-20261110",
+      "sha256": "d9b0f23411640ab1475699c7982923a6a28005c9f8461753ca5a1beadfdc436a",
+      "supersedes": "src-48d6187131b9e9e7361e"
     },
     "src-928d2d54da9bc0df723a": {
       "captured_path": ".raw/captured/e375e4d6543399132a663787e5f52570e012cd85fbcf5ef914337df04ae624eb.html",

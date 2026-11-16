@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T06:35:00Z",
+  "generated_at": "2026-11-10T06:05:00Z",
   "schema": "claude-obsidian.claim-ledger.v1",
   "claims": {
     "clm-engine-deterministic": {
@@ -7,7 +7,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/concepts/排盤引擎架構.md",
         "anchor": "確定性"
@@ -32,6 +32,11 @@
           "source_id": "src-928d2d54da9bc0df723a",
           "relation": "supports",
           "locator": "收斂版重新掃過：Math.random 0 處（星空動畫已隨首頁改版移除）、Date.now 僅 708/790 行快取時戳、new Date() 無參數 0 處"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "共用計算層版：計算路徑仍無 Math.random / Date.now"
         }
       ],
       "supersedes": null,
@@ -42,7 +47,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/concepts/關卡年推算.md",
         "anchor": "三個訊號"
@@ -67,6 +72,11 @@
           "source_id": "src-928d2d54da9bc0df723a",
           "relation": "supports",
           "locator": "收斂版 age=27;age<=32;age+=0.05、y=Y+14;y<=Y+55、_ag>=16&&_ag<=56 均未變動"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "土星回歸與流年沖日支移入 saturnReturn / chongYears，參數未變"
         }
       ],
       "supersedes": null,
@@ -77,7 +87,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/concepts/排盤引擎架構.md",
         "anchor": "三個容易踩到的換算"
@@ -102,6 +112,11 @@
           "source_id": "src-928d2d54da9bc0df723a",
           "relation": "supports",
           "locator": "收斂版移入共用函式 designTime：88°、utc-95*864e5～utc-80*864e5、i<60 參數不變"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "designTime 移入 fusheng-calc.js，88°／80-95 天／60 次不變"
         }
       ],
       "supersedes": null,
@@ -192,7 +207,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/concepts/解讀邊界與誠實聲明.md",
         "anchor": "硬性禁止"
@@ -212,6 +227,11 @@
           "source_id": "src-928d2d54da9bc0df723a",
           "relation": "supports",
           "locator": "收斂版防護字串仍為「嚴禁猜姓氏或具體事件」，全檔 1 處"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "共用計算層版防護字串不變，仍 1 處"
         }
       ],
       "supersedes": "clm-parent-guard-narrower",
@@ -222,7 +242,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/concepts/排盤引擎架構.md",
         "anchor": "共用計算（原為重複實作）"
@@ -237,6 +257,11 @@
           "source_id": "src-a18adecb8477cace4c61",
           "relation": "context",
           "locator": "收斂前：lonToGate/_ltg、時辰索引 ×2、設計盤二分 ×2"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "paipan 的三處共用函式現由 fusheng-calc.js 提供"
         }
       ],
       "supersedes": null,
@@ -247,7 +272,7 @@
       "risk": "normal",
       "assessment": "accepted",
       "confidence": "high",
-      "reviewed_at": "2026-11-03",
+      "reviewed_at": "2026-11-10",
       "location": {
         "path": "wiki/sources/hepan 合盤實作.md",
         "anchor": "與 paipan.html 的關係"
@@ -257,6 +282,11 @@
           "source_id": "src-48d6187131b9e9e7361e",
           "relation": "supports",
           "locator": "逐項計數：_ltg / sunLon / h===23 / sunLon(utc)-88 / 天干表 / 地支表 / GATE_ORDER / CHANNELS 各 1 份"
+        },
+        {
+          "source_id": "src-86184c277cd230b519c9",
+          "relation": "supports",
+          "locator": "共用計算層版：仍無檔內重複"
         }
       ],
       "supersedes": null,
@@ -265,7 +295,7 @@
     "clm-crossfile-calc-duplication": {
       "text": "paipan.html 與 hepan.html 各自帶一套計算層，約 14 項重複；經逐項驗證目前行為完全一致，但沒有任何機制保證兩邊同步。",
       "risk": "normal",
-      "assessment": "accepted",
+      "assessment": "deprecated",
       "confidence": "high",
       "reviewed_at": "2026-11-03",
       "location": {
@@ -285,7 +315,47 @@
         }
       ],
       "supersedes": null,
-      "notes": "驗證：閘門轉換掃 29,377 個黃經值 0 不一致；設計盤 3 種 sunLon 替身 × 292 時刻 = 876 次 0 不一致；時辰索引 h=0..23 0 不一致；planetLon 與北交點把命名差異正規化後逐字相同。2026-11-03 的檔內收斂使不對稱擴大——paipan 已抽成共用函式，hepan 仍就地展開，改 paipan 不會同步到 hepan。處理方式 A/B/C 待 repo 擁有者決定。"
+      "notes": "驗證：閘門轉換掃 29,377 個黃經值 0 不一致；設計盤 3 種 sunLon 替身 × 292 時刻 = 876 次 0 不一致；時辰索引 h=0..23 0 不一致；planetLon 與北交點把命名差異正規化後逐字相同。2026-11-03 的檔內收斂使不對稱擴大——paipan 已抽成共用函式，hepan 仍就地展開，改 paipan 不會同步到 hepan。處理方式 A/B/C 待 repo 擁有者決定。 2026-11-10：已選方案 A 收斂至 fusheng-calc.js，本主張退役，由 clm-calc-shared-across-pages 取代。保留紀錄的理由：這類跨檔副本是靠人工同步撐著的，重新長回來的門檻很低。"
+    },
+    "clm-calc-shared-across-pages": {
+      "text": "paipan.html 與 hepan.html 的命理計算層由單一檔案 fusheng-calc.js 提供（19 個頂層宣告），兩頁不再各自保有副本。",
+      "risk": "normal",
+      "assessment": "accepted",
+      "confidence": "high",
+      "reviewed_at": "2026-11-10",
+      "location": {
+        "path": "wiki/questions/跨檔計算層重複.md",
+        "anchor": "已於 2026-11-10 收斂（選了 A）"
+      },
+      "evidence": [
+        {
+          "source_id": "src-3301ff0f80770cf86ae3",
+          "relation": "supports",
+          "locator": "62 行、19 個頂層宣告，涵蓋人類圖對照、天文、紫微時辰、五行表、關卡年兩訊號"
+        },
+        {
+          "source_id": "src-7866d5e3e39888d5e452",
+          "relation": "supports",
+          "locator": "paipan −3,384 字元；引用 14 個共用名稱，宣告衝突 0"
+        },
+        {
+          "source_id": "src-86184c277cd230b519c9",
+          "relation": "supports",
+          "locator": "hepan −2,867 字元；引用 15 個共用名稱，宣告衝突 0"
+        },
+        {
+          "source_id": "src-928d2d54da9bc0df723a",
+          "relation": "context",
+          "locator": "收斂前：paipan 自帶一份"
+        },
+        {
+          "source_id": "src-48d6187131b9e9e7361e",
+          "relation": "context",
+          "locator": "收斂前：hepan 自帶一份"
+        }
+      ],
+      "supersedes": "clm-crossfile-calc-duplication",
+      "notes": "驗證 23 項零差異：paipan 6 組渲染 DOM＋摘要、hepan 6 組 calcPerson＋5 組 quickRead，改動前後逐字相同；跨頁 5 組人類圖類型／權威／角色單人盤與合盤一致。最大風險面是宣告衝突而非演算法——classic script 頂層 const 與 inline 共用全域詞法環境，同名宣告會讓整個 inline 區塊因 SyntaxError 不執行；用宣告名稱交集檢查擋住，兩頁皆為 0。"
     }
   }
 }
