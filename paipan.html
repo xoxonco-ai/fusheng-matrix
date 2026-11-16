@@ -482,20 +482,38 @@ const QZ={
 function genQianzi(d){
   const si=l=>Math.floor((((l%360)+360)%360)/30);
   const SN=['牡羊','金牛','雙子','巨蟹','獅子','處女','天秤','天蠍','射手','摩羯','水瓶','雙魚'];
+  const EN={wood:'木',fire:'火',earth:'土',metal:'金',water:'水'};
   const sun=si(d.sunL),moon=si(d.moonL),asc=si(d.asc);
-  const elName={wood:'木',fire:'火',earth:'土',metal:'金',water:'水'};
-  const miss=Object.keys(d.cnt).filter(k=>d.cnt[k]===0);
-  let h='';
-  h+=`<p class="lead">把你的八字、紫微、占星、人類圖同時攤開，浮現的是一套<span class="accent">${QZ.spine[d.dmEl]}</span>的生命結構。以下是四套系統交叉後，屬於你的千字精華。</p>`;
-  h+=`<h4>八字｜你的底層材質</h4><p>你的八字以 <span class="accent">${d.dg}（${elName[d.dmEl]}）</span> 為日主。${QZ.el[d.dmEl]}${miss.length?'　'+QZ.miss[miss[0]]:''}</p>`;
-  h+=`<h4>占星｜你的人格藍圖</h4><p>太陽在<span class="accent">${SN[sun]}</span>——${QZ.sun[sun]}月亮在${SN[moon]}，${QZ.moon[moon]}上升${SN[asc]}，給人${QZ.asc[asc]}的第一印象。</p>`;
-  h+=`<h4>人類圖｜你的運作機制</h4><p>你的類型是<span class="accent">${d.typeName}</span>。${QZ.type[d.tkey]}你的內在權威是${d.authName}：${QZ.auth[d.akey]}人生角色 ${d.profile}——${QZ.role[d.profile]||''}</p>`;
-  if(d.star&&QZ.star[d.star]) h+=`<h4>紫微｜你的命格主軸</h4><p>紫微命宮主星為 <span class="accent">${d.star}</span>，${QZ.star[d.star]}</p>`;
-  h+=`<h4>四套系統共同指向</h4><p>當四套語言放在一起，它們指向同一件事：你正<span class="accent">${QZ.spine[d.dmEl]}</span>在活著，而你最大的力量與最深的卡點，往往是同一個來源。${miss.length?'那些先天「缺」的部分，正是你一生在補的功課。':''}</p>`;
-  h+=`<p>這份千字讓你看見<span class="accent">主線</span>。但你為什麼總在同樣的地方卡住、被同樣的人吸引，那些四套系統互相矛盾、藏在更深處的盲區與破局之道，是<span class="accent">萬字報告</span>才拆得開的部分。</p>`;
-  h+=`<p class="qz-note">本千字由四套系統實算結果自動生成，為結構性導讀；完整、深入、針對你個人矛盾的解讀，請見萬字報告。</p>`;
-  document.getElementById('qianzi-content').innerHTML=h;
-  // 千字精華免費直接顯示（排盤前已收 Email，不再要求註冊）
+  const observe={
+    wood:'回想最近一次想往前、卻遲遲沒有開始的事。妳缺的是清楚方向、可用資源，還是害怕做得不夠好？把「想成長」改寫成一件這週可以完成的小事，看看行動後的感受，而不是只要求自己再努力一點。',
+    fire:'回想最近一次很有熱情、後來卻迅速疲累的事。讓妳投入的是事情本身、被看見的感覺，還是別人的期待？下次開始前先訂一個停止時間，留意熱情能否在有休息的情況下延續，不必靠耗盡自己證明認真。',
+    earth:'回想最近一次替別人接下責任的時刻。那是妳真心願意、原本的職責，還是怕讓人失望？把事情分成「我負責」「可以分擔」「不必由我承接」三欄，挑一件練習說清楚，不用一次推翻所有習慣。',
+    metal:'回想最近一次想把事情做到很好的時刻。妳的標準幫忙釐清方向，還是讓自己一直無法收尾？先寫下這件事真正需要達到的三項條件，完成後停一下，區分必要品質和額外苛求，也留出別人不同做法的空間。',
+    water:'回想最近一次順著環境調整自己的時刻。那份彈性讓事情更順，還是讓自己的需要消失？在答應之前先寫下一個不想退讓的重點，再提出可以協調的部分，觀察有方向的調整是否比一味配合更輕鬆。'
+  };
+  const typePractice={
+    mani:'選一件影響範圍小的事，在開始前告知會受影響的人，看看資訊透明是否減少誤會。告知不是要求所有人同意，也不是忽略共同責任。',
+    gen:'遇到邀請時先問自己：我願意做哪一部分，又不願意承擔哪一部分？用具體選項觀察反應，再核對時間、能力與現實責任，不把瞬間感覺當唯一依據。',
+    mg:'挑一個正在進行的計畫，找出哪一步跳得太快。先確認自己仍想繼續，再補上必要溝通；改變方向可以，但讓合作的人知道，比悶著頭加速更重要。',
+    proj:'想給建議前，先問對方現在需要傾聽還是方法。也替自己訂好投入時間，觀察受到邀請與主動扛下所有問題時，感受和結果有何不同。',
+    refl:'把一個不急迫的小決定記錄幾天，分別留意不同環境、作息與陪伴者對感受的影響。需要及時處理的責任仍按期限行動，不必為了配合類型而延誤。'
+  };
+  const counts=Object.keys(EN).map(k=>EN[k]+d.cnt[k]).join('、');
+  let h='<p class="lead">這份千字精華把四套命盤資料整理成一份生活導讀。它不是對妳的定論，也不是四套系統一致同意的科學證明。以下先列出這次計算得到的重點，再提供可以對照真實經驗的問題。讀到不符合的地方，可以直接保留不同意見；報告的用途是幫妳看見選擇，不是讓妳服從描述。</p>';
+  if(d.unknown)h+='<p class="qz-note">妳尚未確認出生時間，本次以中午暫算。八字時柱、紫微命宮、上升與人類圖結果可能改變；相關段落先作暫定參考，確認時間後再重排。</p>';
+  h+=`<h4>一、八字｜觀察妳慣常怎麼使力</h4><p>本次八字日主為 <span class="accent">${d.dg}（${EN[d.dmEl]}）</span>，畫面採用的五行計數是${counts}。在這套傳統解讀語言裡，${QZ.el[d.dmEl]}這是供妳核對的象徵描述，不代表性格由單一元素決定；計數較少也不等於能力不足，更不需要因此急著購買補運物品。</p><p>${observe[d.dmEl]}把結果帶回具體情境，比只記住自己是哪一種人更有用。</p>`;
+  h+=`<h4>二、占星｜區分想做的事與需要的支持</h4><p>本次太陽在${SN[sun]}、月亮在${SN[moon]}，${d.unknown?'暫算上升':'上升'}為${SN[asc]}。太陽的描述是：${QZ.sun[sun]}月亮則提示：${QZ.moon[moon]}上升的象徵印象偏向${QZ.asc[asc]}。三者可以放在一起看，但不能只挑一句像自己的話，就認定整份報告全部正確。</p><p>試著各寫一件事：什麼讓妳願意投入、什麼使妳安心、別人通常怎麼看妳。三個答案不必相同。如果外在表現和內在需要有落差，可以練習說出「我做得到，但我需要什麼支持」，而不是繼續維持一個看起來沒問題的樣子。</p>`;
+  h+=`<h4>三、人類圖｜把決策方式當成可觀察的假設</h4><p>本次${d.unknown?'暫算':'計算'}類型為${d.typeName}，權威為${d.authName}，人生角色為${d.profile}。這套系統對類型的描述是：${QZ.type[d.tkey]}角色的觀察方向是：${QZ.role[d.profile]||'留意妳在不同場景中的學習和互動方式。'}這些用語不是能力評分，也不表示妳必須只做某一類工作或關係中的某種角色。</p><p>${typePractice[d.tkey]}對權威的描述可用來提醒自己留意身體、情緒或談話後的變化，但不能取代事實查核。涉及健康、財務或法律時，仍需合格專業意見；有壓力或疲累時，也不急著把每個感覺解釋成答案。</p>`;
+  h+='<h4>四、紫微｜在真實場景裡理解角色</h4>';
+  if(d.star&&QZ.star[d.star])h+=`<p>本次${d.unknown?'暫算':'計算'}命宮所取的主星為${d.star}。傳統描述是：${QZ.star[d.star]}這裡只取一個閱讀入口，不代表完整十二宮或所有星曜的分析，也不據此預測某件事一定發生。</p>`;
+  else h+='<p>本次未取得可用的命宮主星文字解讀，因此這一段不補猜星曜，也不把資料缺口說成特殊命格。可以先看上方十二宮資料；若出生時間不確定，確認後再重新計算，會比勉強套入一個結論更妥當。</p>';
+  h+='<p>回想妳在家裡、工作和朋友面前三個場景：哪些責任是自己選的，哪些是長期被期待承擔的？同一個人會因環境展現不同面向。若某個角色讓妳疲累，先看分工、資源和溝通能否調整，不要把現實困難全歸因於命盤或自己的不足。</p>';
+  h+='<h4>五、把四種語言放回同一段生活</h4><p>以上是四套結果的並列整理，沒有自動證明它們彼此一致。挑一件近期反覆發生的小事，分別用「我怎麼使力」「我需要什麼支持」「我怎麼做決定」「我承擔什麼角色」四個問題來看。若答案相近，記下具體經驗；若互相矛盾，也保留差異。不要為了讓報告看起來準，修改自己的記憶或忽略不符合的部分。</p>';
+  h+='<h4>六、這週只試一個小改變</h4><p>第一步，記錄事情發生的情境，不先評斷自己。第二步，分清已知事實、自己的推測與真正需要。第三步，只選一個低風險的新做法，例如晚一點答應、請人分擔一件事，或把要求說具體。幾天後再看它是否減少消耗、改善溝通；沒有幫助就調整，不必為了符合類型而勉強維持。妳的生活經驗，比任何一份描述更有優先權。</p>';
+  h+='<p class="qz-note">本篇依實算結果與預先整理的解讀文字自動組合，不是人工逐案諮詢，也不提供醫療、心理診斷或人生結果保證。需要更詳細的閱讀時再考慮完整報告，不必因為這一篇描述了卡點就立刻購買。</p>';
+  const text=h.replace(/<[^>]*>/g,'');
+  const count=(text.match(/[\u3400-\u4dbf\u4e00-\u9fff]/g)||[]).length;
+  document.getElementById('qianzi-content').innerHTML=`<p class="qz-note">本篇約 ${count} 個中文字</p>`+h;
 }
 
 function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
@@ -612,7 +630,7 @@ function compute(name,gender,Y,M,D,h,mi,lon,lat,tz,unknown){
   const _dg=ec.getDayGan();
   const _star=soulP.majorStars[0]?(IZ.star[soulP.majorStars[0].name]?IZ.star[soulP.majorStars[0].name].tw:null):null;
   const _authShort={solar:'情緒型',sacral:'薦骨型',spleen:'直覺型',heart:'意志力型',g:'自我投射型',mental:'心智／外在型',lunar:'月循環型'};
-  genQianzi({dg:_dg, dmEl:STEM_EL[_dg], cnt, sunL:lons[0], moonL:lons[1], asc:asc, tkey, akey, profile, typeName:TYPE[tkey].tw, authName:_authShort[akey], star:_star});
+  genQianzi({dg:_dg, dmEl:STEM_EL[_dg], cnt, sunL:lons[0], moonL:lons[1], asc:asc, tkey, akey, profile, typeName:TYPE[tkey].tw, authName:_authShort[akey], star:_star, unknown});
 }
 
 /* ============================================================
