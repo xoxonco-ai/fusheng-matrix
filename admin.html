@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
 <script src="supabase-config.js"></script>
+<script src="chart-extras.js?v=1"></script>
 <script src="report-draft.js?v=chapter2"></script>
 <link rel="stylesheet" href="v5-theme.css?v=1">
 <link rel="stylesheet" href="lantern-app.css?v=1">
@@ -105,7 +106,8 @@
 const sb = supabase.createClient(window.SB_URL, window.SB_KEY);
 const $=id=>document.getElementById(id);
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const VLABEL={script:'劇本版', breakthrough:'破局版', sync:'合盤・同頻版', clash:'合盤・碰撞版'};
+const VLABEL={script:'劇本版', breakthrough:'破局版', sync:'合盤・同頻版', clash:'合盤・碰撞版', family:'主題・原生家庭版', wealth:'主題・財富版', vocation:'主題・天職版'};
+const SOLO_VERSIONS=['script','breakthrough','family','wealth','vocation'];
 let ME=null, CLIENTS=[], CASES=[];
 const EDGE_URL = window.SB_URL + '/functions/v1/generate-report';
 
@@ -133,7 +135,7 @@ function chartSummary(c){
   if(c.birth_time){[h,mi]=c.birth_time.split(':').map(Number);}else{h=12;mi=0;unknown=true;}
   const lon=(c.lon!=null?c.lon:121.5654), lat=(c.lat!=null?c.lat:25.0330), tz=(c.tz!=null?c.tz:8);
   const gender=c.gender||'女';
-  let out=[]; let _fm='';
+  let out=[]; let _fm=''; let _zwX=null;
   out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
   // 八字
   const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
@@ -146,7 +148,7 @@ function chartSummary(c){
   // 紫微
   try{
     const ti=(h===23)?12:Math.floor((h+1)/2);
-    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
+    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN'); _zwX=zw;
     const sp=zw.palaces.find(p=>p.name==='命宫');
     const _fmp=zw.palaces.find(p=>p.name==='父母'); if(_fmp)_fm=_s2t(_fmp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)';
     const sh=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sh.push(_s2t(s.name)+'化'+_s2t(s.mutagen))}));
@@ -170,6 +172,8 @@ function chartSummary(c){
   let type;if(dc.size===0)type='反映者';else if(dc.has('sacral'))type=m2t?'顯示生產者':'生產者';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn(m,'throat'))nm=true});type=nm?'顯示者':'投射者'}
   let auth=dc.has('solar')?'情緒':dc.has('sacral')?'薦骨':dc.has('spleen')?'直覺':dc.has('heart')?'意志力':dc.has('g')?'自我投射':(type==='反映者'?'月循環':'心智');
   out.push(`【人類圖】類型：${type}；內在權威：${auth}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc].map(x=>_CN[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
+  // ===== 十二宮／大運／流年（chart-extras.js）=====
+  try{ if(window.chartExtras) window.chartExtras({ec,zw:_zwX,birthYear:Y,gender,s2t:_s2t,unknown}).forEach(l=>out.push(l)); }catch(e){}
   // ===== 關卡年（可驗證佐證）=====
   try{
     const _natSat=Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',utc,true)).elon;
@@ -281,7 +285,7 @@ function renderCases(){
       <h3>${esc(c.name||'未命名')} <span class="pill">${esc(clientName(c.client_id))}</span></h3>
       <div class="meta">${esc(c.gender||'')}　${esc(c.birth_date||'')} ${esc(c.birth_time||'')}　${esc(c.birth_place||'')}${(c.chart&&c.chart.evidence)?'　<span style="color:var(--gold)">📌 已填佐證</span>':''}</div>
       <div class="row" style="margin-bottom:10px">
-        ${((c.chart&&c.chart.couple)?['sync','clash']:['script','breakthrough']).map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
+        ${((c.chart&&c.chart.couple)?['sync','clash']:SOLO_VERSIONS).map(v=>{const r=reps[v];const st=r?(r.full_unlocked?' ✓萬字已解鎖':(r.published?' ·千字已發布':' ·草稿')):' ·未建立';return `<button class="tabbtn ${r&&r.published?'active':''}" onclick="editReport('${c.id}','${v}')">${VLABEL[v]}${st}</button>`;}).join('')}
         <button class="btn ghost small" onclick="editCase('${c.id}')" style="margin-left:auto">✎ 編輯個案</button>
         <button class="btn ghost small" onclick="delCase('${c.id}')">刪除</button>
       </div>
@@ -358,7 +362,10 @@ window.saveReport=async function(caseId,version,reportId){
   const payload={case_id:caseId,version,excerpt:$('ex-'+caseId).value,full_content:$('fc-'+caseId).value,published:$('pb-'+caseId).checked,full_unlocked:$('fu-'+caseId).checked};
   if(payload.published||payload.full_unlocked){
     const headings=[...payload.full_content.matchAll(/^#{1,6}\s+(.+)$/gm)].map(x=>x[1].replace(/\*\*/g,'').trim());
-    const required=['〇','一','二','三','四','五','六','七','八','九'].slice(0,version==='script'?10:version==='breakthrough'?9:8);
+    // 章數：新版劇本 〇~十一、新版破局 〇~九、主題書 〇~八、合盤 〇~七；舊結構的既有報告仍可照舊儲存
+    const isNew=t=>headings.includes(t);
+    const need=version==='script'?(isNew('一、寫給你的話')?12:10):version==='breakthrough'?(isNew('八、破局清單')?10:9):['family','wealth','vocation'].includes(version)?9:8;
+    const required=['〇','一','二','三','四','五','六','七','八','九','十','十一'].slice(0,need);
     if(required.some(n=>!headings.some(h=>h.startsWith(n+'、')))||!headings.includes('附錄、矩陣證據')){
       const m=$('rmsg-'+caseId);m.className='msg err';m.textContent='章節不完整，不能發布或解鎖。請先取消兩個勾選以存草稿，再補齊各章與矩陣證據附錄。';return;
     }

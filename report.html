@@ -209,8 +209,9 @@ function initReading(root){
   // 依個案分組，劇本版 / 破局版 並列
   const byCase={};
   reports.forEach(r=>{ (byCase[r.case_id]=byCase[r.case_id]||{info:r,v:{}}); byCase[r.case_id].v[r.version]=r; });
-  const VL={script:'劇本版',breakthrough:'破局版',sync:'同頻版',clash:'碰撞版'};
-  const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本',sync:'你們怎麼吸引彼此',clash:'你們怎麼互相消耗'};
+  const VL={script:'劇本版',breakthrough:'破局版',sync:'同頻版',clash:'碰撞版',family:'原生家庭版',wealth:'財富版',vocation:'天職版'};
+  const VS={script:'看見你的人生主線',breakthrough:'找出困住你的劇本',sync:'你們怎麼吸引彼此',clash:'你們怎麼互相消耗',family:'你從家裡帶出來的劇本',wealth:'你和錢的關係',vocation:'你最不費力的本事'};
+  const THEMES=['family','wealth','vocation'];
   const col=(g,ver)=>{
     const r=g.v[ver];
     if(!r) return `<div class="vcol" data-v="${ver}"><div class="vhead ${ver}">${VL[ver]}</div><p class="muted" style="font-family:var(--sans);padding:10px 0">尚未提供</p></div>`;
@@ -231,11 +232,14 @@ function initReading(root){
     : '';
   box.innerHTML = banner.html + idx + groups.map((g,i)=>{
     const c=g.info;
-    const pair = (g.v.sync||g.v.clash) ? ['sync','clash'] : ['script','breakthrough'];
+    // 主報告兩版並列；主題書有才顯示。只買主題書的個案不顯示空的主報告分頁
+    const themed = THEMES.filter(v=>g.v[v]);
+    const base = (g.v.sync||g.v.clash) ? ['sync','clash'] : ['script','breakthrough'];
+    const pair = (themed.length && !base.some(v=>g.v[v])) ? themed : base.concat(themed);
     return `<div class="case-block" id="case-${i}">
       <h2 class="case-name">${esc(c.case_name||'我的命盤')}<span>${esc(c.birth_date||'')} ${esc(c.birth_place||'')}</span></h2>
       <div class="vtabs" role="tablist">${pair.map(v=>`<button role="tab" data-v="${v}">${VL[v]}<span>${VS[v]}</span></button>`).join('')}</div>
-      <div class="parallel">${col(g,pair[0])}${col(g,pair[1])}</div>
+      <div class="parallel">${pair.map(v=>col(g,v)).join('')}</div>
     </div>`;
   }).join('');
   initReading(box);

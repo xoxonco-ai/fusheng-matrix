@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="chart-extras.js?v=1"></script>
 <link rel="stylesheet" href="ink.css">
 <link rel="stylesheet" href="app.css">
 <style>
@@ -646,7 +647,7 @@ function chartSummary(c){
   if(c.birth_time){[h,mi]=c.birth_time.split(':').map(Number);}else{h=12;mi=0;unknown=true;}
   const lon=(c.lon!=null?c.lon:121.5654), lat=(c.lat!=null?c.lat:25.0330), tz=(c.tz!=null?c.tz:8);
   const gender=c.gender||'女';
-  let out=[]; let _fm='';
+  let out=[]; let _fm=''; let _zwX=null;
   out.push(`姓名：${c.name||''}　性別：${gender}　出生：${Y}/${M}/${D} ${unknown?'(時間不確定，以中午推算)':(h+':'+String(mi).padStart(2,'0'))}　出生地：${c.birth_place||''}`);
   // 八字
   const ec=Solar.fromYmdHms(Y,M,D,h,mi,0).getLunar().getEightChar();
@@ -659,7 +660,7 @@ function chartSummary(c){
   // 紫微
   try{
     const ti=ziweiHourIndex(h);
-    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN');
+    const zw=iztro.astro.bySolar(`${Y}-${String(M).padStart(2,'0')}-${String(D).padStart(2,'0')}`,ti,gender==='男'?'male':'female','zh-CN'); _zwX=zw;
     const sp=zw.palaces.find(p=>p.name==='命宫');
     const _fmp=zw.palaces.find(p=>p.name==='父母'); if(_fmp)_fm=_s2t(_fmp.majorStars.map(s=>s.name+(s.brightness||'')).join('、'))||'(空宮)';
     const sh=[];zw.palaces.forEach(p=>p.majorStars.concat(p.minorStars).forEach(s=>{if(s.mutagen)sh.push(_s2t(s.name)+'化'+_s2t(s.mutagen))}));
@@ -683,6 +684,8 @@ function chartSummary(c){
   let type2;if(dc2.size===0)type2='反映者';else if(dc2.has('sacral'))type2=m2t2?'顯示生產者':'生產者';else{let nm=false;['heart','solar','root'].forEach(m=>{if(conn2(m,'throat'))nm=true});type2=nm?'顯示者':'投射者'}
   let auth2=dc2.has('solar')?'情緒':dc2.has('sacral')?'薦骨':dc2.has('spleen')?'直覺':dc2.has('heart')?'意志力':dc2.has('g')?'自我投射':(type2==='反映者'?'月循環':'心智');
   out.push(`【人類圖】類型：${type2}；內在權威：${auth2}；人生角色：${pSun.line}/${dSun.line}；定義中心：${[...dc2].map(x=>_CNM[x]).join('、')}；通道：${defc.map(ch=>ch[0]+'-'+ch[1]).join(' ')}`);
+  // 十二宮／大運／流年（chart-extras.js）
+  try{ if(window.chartExtras) window.chartExtras({ec,zw:_zwX,birthYear:Y,gender,s2t:_s2t,unknown}).forEach(l=>out.push(l)); }catch(e){}
   // 關卡年（可驗證佐證）
   try{
     const _natSat=Astronomy.Ecliptic(Astronomy.GeoVector('Saturn',utc,true)).elon;
